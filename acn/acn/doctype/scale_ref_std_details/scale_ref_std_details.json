@@ -1,0 +1,42 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-21 21:02:38.712027",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "scale",
+  "reference_standard"
+ ],
+ "fields": [
+  {
+   "fieldname": "scale",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Scale",
+   "options": "Scale",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reference_standard",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Reference Standard",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-03-21 21:03:33.695256",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Scale Ref std details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

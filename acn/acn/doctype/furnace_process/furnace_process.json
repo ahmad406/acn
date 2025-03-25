@@ -1,0 +1,51 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-21 20:33:39.387421",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "furnace_process",
+  "furnace_details"
+ ],
+ "fields": [
+  {
+   "fieldname": "furnace_process",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Furnace Process",
+   "reqd": 1
+  },
+  {
+   "fieldname": "furnace_details",
+   "fieldtype": "Table",
+   "label": "Furnace Details",
+   "options": "Furnace Details"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-21 20:36:13.201284",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Furnace Process",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

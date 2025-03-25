@@ -1,0 +1,80 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-21 20:17:37.950061",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "process_type",
+  "process_name",
+  "job_card_color",
+  "load_no",
+  "process_items",
+  "process_parameter"
+ ],
+ "fields": [
+  {
+   "fieldname": "process_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Process Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "process_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Process Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "job_card_color",
+   "fieldtype": "Link",
+   "label": "Job Card Color",
+   "options": "Color"
+  },
+  {
+   "fieldname": "load_no",
+   "fieldtype": "Select",
+   "label": "Load No",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "process_items",
+   "fieldtype": "Table",
+   "label": "Process items",
+   "options": "Process items"
+  },
+  {
+   "fieldname": "process_parameter",
+   "fieldtype": "Table",
+   "label": "Process Parameter",
+   "options": "Process Parameter"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-21 20:27:15.160448",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Process Type",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

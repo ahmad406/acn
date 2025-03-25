@@ -1,0 +1,145 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-21 21:17:32.134505",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "customer_process_template",
+  "item_code",
+  "material",
+  "column_break_mbgj",
+  "process_type",
+  "process_name",
+  "item_name",
+  "customer_ref",
+  "ref_date",
+  "section_break_azrz",
+  "part_no__process_rate",
+  "customer_requirements",
+  "sequence_lot_wise_internal_process",
+  "parameters_with_acceptance_criteria",
+  "note"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer_process_template",
+   "fieldtype": "Link",
+   "label": "Customer Process Template",
+   "options": "Customer Process template"
+  },
+  {
+   "fetch_from": "customer_process_template.process_type",
+   "fetch_if_empty": 1,
+   "fieldname": "process_type",
+   "fieldtype": "Link",
+   "label": "Process Type",
+   "options": "Process Type",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "process_type.process_name",
+   "fieldname": "process_name",
+   "fieldtype": "Data",
+   "label": "Process name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_mbgj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "label": "Item code"
+  },
+  {
+   "fieldname": "material",
+   "fieldtype": "Data",
+   "label": "Material"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Part/Item Name"
+  },
+  {
+   "fieldname": "customer_ref",
+   "fieldtype": "Data",
+   "label": "Customer Process Ref. No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "ref_date",
+   "fieldtype": "Date",
+   "label": "Ref Date"
+  },
+  {
+   "fieldname": "section_break_azrz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "customer_requirements",
+   "fieldtype": "Table",
+   "label": "Customer Requirements",
+   "options": "Customer Requirements"
+  },
+  {
+   "fieldname": "sequence_lot_wise_internal_process",
+   "fieldtype": "Table",
+   "label": "Sequence/Lot wise Internal Process",
+   "options": "Sequence Lot wise Internal Process"
+  },
+  {
+   "fieldname": "parameters_with_acceptance_criteria",
+   "fieldtype": "Table",
+   "label": "Parameters with Acceptance criteria",
+   "options": "Parameters with Acceptance criteria"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Long Text",
+   "label": "Note"
+  },
+  {
+   "fieldname": "part_no__process_rate",
+   "fieldtype": "Table",
+   "label": "Part No & Process Rate",
+   "options": "Part No  Process Rate"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-21 22:01:38.589782",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Customer Process",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

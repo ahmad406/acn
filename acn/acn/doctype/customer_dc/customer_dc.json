@@ -1,0 +1,125 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-22 14:31:59.382823",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "name_series",
+  "tran_date",
+  "ref_no",
+  "column_break_lz4m",
+  "ref_date",
+  "customer",
+  "customer_name",
+  "sales_order_no",
+  "order_date",
+  "customer_order_no",
+  "customer_order_date",
+  "section_break_19fl",
+  "items",
+  "total_qty"
+ ],
+ "fields": [
+  {
+   "fieldname": "name_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "CDC-.FY.-.#####."
+  },
+  {
+   "fieldname": "tran_date",
+   "fieldtype": "Date",
+   "label": "Tran Date"
+  },
+  {
+   "fieldname": "ref_no",
+   "fieldtype": "Data",
+   "label": "Ref no"
+  },
+  {
+   "fieldname": "ref_date",
+   "fieldtype": "Date",
+   "label": "Ref Date"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "column_break_lz4m",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_19fl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Customer DC child"
+  },
+  {
+   "fieldname": "sales_order_no",
+   "fieldtype": "Link",
+   "label": "Sales Order No",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "order_date",
+   "fieldtype": "Data",
+   "label": "Order Date"
+  },
+  {
+   "fieldname": "customer_order_no",
+   "fieldtype": "Data",
+   "label": "Customer Order No"
+  },
+  {
+   "fieldname": "customer_order_date",
+   "fieldtype": "Date",
+   "label": "Customer order date"
+  },
+  {
+   "fieldname": "total_qty",
+   "fieldtype": "Float",
+   "label": "Total Qty",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-25 20:02:40.278462",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Customer DC",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

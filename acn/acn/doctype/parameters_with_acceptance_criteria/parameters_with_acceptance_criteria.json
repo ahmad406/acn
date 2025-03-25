@@ -1,0 +1,69 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-21 21:13:16.404814",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "control_parameter",
+  "minimum_value",
+  "maximum_value",
+  "scale",
+  "microstructure_cutoff",
+  "information"
+ ],
+ "fields": [
+  {
+   "fieldname": "control_parameter",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Control Parameter",
+   "options": "Internal Control Parameter",
+   "reqd": 1
+  },
+  {
+   "fieldname": "minimum_value",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Minimum Value"
+  },
+  {
+   "fieldname": "maximum_value",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Maximum Value"
+  },
+  {
+   "fieldname": "scale",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Scale",
+   "options": "Scale"
+  },
+  {
+   "fieldname": "microstructure_cutoff",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Microstructure/Cut-off"
+  },
+  {
+   "fieldname": "information",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Information"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-03-21 21:16:55.912637",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Parameters with Acceptance criteria",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

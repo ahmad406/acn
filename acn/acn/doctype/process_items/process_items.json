@@ -1,0 +1,57 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-21 20:20:48.939485",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "process_item_code",
+  "item_name",
+  "rate",
+  "hsn_sac"
+ ],
+ "fields": [
+  {
+   "fieldname": "process_item_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Process Item code",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Rate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "hsn_sac",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "HSN/SAC Code",
+   "options": "GST HSN Code"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-03-21 20:24:48.473247",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Process items",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

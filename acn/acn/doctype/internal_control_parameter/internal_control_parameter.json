@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-21 20:38:40.270327",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "internal_control_parameter",
+  "tc_order_no",
+  "ref_std"
+ ],
+ "fields": [
+  {
+   "fieldname": "internal_control_parameter",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Internal Control Parameter",
+   "reqd": 1
+  },
+  {
+   "description": "Mention print order number if required to print in Test Certificate",
+   "fieldname": "tc_order_no",
+   "fieldtype": "Data",
+   "label": "TC Order No"
+  },
+  {
+   "fieldname": "ref_std",
+   "fieldtype": "Table",
+   "label": "Scale & Ref. std. details ",
+   "options": "Scale Ref std details"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-21 21:04:05.584488",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Internal Control Parameter",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

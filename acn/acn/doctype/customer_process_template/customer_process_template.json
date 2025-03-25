@@ -1,0 +1,75 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-21 21:04:31.000316",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "process_type",
+  "process_name",
+  "customer_requirements",
+  "sequence_lot_wise_internal_process",
+  "parameters_with_acceptance_criteria"
+ ],
+ "fields": [
+  {
+   "fieldname": "process_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Process Type",
+   "options": "Process Type",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "process_type.process_name",
+   "fieldname": "process_name",
+   "fieldtype": "Data",
+   "label": "Process Name",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer_requirements",
+   "fieldtype": "Table",
+   "label": "Customer Requirements",
+   "options": "Customer Requirements"
+  },
+  {
+   "fieldname": "sequence_lot_wise_internal_process",
+   "fieldtype": "Table",
+   "label": "Sequence/Lot wise Internal Process",
+   "options": "Sequence Lot wise Internal Process"
+  },
+  {
+   "fieldname": "parameters_with_acceptance_criteria",
+   "fieldtype": "Table",
+   "label": "Parameters with Acceptance criteria",
+   "options": "Parameters with Acceptance criteria"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-21 21:17:02.457947",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Customer Process template",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

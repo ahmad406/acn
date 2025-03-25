@@ -1,0 +1,79 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-22 17:20:00.936330",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "job_plan_id",
+  "planned_date",
+  "internal_process",
+  "display_internal_process",
+  "display_furnace_process",
+  "display_media",
+  "job_execution_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "job_plan_id",
+   "fieldtype": "Select",
+   "label": "Job Plan ID"
+  },
+  {
+   "fieldname": "planned_date",
+   "fieldtype": "Date",
+   "label": "Planned Date",
+   "options": "PP-.FY.-.#####"
+  },
+  {
+   "fieldname": "internal_process",
+   "fieldtype": "Select",
+   "label": "Internal Process"
+  },
+  {
+   "fieldname": "display_internal_process",
+   "fieldtype": "Data",
+   "label": "Display Internal Process"
+  },
+  {
+   "fieldname": "display_furnace_process",
+   "fieldtype": "Data",
+   "label": "Display Furnace Process"
+  },
+  {
+   "fieldname": "display_media",
+   "fieldtype": "Data",
+   "label": "Display Media"
+  },
+  {
+   "fieldname": "job_execution_date",
+   "fieldtype": "Date",
+   "label": "Job Execution Date"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-22 17:33:35.400889",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Job Plan Scheduler",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

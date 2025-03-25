@@ -1,0 +1,60 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-21 21:09:12.933497",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "lot_no",
+  "internal_process",
+  "furnace_process",
+  "media"
+ ],
+ "fields": [
+  {
+   "fieldname": "lot_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Lot No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "internal_process",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Internal Process",
+   "options": "Internal Process",
+   "reqd": 1
+  },
+  {
+   "fieldname": "furnace_process",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Furnace Process",
+   "options": "Furnace Process",
+   "reqd": 1
+  },
+  {
+   "fieldname": "media",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Media",
+   "options": "Media",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-03-21 21:11:46.722729",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Sequence Lot wise Internal Process",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
