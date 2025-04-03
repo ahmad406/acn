@@ -1,0 +1,152 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-03-27 22:36:49.412718",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "generated_on",
+  "customer_dc",
+  "tran_date",
+  "item_code",
+  "item_name",
+  "part_no",
+  "customer_code",
+  "customer_name",
+  "process_type",
+  "process_name",
+  "material",
+  "customer_process_ref_no",
+  "customer_dc_no",
+  "qty_in_nos",
+  "qty_in_kgs",
+  "commitment_date",
+  "card_colour"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series"
+  },
+  {
+   "fieldname": "generated_on",
+   "fieldtype": "Date",
+   "label": "Generated on"
+  },
+  {
+   "fieldname": "customer_dc",
+   "fieldtype": "Link",
+   "label": "Customer DC",
+   "options": "Customer DC"
+  },
+  {
+   "fieldname": "tran_date",
+   "fieldtype": "Date",
+   "label": "Tran Date"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "part_no",
+   "fieldtype": "Link",
+   "label": "Part No",
+   "options": "Part no"
+  },
+  {
+   "fieldname": "customer_code",
+   "fieldtype": "Data",
+   "label": "Customer Code"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "process_type",
+   "fieldtype": "Link",
+   "label": "Process Type",
+   "options": "Process Type"
+  },
+  {
+   "fieldname": "process_name",
+   "fieldtype": "Data",
+   "label": "Process Name"
+  },
+  {
+   "fieldname": "material",
+   "fieldtype": "Data",
+   "label": "Material"
+  },
+  {
+   "fieldname": "customer_process_ref_no",
+   "fieldtype": "Data",
+   "label": "Customer Process Ref No"
+  },
+  {
+   "fieldname": "customer_dc_no",
+   "fieldtype": "Data",
+   "label": "Customer DC No"
+  },
+  {
+   "fieldname": "qty_in_nos",
+   "fieldtype": "Float",
+   "label": "Qty in Nos"
+  },
+  {
+   "fieldname": "qty_in_kgs",
+   "fieldtype": "Float",
+   "label": "Qty in Kgs"
+  },
+  {
+   "fieldname": "commitment_date",
+   "fieldtype": "Date",
+   "label": "Commitment date"
+  },
+  {
+   "fieldname": "card_colour",
+   "fieldtype": "Data",
+   "label": "Card colour"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-27 22:45:07.570693",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Job Card for process",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

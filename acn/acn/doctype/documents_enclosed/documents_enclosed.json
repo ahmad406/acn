@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:documents_name",
  "creation": "2025-03-21 22:02:38.808335",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -13,16 +14,18 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Documents name",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-21 22:02:58.647086",
+ "modified": "2025-03-25 20:20:10.066910",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Documents enclosed",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {

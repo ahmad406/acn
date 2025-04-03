@@ -1,30 +1,28 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:media",
- "creation": "2025-03-21 20:37:02.914341",
+ "autoname": "field:process_parameters",
+ "creation": "2025-04-03 20:47:49.513882",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "media"
+  "process_parameters"
  ],
  "fields": [
   {
-   "fieldname": "media",
+   "fieldname": "process_parameters",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Media",
-   "reqd": 1,
+   "label": "Process Parameters",
    "unique": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-25 20:16:23.881761",
+ "modified": "2025-04-03 20:48:17.866554",
  "modified_by": "Administrator",
  "module": "ACN",
- "name": "Media",
+ "name": "Process Parameters",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [

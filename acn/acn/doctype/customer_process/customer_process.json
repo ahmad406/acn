@@ -20,7 +20,8 @@
   "customer_requirements",
   "sequence_lot_wise_internal_process",
   "parameters_with_acceptance_criteria",
-  "note"
+  "note",
+  "title_data"
  ],
  "fields": [
   {
@@ -115,12 +116,18 @@
    "fieldtype": "Table",
    "label": "Part No & Process Rate",
    "options": "Part No  Process Rate"
+  },
+  {
+   "fieldname": "title_data",
+   "fieldtype": "Data",
+   "label": "Title data",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-21 22:01:38.589782",
+ "modified": "2025-03-27 22:04:32.868151",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer Process",
@@ -139,7 +146,9 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "title_data"
 }

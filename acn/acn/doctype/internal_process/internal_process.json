@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:internal_process",
  "creation": "2025-03-21 20:30:10.892565",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -15,7 +16,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Internal Process",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "department",
@@ -36,10 +38,11 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-21 20:32:16.830894",
+ "modified": "2025-03-25 20:15:01.797541",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Internal Process",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {

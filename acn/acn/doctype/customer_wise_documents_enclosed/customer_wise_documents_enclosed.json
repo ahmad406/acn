@@ -15,7 +15,8 @@
    "in_list_view": 1,
    "label": "Customer",
    "options": "Customer",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "documents_enclosed",
@@ -27,7 +28,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-21 22:06:06.255027",
+ "modified": "2025-03-25 20:21:01.995459",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer wise documents enclosed",

@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:process_type",
  "creation": "2025-03-21 20:17:37.950061",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -18,7 +19,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Process Type",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "process_name",
@@ -55,10 +57,11 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-21 20:27:15.160448",
+ "modified": "2025-04-01 15:58:12.126954",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Process Type",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -74,6 +77,7 @@
    "write": 1
   }
  ],
+ "search_fields": "process_type,process_name",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
