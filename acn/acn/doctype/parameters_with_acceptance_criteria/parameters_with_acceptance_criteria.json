@@ -5,6 +5,8 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "lot_no",
+  "internal_process",
   "control_parameter",
   "minimum_value",
   "maximum_value",
@@ -51,13 +53,26 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Information"
+  },
+  {
+   "fieldname": "lot_no",
+   "fieldtype": "Data",
+   "label": "Lot No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "internal_process",
+   "fieldtype": "Link",
+   "label": "Internal Process",
+   "options": "Internal Process",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-21 21:16:55.912637",
+ "modified": "2025-04-07 19:24:54.767596",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Parameters with Acceptance criteria",

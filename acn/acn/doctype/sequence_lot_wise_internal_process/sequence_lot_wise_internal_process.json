@@ -17,6 +17,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Lot No",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -32,23 +33,21 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Furnace Process",
-   "options": "Furnace Process",
-   "reqd": 1
+   "options": "Furnace Process"
   },
   {
    "fieldname": "media",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Media",
-   "options": "Media",
-   "reqd": 1
+   "options": "Media"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-21 21:11:46.722729",
+ "modified": "2025-04-07 19:11:26.340990",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Sequence Lot wise Internal Process",

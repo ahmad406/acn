@@ -1,0 +1,237 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-04 19:51:49.834027",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "name_series",
+  "execution_date",
+  "job_plan_id",
+  "rocessfurnace_section",
+  "internal_process",
+  "furnace_process",
+  "furnace_code",
+  "furnace_name",
+  "column_break_5vig",
+  "media",
+  "job_loading_plan_date",
+  "loading_plan_time",
+  "load_no",
+  "section_break_2n2p",
+  "production_jobs",
+  "job_card_id",
+  "customer_dc_id",
+  "item_code",
+  "item_name",
+  "part_no",
+  "customer_code",
+  "customer_name",
+  "process_type",
+  "process_name",
+  "material",
+  "customer_process_ref_no",
+  "customer_dc_no",
+  "planned_qty_in_nos",
+  "planned_qty_in_kgs",
+  "section_break_ace2",
+  "parameters"
+ ],
+ "fields": [
+  {
+   "fieldname": "name_series",
+   "fieldtype": "Select",
+   "label": "Logsheet ID"
+  },
+  {
+   "fieldname": "execution_date",
+   "fieldtype": "Date",
+   "label": "Execution date"
+  },
+  {
+   "fieldname": "job_plan_id",
+   "fieldtype": "Link",
+   "label": "Job Plan ID",
+   "options": "Job Plan Scheduler"
+  },
+  {
+   "fieldname": "rocessfurnace_section",
+   "fieldtype": "Section Break",
+   "label": "Process/Furnace"
+  },
+  {
+   "fieldname": "internal_process",
+   "fieldtype": "Data",
+   "label": "Internal Process",
+   "read_only": 1
+  },
+  {
+   "fieldname": "furnace_process",
+   "fieldtype": "Data",
+   "label": "Furnace Process",
+   "read_only": 1
+  },
+  {
+   "fieldname": "furnace_code",
+   "fieldtype": "Data",
+   "label": "Furnace Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "furnace_name",
+   "fieldtype": "Data",
+   "label": "Furnace Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "media",
+   "fieldtype": "Data",
+   "label": "Media",
+   "read_only": 1
+  },
+  {
+   "fieldname": "job_loading_plan_date",
+   "fieldtype": "Date",
+   "label": "Job loading plan date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "loading_plan_time",
+   "fieldtype": "Time",
+   "label": "Loading plan Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "load_no",
+   "fieldtype": "Data",
+   "label": "Load No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5vig",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_2n2p",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "production_jobs",
+   "fieldtype": "Table",
+   "label": "Production Jobs",
+   "options": "Job Execution Logsheet child"
+  },
+  {
+   "fieldname": "job_card_id",
+   "fieldtype": "Link",
+   "label": "Job Card ID",
+   "options": "Job Card"
+  },
+  {
+   "fieldname": "customer_dc_id",
+   "fieldtype": "Link",
+   "label": "Customer DC ID",
+   "options": "Customer DC"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item code",
+   "options": "Item"
+  },
+  {
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "part_no",
+   "fieldtype": "Link",
+   "label": "Part No",
+   "options": "Part no"
+  },
+  {
+   "fieldname": "customer_code",
+   "fieldtype": "Data",
+   "label": "Customer code"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer name"
+  },
+  {
+   "fieldname": "process_type",
+   "fieldtype": "Link",
+   "label": "Process type",
+   "options": "Process Type"
+  },
+  {
+   "fieldname": "process_name",
+   "fieldtype": "Data",
+   "label": "Process Name"
+  },
+  {
+   "fieldname": "material",
+   "fieldtype": "Data",
+   "label": "Material"
+  },
+  {
+   "fieldname": "customer_process_ref_no",
+   "fieldtype": "Data",
+   "label": "Customer Process Ref No"
+  },
+  {
+   "fieldname": "customer_dc_no",
+   "fieldtype": "Data",
+   "label": "Customer DC No"
+  },
+  {
+   "fieldname": "planned_qty_in_nos",
+   "fieldtype": "Float",
+   "label": "Planned Qty in Nos"
+  },
+  {
+   "fieldname": "planned_qty_in_kgs",
+   "fieldtype": "Float",
+   "label": "Planned Qty in Kgs"
+  },
+  {
+   "fieldname": "section_break_ace2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "parameters",
+   "fieldtype": "Table",
+   "label": "Parameters",
+   "options": "logsheet Parameters"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-04-04 20:33:43.167556",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Job Execution Logsheet",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

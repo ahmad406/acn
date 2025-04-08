@@ -5,7 +5,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "job_plan_id",
+  "name_series",
   "planned_date",
   "internal_process",
   "display_internal_process",
@@ -14,11 +14,6 @@
   "job_execution_date"
  ],
  "fields": [
-  {
-   "fieldname": "job_plan_id",
-   "fieldtype": "Select",
-   "label": "Job Plan ID"
-  },
   {
    "fieldname": "planned_date",
    "fieldtype": "Date",
@@ -49,12 +44,17 @@
    "fieldname": "job_execution_date",
    "fieldtype": "Date",
    "label": "Job Execution Date"
+  },
+  {
+   "fieldname": "name_series",
+   "fieldtype": "Select",
+   "label": "Job Plan ID"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-22 17:33:35.400889",
+ "modified": "2025-04-04 19:57:25.899466",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Plan Scheduler",

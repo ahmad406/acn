@@ -1,0 +1,37 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-04 20:08:01.884025",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "production_jobs",
+  "qtys"
+ ],
+ "fields": [
+  {
+   "fieldname": "production_jobs",
+   "fieldtype": "Data",
+   "label": "Production Jobs"
+  },
+  {
+   "fieldname": "qtys",
+   "fieldtype": "Float",
+   "label": "Qtys"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-04-04 20:08:39.700308",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Job Execution Logsheet child",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

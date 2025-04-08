@@ -29,14 +29,14 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Rate UoM",
-   "options": "Nos\nKgs"
+   "options": "Nos\nKgs\nMinimum"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-21 22:00:46.194904",
+ "modified": "2025-04-07 20:07:19.342023",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Part No  Process Rate",

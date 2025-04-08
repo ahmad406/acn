@@ -1,11 +1,12 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:process_type",
+ "autoname": "field:customer_process_template_name",
  "creation": "2025-03-21 21:04:31.000316",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "customer_process_template_name",
   "process_type",
   "process_name",
   "customer_requirements",
@@ -47,12 +48,19 @@
    "fieldtype": "Table",
    "label": "Parameters with Acceptance criteria",
    "options": "Parameters with Acceptance criteria"
+  },
+  {
+   "fieldname": "customer_process_template_name",
+   "fieldtype": "Data",
+   "label": "Customer Process template Name",
+   "reqd": 1,
+   "unique": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-01 16:33:00.794008",
+ "modified": "2025-04-05 15:01:59.729489",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer Process template",
