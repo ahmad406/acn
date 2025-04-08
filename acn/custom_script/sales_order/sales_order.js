@@ -20,6 +20,10 @@ frappe.ui.form.on('Sales Order Item', {
 				callback: function(r) {
 					if (r.message) {
 						frappe.model.set_value(cdt, cdn, "custom_rate_uom", r.message.rate_uom);
+						// frappe.model.set_value(cdt, cdn, "item_code", r.message.item_code);
+						row..item_code = r.message.item_code;
+						frappe.model.set_value(cdt, cdn, "rate", r.message.process_rate);
+
 					}
 				}
 			});

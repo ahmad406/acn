@@ -9,7 +9,9 @@ def validate(self,method=None):
 			d.custom_process_name = process_details.process_name
 			d.material = process_details.material
 			d.custom_rate_uom = process_details.rate_uom
+			d.item_code= process_details.item_code
 			d.rate = process_details.process_rate
+			d.custom_customer_process_ref_no = process_details.customer_ref
 			if process_details.rate_uom=="Minimum":
 				d.qty=1
 			elif process_details.rate_uom=="Nos":
@@ -23,7 +25,7 @@ def validate(self,method=None):
 @frappe.whitelist()
 def get_process_rate(part_no, customer):
 	result = frappe.db.sql("""
-		SELECT c.process_rate, c.rate_uom,p.process_type,p.process_name,p.material
+		SELECT c.process_rate, c.rate_uom,p.process_type,p.process_name,p.material,p.item_code,p.customer_ref
 		FROM `tabCustomer Process` p
 		INNER JOIN `tabPart No  Process Rate` c ON p.name = c.parent
 		WHERE c.part_no = %s AND p.customer = %s
