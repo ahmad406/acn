@@ -15,21 +15,28 @@
   "part_no",
   "customer_code",
   "customer_name",
+  "column_break_xrgf",
   "process_type",
   "process_name",
   "material",
   "customer_process_ref_no",
   "customer_dc_no",
+  "customer_dc_date",
   "qty_in_nos",
   "qty_in_kgs",
   "commitment_date",
-  "card_colour"
+  "card_colour",
+  "section_break_5zor",
+  "customer_requirements",
+  "sequence_lot_wise_internal_process",
+  "parameters_with_acceptance_criteria"
  ],
  "fields": [
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
-   "label": "Series"
+   "label": "Series",
+   "options": "JB-.FY.-.#####."
   },
   {
    "fieldname": "generated_on",
@@ -121,12 +128,43 @@
    "fieldname": "card_colour",
    "fieldtype": "Data",
    "label": "Card colour"
+  },
+  {
+   "fieldname": "column_break_xrgf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_5zor",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "customer_requirements",
+   "fieldtype": "Table",
+   "label": "Customer Requirements",
+   "options": "Customer Requirements"
+  },
+  {
+   "fieldname": "sequence_lot_wise_internal_process",
+   "fieldtype": "Table",
+   "label": "Sequence/Lot wise Internal Process",
+   "options": "Sequence Lot wise Internal Process"
+  },
+  {
+   "fieldname": "parameters_with_acceptance_criteria",
+   "fieldtype": "Table",
+   "label": "Parameters with Acceptance criteria",
+   "options": "Parameters with Acceptance criteria"
+  },
+  {
+   "fieldname": "customer_dc_date",
+   "fieldtype": "Date",
+   "label": "Customer DC Date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-27 22:45:07.570693",
+ "modified": "2025-04-14 22:57:44.588660",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Card for process",

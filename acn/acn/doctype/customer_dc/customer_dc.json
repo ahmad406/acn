@@ -7,12 +7,12 @@
  "field_order": [
   "name_series",
   "tran_date",
-  "ref_no",
-  "column_break_lz4m",
-  "ref_date",
+  "sales_order_no",
   "customer",
   "customer_name",
-  "sales_order_no",
+  "column_break_lz4m",
+  "ref_no",
+  "ref_date",
   "order_date",
   "customer_order_no",
   "customer_order_date",
@@ -28,6 +28,7 @@
    "options": "CDC-.FY.-.#####."
   },
   {
+   "default": "Today",
    "fieldname": "tran_date",
    "fieldtype": "Date",
    "label": "Tran Date"
@@ -46,7 +47,8 @@
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_lz4m",
@@ -56,6 +58,7 @@
    "fetch_from": "customer.customer_name",
    "fieldname": "customer_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Customer name",
    "read_only": 1
   },
@@ -72,20 +75,26 @@
   {
    "fieldname": "sales_order_no",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Sales Order No",
-   "options": "Sales Order"
+   "link_filters": "[[\"Sales Order\",\"docstatus\",\"=\",\"1\"]]",
+   "options": "Sales Order",
+   "reqd": 1
   },
   {
+   "fetch_from": "sales_order_no.transaction_date",
    "fieldname": "order_date",
-   "fieldtype": "Data",
+   "fieldtype": "Date",
    "label": "Order Date"
   },
   {
+   "fetch_from": "sales_order_no.po_no",
    "fieldname": "customer_order_no",
    "fieldtype": "Data",
    "label": "Customer Order No"
   },
   {
+   "fetch_from": "sales_order_no.po_date",
    "fieldname": "customer_order_date",
    "fieldtype": "Date",
    "label": "Customer order date"
@@ -100,7 +109,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-25 20:02:40.278462",
+ "modified": "2025-04-14 17:02:18.941554",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer DC",
