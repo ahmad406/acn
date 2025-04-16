@@ -12,7 +12,8 @@
   "maximum_value",
   "scale",
   "microstructure_cutoff",
-  "information"
+  "information",
+  "job"
  ],
  "fields": [
   {
@@ -66,13 +67,19 @@
    "label": "Internal Process",
    "options": "Internal Process",
    "read_only": 1
+  },
+  {
+   "fieldname": "job",
+   "fieldtype": "Data",
+   "label": "Job",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-07 19:24:54.767596",
+ "modified": "2025-04-16 21:44:46.223750",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Parameters with Acceptance criteria",

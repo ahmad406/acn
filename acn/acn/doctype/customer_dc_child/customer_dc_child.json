@@ -76,20 +76,17 @@
   {
    "fieldname": "customer_dc_no",
    "fieldtype": "Data",
-   "label": "Customer DC No ",
-   "read_only": 1
+   "label": "Customer DC No "
   },
   {
    "fieldname": "customer_dc_date",
    "fieldtype": "Date",
-   "label": "Customer DC Date",
-   "read_only": 1
+   "label": "Customer DC Date"
   },
   {
    "fieldname": "commitment_date",
    "fieldtype": "Date",
-   "label": "Commitment Date",
-   "read_only": 1
+   "label": "Commitment Date"
   },
   {
    "fieldname": "rate",
@@ -120,7 +117,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-14 15:57:12.091065",
+ "modified": "2025-04-16 17:19:24.420497",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer DC child",

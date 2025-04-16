@@ -29,7 +29,9 @@
   "section_break_5zor",
   "customer_requirements",
   "sequence_lot_wise_internal_process",
-  "parameters_with_acceptance_criteria"
+  "parameters_with_acceptance_criteria",
+  "reference",
+  "amended_from"
  ],
  "fields": [
   {
@@ -159,12 +161,29 @@
    "fieldname": "customer_dc_date",
    "fieldtype": "Date",
    "label": "Customer DC Date"
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Link",
+   "label": "Reference",
+   "options": "Customer DC"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Job Card for process",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2025-04-14 22:57:44.588660",
+ "modified": "2025-04-16 17:37:31.794288",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Card for process",

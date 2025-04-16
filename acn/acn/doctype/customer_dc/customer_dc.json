@@ -1,15 +1,16 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "naming_series:",
  "creation": "2025-03-22 14:31:59.382823",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "name_series",
+  "naming_series",
   "tran_date",
-  "sales_order_no",
   "customer",
   "customer_name",
+  "sales_order_no",
   "column_break_lz4m",
   "ref_no",
   "ref_date",
@@ -18,15 +19,10 @@
   "customer_order_date",
   "section_break_19fl",
   "items",
-  "total_qty"
+  "total_qty",
+  "amended_from"
  ],
  "fields": [
-  {
-   "fieldname": "name_series",
-   "fieldtype": "Select",
-   "label": "Series",
-   "options": "CDC-.FY.-.#####."
-  },
   {
    "default": "Today",
    "fieldname": "tran_date",
@@ -77,7 +73,6 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Sales Order No",
-   "link_filters": "[[\"Sales Order\",\"docstatus\",\"=\",\"1\"]]",
    "options": "Sales Order",
    "reqd": 1
   },
@@ -104,15 +99,33 @@
    "fieldtype": "Float",
    "label": "Total Qty",
    "read_only": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "CDC-.FY.-.#####."
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Customer DC",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2025-04-14 17:02:18.941554",
+ "modified": "2025-04-16 19:29:04.285510",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer DC",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

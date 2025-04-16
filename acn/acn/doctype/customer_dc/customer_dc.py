@@ -10,8 +10,21 @@ class CustomerDC(Document):
 
 	def on_submit(self):
 		self.update_qty_in_sales_order()
+		self.create_job_card()
 	def on_cancel(self):
 		self.update_qty_in_sales_order(is_cancel=True)
+		self.cancel_job_card()
+
+	def cancel_job_card(self):
+		sql="""select name from `tabJob Card for process` where reference="{}" """.format(self.name)
+		data=frappe.db.sql(sql,as_dict=True)
+		if data:
+			for d in data:
+				doc=frappe.get_doc("Job Card for process",d.name)
+				if doc.docstatus==1:
+					doc.cancel()
+				doc.delete()
+	
 
 
 	def create_job_card(self):
@@ -27,13 +40,15 @@ class CustomerDC(Document):
 			doc.process_type=cp.process_type
 			doc.process_name=cp.process_name
 			doc.material=cp.material
-			doc.customer_process_ref_no=cp.customer_process_ref_no
+			doc.customer_process_ref_no=d.customer_process_ref_no
 			doc.customer_dc_no=d.customer_dc_no
 			doc.customer_dc_date=d.customer_dc_date
 			doc.commitment_date=d.commitment_date
-			doc.card_colour=frappe.get_value("Process Type",doc.process_type,"card_colour")
+			doc.card_colour=frappe.get_value("Process Type",doc.process_type,"job_card_color")
 			doc.customer_code=self.customer
 			doc.customer_name=self.customer_name
+			doc.qty_in_kgs=d.qty_kgs
+			doc.qty_in_nos=d.qty_nos
 
 
 
@@ -63,9 +78,11 @@ class CustomerDC(Document):
 				row_p.scale=p.scale
 				row_p.microstructure_cutoff=p.microstructure_cutoff
 				row_p.information=p.information
+			doc.reference=self.name
+			doc.save()
 
 	def get_customer_process(self,part_no):
-		sql="""select * from `tabCustomer Process` where customer="{}" and part_no="{}" """.format(self.customer,part_no)
+		sql="""select p.name from `tabCustomer Process` p inner join `tabPart No  Process Rate` c on p.name=c.parent where p.customer="{}" and c.part_no="{}" """.format(self.customer,part_no)
 		data=frappe.db.sql(sql,as_dict=True)
 		if data:
 			return data[0].name
@@ -77,11 +94,11 @@ class CustomerDC(Document):
 		so = frappe.get_doc("Sales Order", self.sales_order_no)
 
 		for item in self.items:
-			if not item.sales_order_item_id:
+			if not item.sales_order_item:
 				frappe.throw("Sales Order Item ref not found in row {}".format(item.idx))
 
 			for so_item in so.items:
-				if so_item.name == item.sales_order_item_id:
+				if so_item.name == item.sales_order_item:
 					sign = -1 if is_cancel else 1
 
 					new_bal_nos = so_item.custom_bal_qty_in_nos + sign * item.qty_nos
@@ -120,7 +137,7 @@ class CustomerDC(Document):
 						d.process_type=data[0].custom_process_type
 						d.process_name=data[0].custom_process_name
 						d.commitment_date=data[0].delivery_date
-						d.sales_order_item_id=data[0].name
+						d.sales_order_item=data[0].name
 
 						break
 		return True

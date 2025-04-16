@@ -9,12 +9,13 @@
   "lot_no",
   "internal_process",
   "furnace_process",
-  "media"
+  "media",
+  "is_planned"
  ],
  "fields": [
   {
    "fieldname": "lot_no",
-   "fieldtype": "Data",
+   "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Lot No",
    "read_only": 1,
@@ -41,13 +42,20 @@
    "in_list_view": 1,
    "label": "Media",
    "options": "Media"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_planned",
+   "fieldtype": "Check",
+   "label": "Is planned",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-07 19:11:26.340990",
+ "modified": "2025-04-15 20:34:27.350238",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Sequence Lot wise Internal Process",

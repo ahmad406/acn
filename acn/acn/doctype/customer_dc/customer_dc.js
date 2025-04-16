@@ -27,18 +27,29 @@ frappe.ui.form.on("Customer DC", {
         //     }, __("Get Items From"));
         // }
     },
-    setup:function(frm){
-        cur_frm.cscript.onload = function   (){
+    setup: function (frm) {
+        cur_frm.cscript.onload = function () {
             cur_frm.set_query("part_no", "items", function (frm, cdt, cdn) {
                 var child = locals[cdt][cdn];
-                    return {
-                        query: 'acn.acn.doctype.customer_dc.customer_dc.get_part_no',
-                        filters: {"sales_order":cur_frm.doc.sales_order_no
-                        }
-        
+                return {
+                    query: 'acn.acn.doctype.customer_dc.customer_dc.get_part_no',
+                    filters: {
+                        "sales_order": cur_frm.doc.sales_order_no
                     }
-                });
-            }
+
+                }
+            });
+          
+        }
+        cur_frm.set_query("sales_order_no", function (frm) {
+            return {
+                filters: {
+                    customer: cur_frm.doc.customer,
+                    docstatus: 1
+                }
+            };
+        });
+        
 
     },
 
@@ -69,15 +80,15 @@ frappe.ui.form.on("Customer DC child", {
         item.qty = item.qty_kgs;
         cur_frm.refresh()
     },
-    part_no:function(frm,cdt,cdn){
+    part_no: function (frm, cdt, cdn) {
         var d = locals[cdt][cdn];
         frappe.call({
             method: "set_part_no_details",
-            args:{row:d},
-			doc: cur_frm.doc,
-            callback: function(r) {
+            args: { row: d },
+            doc: cur_frm.doc,
+            callback: function (r) {
                 if (r.message) {
-                   cur_frm.refresh()
+                    cur_frm.refresh()
                 }
             }
         });

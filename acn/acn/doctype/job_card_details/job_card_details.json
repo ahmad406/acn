@@ -1,0 +1,149 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-15 20:57:49.804018",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "job_card_id",
+  "job_card_for_process",
+  "customer_dc_id",
+  "item_code",
+  "item_name",
+  "part_no",
+  "customer_code",
+  "customer_name",
+  "column_break_phuq",
+  "process_type",
+  "process_name",
+  "material",
+  "customer_process_ref_no",
+  "customer_dc_no",
+  "balance_plan_qty_in_nos",
+  "balance_plan_qty_in_kgs",
+  "commitment_date",
+  "planned_qty_in_nos",
+  "planned_qty_in_kgs"
+ ],
+ "fields": [
+  {
+   "fieldname": "job_card_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Job Card ID",
+   "options": "Job Card for process"
+  },
+  {
+   "fetch_from": "job_card_id.process_name",
+   "fieldname": "job_card_for_process",
+   "fieldtype": "Data",
+   "label": "Job Card for Process"
+  },
+  {
+   "fieldname": "customer_dc_id",
+   "fieldtype": "Data",
+   "label": "Customer DC ID"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name"
+  },
+  {
+   "fieldname": "part_no",
+   "fieldtype": "Link",
+   "label": "Part No",
+   "options": "Part no"
+  },
+  {
+   "fieldname": "customer_code",
+   "fieldtype": "Link",
+   "label": "Customer code",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer name"
+  },
+  {
+   "fieldname": "process_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": " Process Type",
+   "options": "Process Type"
+  },
+  {
+   "fetch_from": "process_type.process_name",
+   "fieldname": "process_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Process name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "material",
+   "fieldtype": "Data",
+   "label": "Material"
+  },
+  {
+   "fieldname": "customer_process_ref_no",
+   "fieldtype": "Data",
+   "label": "Customer Process Ref No"
+  },
+  {
+   "fieldname": "customer_dc_no",
+   "fieldtype": "Data",
+   "label": "Customer DC No"
+  },
+  {
+   "fieldname": "commitment_date",
+   "fieldtype": "Date",
+   "label": "Commitment date"
+  },
+  {
+   "fieldname": "planned_qty_in_nos",
+   "fieldtype": "Float",
+   "label": "Planned Qty in Nos"
+  },
+  {
+   "fieldname": "planned_qty_in_kgs",
+   "fieldtype": "Float",
+   "label": "Planned Qty in Kgs"
+  },
+  {
+   "fieldname": "column_break_phuq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "balance_plan_qty_in_nos",
+   "fieldtype": "Float",
+   "label": "Balance plan Qty in Nos"
+  },
+  {
+   "fieldname": "balance_plan_qty_in_kgs",
+   "fieldtype": "Float",
+   "label": "Balance plan Qty in Kgs"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-04-15 21:08:38.635430",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Job Card details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
