@@ -34,7 +34,7 @@
    "fieldname": "job_plan_id",
    "fieldtype": "Link",
    "label": "Job Plan ID",
-   "link_filters": "[[\"Job Plan Scheduler\",\"internal_process_for\",\"=\",\"Production\"],[\"Job Plan Scheduler\",\"job_execution\",\"=\",0]]",
+   "link_filters": "[[\"Job Plan Scheduler\",\"internal_process_for\",\"=\",\"Production\"],[\"Job Plan Scheduler\",\"job_execution\",\"=\",0],[\"Job Plan Scheduler\",\"docstatus\",\"=\",\"1\"]]",
    "options": "Job Plan Scheduler"
   },
   {
@@ -131,7 +131,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-19 23:20:14.297631",
+ "modified": "2025-04-19 23:21:53.002702",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Execution Logsheet",
