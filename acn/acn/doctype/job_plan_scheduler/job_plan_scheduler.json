@@ -1,11 +1,12 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "naming_series:naming_series",
  "creation": "2025-03-22 17:20:00.936330",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "name_series",
+  "naming_series",
   "planned_date",
   "internal_process",
   "internal_process_for",
@@ -22,7 +23,9 @@
   "energy_starting_reading",
   "energy_ending_reading",
   "parameters_with_acceptance_criteria",
-  "parameters_plan"
+  "parameters_plan",
+  "job_execution",
+  "amended_from"
  ],
  "fields": [
   {
@@ -41,12 +44,6 @@
    "fieldname": "job_execution_date",
    "fieldtype": "Date",
    "label": "Job Execution Date"
-  },
-  {
-   "fieldname": "name_series",
-   "fieldtype": "Select",
-   "label": "Job Plan ID",
-   "options": "PP-.FY.-.#####."
   },
   {
    "fieldname": "column_break_vgyr",
@@ -128,15 +125,40 @@
    "fieldtype": "Data",
    "label": "Media",
    "read_only": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Job Plan ID",
+   "options": "PP-.FY.-.#####."
+  },
+  {
+   "default": "0",
+   "fieldname": "job_execution",
+   "fieldtype": "Check",
+   "label": "Job Execution",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Job Plan Scheduler",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2025-04-16 21:56:52.924955",
+ "modified": "2025-04-19 22:49:36.986614",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Plan Scheduler",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

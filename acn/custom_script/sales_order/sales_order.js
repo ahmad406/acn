@@ -11,40 +11,40 @@ frappe.ui.form.on('Sales Order', {
                 }
             };
         };
-			$(frm.wrapper).on("grid-row-render", function (e, grid_row) {
-				if (
-					in_list(["Sales Order Item"], grid_row.doc.doctype)
-				) {
-					let cl = grid_row.columns_list;
-					if (grid_row.doc.custom_rate_uom == "Kgs") {
+			// $(frm.wrapper).on("grid-row-render", function (e, grid_row) {
+			// 	if (
+			// 		in_list(["Sales Order Item"], grid_row.doc.doctype)
+			// 	) {
+			// 		let cl = grid_row.columns_list;
+			// 		if (grid_row.doc.custom_rate_uom == "Kgs") {
 						
-						if ('custom_qty_in_nos' in grid_row.columns) {
-							cl[grid_row.columns.custom_qty_in_nos.column_index].df.read_only = 1;
-						}
-						if ('custom_qty_in_kgs' in grid_row.columns) {
-							cl[grid_row.columns.custom_qty_in_kgs.column_index].df.read_only = 0;
-						}
-					}
-					if (grid_row.doc.custom_rate_uom == "Nos") {
-						if ('custom_qty_in_kgs' in grid_row.columns) {
-							cl[grid_row.columns.custom_qty_in_kgs.column_index].df.read_only = 1;
-						}
-						if ('custom_qty_in_nos' in grid_row.columns) {
-							cl[grid_row.columns.custom_qty_in_nos.column_index].df.read_only = 0;
-						}
-					}
-					if (grid_row.doc.custom_rate_uom == "Minimum") {
-						if ('custom_qty_in_kgs' in grid_row.columns) {
-							cl[grid_row.columns.custom_qty_in_kgs.column_index].df.read_only = 1;
-						}
-						if ('custom_qty_in_nos' in grid_row.columns) {
-							cl[grid_row.columns.custom_qty_in_nos.column_index].df.read_only = 1;
-						}
-					}
-				}
+			// 			if ('custom_qty_in_nos' in grid_row.columns) {
+			// 				cl[grid_row.columns.custom_qty_in_nos.column_index].df.read_only = 1;
+			// 			}
+			// 			if ('custom_qty_in_kgs' in grid_row.columns) {
+			// 				cl[grid_row.columns.custom_qty_in_kgs.column_index].df.read_only = 0;
+			// 			}
+			// 		}
+			// 		if (grid_row.doc.custom_rate_uom == "Nos") {
+			// 			if ('custom_qty_in_kgs' in grid_row.columns) {
+			// 				cl[grid_row.columns.custom_qty_in_kgs.column_index].df.read_only = 1;
+			// 			}
+			// 			if ('custom_qty_in_nos' in grid_row.columns) {
+			// 				cl[grid_row.columns.custom_qty_in_nos.column_index].df.read_only = 0;
+			// 			}
+			// 		}
+			// 		if (grid_row.doc.custom_rate_uom == "Minimum") {
+			// 			if ('custom_qty_in_kgs' in grid_row.columns) {
+			// 				cl[grid_row.columns.custom_qty_in_kgs.column_index].df.read_only = 1;
+			// 			}
+			// 			if ('custom_qty_in_nos' in grid_row.columns) {
+			// 				cl[grid_row.columns.custom_qty_in_nos.column_index].df.read_only = 1;
+			// 			}
+			// 		}
+			// 	}
 	
 	
-			});
+			// });
 
 	}
 

@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-04-04 20:08:01.884025",
+ "creation": "2025-04-18 22:25:33.496062",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -18,8 +18,19 @@
   "material",
   "customer_process_ref",
   "customer_dc_no",
+  "column_break_mp65",
   "planned_qty_in_nos",
-  "planned_qty_in_kgs"
+  "planned_qty_in_kgs",
+  "checked_qty_in_nos",
+  "checked_qty_in_kgs",
+  "accepted_qty_in_nos",
+  "accepted_qty_in_kgs",
+  "rework_qty_in_nos",
+  "rework_qty_in_kgs",
+  "rejected_qty_in_nos",
+  "rejected_qty_in_kgs",
+  "rework_process",
+  "rework_cause"
  ],
  "fields": [
   {
@@ -31,32 +42,27 @@
   {
    "fieldname": "customer_dc_id",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Customer DC ID"
   },
   {
    "fieldname": "item_code",
-   "fieldtype": "Link",
-   "label": "Item Code",
-   "options": "Item"
+   "fieldtype": "Data",
+   "label": "Item code"
   },
   {
    "fieldname": "item_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Item Name"
   },
   {
    "fieldname": "part_no",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Part No",
    "options": "Part no"
   },
   {
    "fieldname": "customer_code",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Customer code"
   },
   {
@@ -82,7 +88,7 @@
   {
    "fieldname": "customer_process_ref",
    "fieldtype": "Data",
-   "label": "Customer Process Ref No"
+   "label": "Customer Process Ref. No"
   },
   {
    "fieldname": "customer_dc_no",
@@ -98,16 +104,71 @@
    "fieldname": "planned_qty_in_kgs",
    "fieldtype": "Float",
    "label": "Planned Qty in Kgs"
+  },
+  {
+   "fieldname": "checked_qty_in_nos",
+   "fieldtype": "Float",
+   "label": "Checked Qty in Nos"
+  },
+  {
+   "fieldname": "checked_qty_in_kgs",
+   "fieldtype": "Float",
+   "label": "Checked Qty in Kgs"
+  },
+  {
+   "fieldname": "accepted_qty_in_nos",
+   "fieldtype": "Float",
+   "label": "Accepted Qty in Nos"
+  },
+  {
+   "fieldname": "accepted_qty_in_kgs",
+   "fieldtype": "Float",
+   "label": "Accepted Qty in Kgs"
+  },
+  {
+   "fieldname": "rework_qty_in_nos",
+   "fieldtype": "Float",
+   "label": "Rework Qty in Nos"
+  },
+  {
+   "fieldname": "rework_qty_in_kgs",
+   "fieldtype": "Float",
+   "label": "Rework Qty in Kgs"
+  },
+  {
+   "fieldname": "rejected_qty_in_nos",
+   "fieldtype": "Float",
+   "label": "Rejected Qty in Nos"
+  },
+  {
+   "fieldname": "rejected_qty_in_kgs",
+   "fieldtype": "Float",
+   "label": "Rejected Qty in Kgs"
+  },
+  {
+   "fieldname": "rework_process",
+   "fieldtype": "Data",
+   "label": "Rework Process"
+  },
+  {
+   "fieldname": "rework_cause",
+   "fieldtype": "Link",
+   "label": "Rework Cause",
+   "options": "Rework Causes"
+  },
+  {
+   "fieldname": "column_break_mp65",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-19 23:12:36.105549",
+ "modified": "2025-04-18 22:33:49.067371",
  "modified_by": "Administrator",
  "module": "ACN",
- "name": "Job Execution Logsheet child",
+ "name": "Inspection Qty Details",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",

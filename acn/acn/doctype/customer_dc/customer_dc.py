@@ -227,7 +227,7 @@ def get_part_no(doctype, txt, searchfield, start, page_len, filters):
     }
 
     part = frappe.db.sql("""
-        SELECT custom_part_no  
+        SELECT custom_part_no,item_code,item_name,custom_process_name,custom_customer_process_ref_no
         FROM `tabSales Order Item` 
         WHERE parent = %(so)s 
             AND custom_part_no LIKE %(txt)s

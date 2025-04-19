@@ -1,25 +1,134 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "naming_series:",
  "creation": "2025-04-04 21:25:23.465311",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_1b7w"
+  "naming_series",
+  "inspection_date",
+  "job_plan_id",
+  "rocessfurnace_section",
+  "internal_process",
+  "furnace_process",
+  "furnace_code",
+  "furnace_name",
+  "column_break_5vig",
+  "media",
+  "job_loading_plan_date",
+  "loading_plan_time",
+  "load_no",
+  "section_break_2n2p",
+  "inspection_qty_details",
+  "section_break_ace2",
+  "parameters"
  ],
  "fields": [
   {
-   "fieldname": "section_break_1b7w",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Lab Inspection ID",
+   "options": "IN-.FY.-.#####."
+  },
+  {
+   "fieldname": "inspection_date",
+   "fieldtype": "Date",
+   "label": "Inspection date"
+  },
+  {
+   "fieldname": "job_plan_id",
+   "fieldtype": "Link",
+   "label": "Job Plan ID",
+   "link_filters": "[[\"Job Plan Scheduler\",\"internal_process_for\",\"=\",\"Lab Inspection\"]]",
+   "options": "Job Plan Scheduler"
+  },
+  {
+   "fieldname": "rocessfurnace_section",
+   "fieldtype": "Section Break",
+   "label": "Process/Furnace"
+  },
+  {
+   "fieldname": "internal_process",
+   "fieldtype": "Data",
+   "label": "Internal Process",
+   "read_only": 1
+  },
+  {
+   "fieldname": "furnace_process",
+   "fieldtype": "Data",
+   "label": "Furnace Process",
+   "read_only": 1
+  },
+  {
+   "fieldname": "furnace_code",
+   "fieldtype": "Data",
+   "label": "Furnace Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "furnace_name",
+   "fieldtype": "Data",
+   "label": "Furnace Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5vig",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "media",
+   "fieldtype": "Data",
+   "label": "Media",
+   "read_only": 1
+  },
+  {
+   "fieldname": "job_loading_plan_date",
+   "fieldtype": "Date",
+   "label": "Job loading plan date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "loading_plan_time",
+   "fieldtype": "Time",
+   "label": "Loading plan Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "load_no",
+   "fieldtype": "Data",
+   "label": "Load No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_2n2p",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_ace2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "parameters",
+   "fieldtype": "Table",
+   "label": "Parameters",
+   "options": "Lab inspection"
+  },
+  {
+   "fieldname": "inspection_qty_details",
+   "fieldtype": "Table",
+   "label": "Inspection Qty Details",
+   "options": "Inspection Qty Details"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-04 21:25:23.465311",
+ "modified": "2025-04-18 22:55:30.896587",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Lab Inspection Entry",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
