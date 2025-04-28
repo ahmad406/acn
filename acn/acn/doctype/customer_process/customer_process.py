@@ -39,6 +39,19 @@ class CustomerProcess(Document):
 
 	def set_title(self):
 		self.title_data = "{0}-{1}-{2}-{3}".format(self.customer, self.process_type,self.item_code,self.customer_ref)
+
+
+	def on_trash(self):
+		self.remove_item()
+	
+	def remove_item(self):
+		if self.item_code:
+			if   frappe.db.exists("Item", self.item_code):
+				item = frappe.get_doc("Item", self.item_code)
+				if item:
+					item.delete()
+					frappe.msgprint(_("Item {0} deleted successfully").format(self.item_code))
+		
 	def create_item(self):
 		if not  frappe.db.exists("Item", self.item_code):
 			stock=frappe.get_single("Stock Settings")
@@ -49,6 +62,18 @@ class CustomerProcess(Document):
 			item.is_stock_item=0
 			item.stock_uom = stock.stock_uom
 			item.save()
+
+
+	@frappe.whitelist()
+	def start_delete_customer_process_in_background(self):
+		frappe.enqueue(
+			method=delete_customer_process_batch,   # no path needed
+			queue='long',
+			timeout=3600,
+			now=False,
+		)
+		return "Deletion started in background ✅"
+
 
 	@frappe.whitelist()
 	def fetch_customer_process_template(self):
@@ -87,3 +112,31 @@ class CustomerProcess(Document):
 		return True
 
 
+
+
+
+
+
+
+def delete_customer_process_batch():
+    batch_size = 2000
+    count = 0
+
+    customer_process_names = frappe.get_all("Customer Process", pluck="name")
+
+    frappe.logger().info(f"[Customer Process Deletion] Found {len(customer_process_names)} records to delete.")
+
+    for name in customer_process_names:
+        try:
+            doc = frappe.get_doc("Customer Process", name)
+            doc.delete()
+            count += 1
+
+            if count % batch_size == 0:
+                frappe.db.commit()
+                frappe.logger().info(f"[Customer Process Deletion] Committed after {count} deletes.")
+        except Exception as e:
+            frappe.logger().error(f"[Customer Process Deletion] Failed to delete {name}: {e}")
+
+    frappe.db.commit()
+    frappe.logger().info(f"[Customer Process Deletion] ✅ Completed {count} deletions.")

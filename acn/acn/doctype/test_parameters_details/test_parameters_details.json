@@ -1,0 +1,98 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-20 15:28:27.418862",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "test_parameters",
+  "qty_checked",
+  "reference_standard",
+  "print_sequence_no",
+  "acceptance_criteria_from",
+  "acceptance_criteria_to",
+  "scale",
+  "measurement_from",
+  "measurement_to"
+ ],
+ "fields": [
+  {
+   "fetch_from": "Internal Control Parameter->test_parameters",
+   "fieldname": "test_parameters",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Test Parameters"
+  },
+  {
+   "fetch_from": "Accepted Qty in No.",
+   "fieldname": "qty_checked",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty Checked",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "Internal Control Parameter->scale_and_ref_std_details",
+   "fieldname": "reference_standard",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Reference Standard",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "Internal Control Parameter->tc_order_no",
+   "fieldname": "print_sequence_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Print Sequence No.",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "Internal Control Parameter->result_value_from",
+   "fieldname": "acceptance_criteria_from",
+   "fieldtype": "Float",
+   "label": "Acceptance Criteria from"
+  },
+  {
+   "fetch_from": "Internal Control Parameter->result_value_to",
+   "fieldname": "acceptance_criteria_to",
+   "fieldtype": "Float",
+   "label": "Acceptance Criteria to"
+  },
+  {
+   "fetch_from": "Internal Control Parameter->scale",
+   "fieldname": "scale",
+   "fieldtype": "Link",
+   "label": "Scale",
+   "options": "Scale"
+  },
+  {
+   "fieldname": "measurement_from",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Measurement from",
+   "reqd": 1
+  },
+  {
+   "fieldname": "measurement_to",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Measurement to",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-04-20 15:36:05.182637",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Test Parameters Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

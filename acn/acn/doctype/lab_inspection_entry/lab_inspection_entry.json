@@ -40,7 +40,7 @@
    "fieldname": "job_plan_id",
    "fieldtype": "Link",
    "label": "Job Plan ID",
-   "link_filters": "[[\"Job Plan Scheduler\",\"internal_process_for\",\"=\",\"Lab Inspection\"]]",
+   "link_filters": "[[\"Job Plan Scheduler\",\"internal_process_for\",\"=\",\"Lab Inspection\"],[\"Job Plan Scheduler\",\"job_execution\",\"=\",0],[\"Job Plan Scheduler\",\"name\",\"=\",null]]",
    "options": "Job Plan Scheduler"
   },
   {
@@ -124,7 +124,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-18 22:55:30.896587",
+ "modified": "2025-04-20 14:21:47.405450",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Lab Inspection Entry",

@@ -1,0 +1,93 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-04-20 15:17:11.078238",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "date",
+  "lab_inspection_id",
+  "job_card_id",
+  "lab_inspection",
+  "test_parameters_details",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Certificate No.",
+   "options": "TC-.FY.-.#####."
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "lab_inspection_id",
+   "fieldtype": "Link",
+   "label": "Lab Inspection ID",
+   "options": "Lab Inspection Entry"
+  },
+  {
+   "fieldname": "job_card_id",
+   "fieldtype": "Link",
+   "label": "Job Card ID",
+   "options": "Job Card for process"
+  },
+  {
+   "fieldname": "lab_inspection",
+   "fieldtype": "Table",
+   "label": "Lab Inspection",
+   "options": "lab Inspection Grid"
+  },
+  {
+   "fieldname": "test_parameters_details",
+   "fieldtype": "Table",
+   "label": "Test Parameters Details",
+   "options": "Test Parameters Details"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Test Certificate entry",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-04-20 15:30:45.620098",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Test Certificate entry",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -22,6 +22,7 @@
   "loading_plan_time",
   "energy_starting_reading",
   "energy_ending_reading",
+  "update_job_paramenters",
   "parameters_with_acceptance_criteria",
   "parameters_plan",
   "job_execution",
@@ -148,13 +149,18 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "update_job_paramenters",
+   "fieldtype": "Button",
+   "label": "Set Job Parameters"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-04-19 22:49:36.986614",
+ "modified": "2025-04-28 19:58:13.539762",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Plan Scheduler",

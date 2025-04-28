@@ -231,11 +231,12 @@ def get_part_no(doctype, txt, searchfield, start, page_len, filters):
         FROM `tabSales Order Item` 
         WHERE parent = %(so)s 
             AND custom_part_no LIKE %(txt)s
-            AND (
-                custom_bal_qty_in_kgs > 0 
-                OR custom_bal_qty_in_nos > 0 
-                OR qty = 0
-            )
+                  AND (
+            custom_bal_qty_in_kgs > 0 
+            OR custom_bal_qty_in_nos > 0 
+            OR (custom_qty_in_kgs = 0 AND custom_qty_in_nos = 0)
+        )
+
         ORDER BY custom_part_no ASC
         LIMIT %(start)s, %(page_len)s
     """, args)

@@ -38,6 +38,18 @@ frappe.ui.form.on("Job Plan Scheduler", {
             }
         });
 	},
+	update_job_paramenters:function(frm){
+		frappe.call({
+            method: "update_job_card_table",
+			doc: cur_frm.doc,
+            callback: function(r) {
+                if (r.message) {
+                   cur_frm.refresh()
+                }
+            }
+        });
+
+	}
 	// furnace_code(frm) {
 	// 	frappe.call({
 	// 		method: "get_furnace_code_details",

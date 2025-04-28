@@ -44,9 +44,11 @@ class JobPlanScheduler(Document):
 					
 	def validate(self):
 		if self.is_new():
-			self.set_job_paramenters()
-			self.set_consolidatedjob_paramenters()
-
+			self.update_job_card_table()
+	@frappe.whitelist()		
+	def update_job_card_table(self):
+		self.set_job_paramenters()
+		self.set_consolidatedjob_paramenters()
 	def set_job_paramenters(self):
 		jobs = list({d.job_card_id for d in self.job_card_details if d.job_card_id})
 
