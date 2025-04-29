@@ -4,13 +4,17 @@ frappe.ui.form.on('Sales Order', {
 	},
 	setup: function(frm) {
 		frm.fields_dict['items'].grid.get_field('custom_part_no').get_query = function(doc, cdt, cdn) {
-            var child = locals[cdt][cdn];
-            return {
-                filters: {
-                    'customer': doc.customer
-                }
-            };
+			var child = locals[cdt][cdn];
+			return {
+				query: 'acn.custom_script.sales_order.sales_order.get_part_no',
+				filters: {
+					"customer": cur_frm.doc.customer
+				}
+	
+			}
         };
+
+		
 			// $(frm.wrapper).on("grid-row-render", function (e, grid_row) {
 			// 	if (
 			// 		in_list(["Sales Order Item"], grid_row.doc.doctype)
@@ -80,7 +84,7 @@ frappe.ui.form.on('Sales Order Item', {
 						setTimeout(() => {
 							
 							frappe.model.set_value(cdt, cdn, "rate", r.message.process_rate);
-						}, 600);
+						}, 900);
 						cur_frm.refresh()
 
 					}
