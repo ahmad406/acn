@@ -80,6 +80,7 @@ class CustomerDC(Document):
 				row_p.information=p.information
 			doc.reference=self.name
 			doc.save()
+			doc.submit()
 
 	def get_customer_process(self,part_no):
 		sql="""select p.name from `tabCustomer Process` p inner join `tabPart No  Process Rate` c on p.name=c.parent where p.customer="{}" and c.part_no="{}" """.format(self.customer,part_no)
@@ -124,10 +125,15 @@ class CustomerDC(Document):
 					if str(d.idx)==str(row.get("idx")):
 						d.qty_nos = data[0].custom_bal_qty_in_nos
 						d.qty_kgs = data[0].custom_bal_qty_in_kgs
+						
+					
+						d.balance_qty_nos=data[0].custom_bal_qty_in_nos
+						d.balance_qty_kgs=data[0].custom_bal_qty_in_kgs
 						if d.qty_kgs:
 							d.qty = d.qty_kgs
 						if d.qty_nos:
 							d.qty = d.qty_nos
+
 						d.rate= data[0].rate
 
 						d.item_code = data[0].item_code
@@ -141,15 +147,7 @@ class CustomerDC(Document):
 
 						break
 		return True
-
-
-
-
-
-
-
-
-
+	
 
 @frappe.whitelist()
 def map_sales_order_to_customer_dc(source_name, target_doc=None):

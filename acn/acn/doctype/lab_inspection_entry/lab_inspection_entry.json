@@ -19,10 +19,13 @@
   "job_loading_plan_date",
   "loading_plan_time",
   "load_no",
+  "certificates_created",
   "section_break_2n2p",
   "inspection_qty_details",
   "section_break_ace2",
-  "parameters"
+  "set_parameters",
+  "parameters",
+  "amended_from"
  ],
  "fields": [
   {
@@ -40,7 +43,7 @@
    "fieldname": "job_plan_id",
    "fieldtype": "Link",
    "label": "Job Plan ID",
-   "link_filters": "[[\"Job Plan Scheduler\",\"internal_process_for\",\"=\",\"Lab Inspection\"],[\"Job Plan Scheduler\",\"job_execution\",\"=\",0],[\"Job Plan Scheduler\",\"name\",\"=\",null]]",
+   "link_filters": "[[\"Job Plan Scheduler\",\"internal_process_for\",\"=\",\"Lab Inspection\"],[\"Job Plan Scheduler\",\"job_execution\",\"=\",0]]",
    "options": "Job Plan Scheduler"
   },
   {
@@ -119,12 +122,35 @@
    "fieldtype": "Table",
    "label": "Inspection Qty Details",
    "options": "Inspection Qty Details"
+  },
+  {
+   "default": "0",
+   "fieldname": "certificates_created",
+   "fieldtype": "Check",
+   "label": "Certificates Created",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Lab Inspection Entry",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "set_parameters",
+   "fieldtype": "Button",
+   "label": "Set Parameters"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2025-04-20 14:21:47.405450",
+ "modified": "2025-05-01 18:19:30.970472",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Lab Inspection Entry",

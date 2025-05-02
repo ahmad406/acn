@@ -13,6 +13,16 @@ class LabInspectionEntry(Document):
 			self.set("parameters",[])
 
 			jb=frappe.get_doc("Job Plan Scheduler",self.job_plan_id)
+			self.internal_process=jb.internal_process
+			self.furnace_process=jb.furnace_process
+			self.furnace_code=jb.furnace_code
+			self.furnace_name=jb.furnace_name
+			self.media=jb.media
+			self.job_loading_plan_date=jb.job_loading_plan_date
+			self.loading_plan_time=jb.loading_plan_time
+
+
+
 			for d in jb.job_card_details:
 				row=self.append("inspection_qty_details",{})
 				row.job_card_id=d.job_card_id
@@ -45,29 +55,27 @@ class LabInspectionEntry(Document):
 	@frappe.whitelist()
 	def set_plan(self):
 		if self.job_plan_id:
-			self.set("inspection_qty_details",[])
+			# self.set("inspection_qty_details",[])
 			self.set("parameters",[])
 
 			jb=frappe.get_doc("Job Plan Scheduler",self.job_plan_id)
-			for d in self.inspection_qty_details:
-				row=self.append("parameters",{})
-				row.job_card_id=d.job_card_id
-				row.item_code=d.item_code
-				row.item_name=d.item_name
-				row.part_no=d.part_no
-				row.control_parameter=d.control_parameter
-				row.planned_value=d.customer_name
-				row.result_value_from=d.process_type
-				row.result_value_to=d.process_name
-				row.scale=d.material
-				row.customer_process_ref=d.customer_process_ref_no
-				row.customer_dc_no=d.customer_dc_no
-				row.planned_qty_in_nos=d.planned_qty_in_nos
-				row.planned_qty_in_kgs=d.planned_qty_in_kgs
-				for k in jb.parameters_plan:
-					if k.control_parameter==d.control_parameter:
-						row.planned_value=d.planned_value
-						row.scale=d.scale
-						break
+			for k in jb.parameters_plan:
+				for d in self.inspection_qty_details:
+					row=self.append("parameters",{})
+					row.job_card_id=d.job_card_id
+					row.item_code=d.item_code
+					row.item_name=d.item_name
+					row.part_no=d.part_no
+					row.control_parameter=k.control_parameter
+					row.planned_value=d.customer_name
+					row.result_value_from=d.process_type
+					row.result_value_to=d.process_name
+					row.material=d.material
+					row.customer_process_ref=d.customer_process_ref
+					row.customer_dc_no=d.customer_dc_no
+					row.planned_qty_in_nos=d.planned_qty_in_nos
+					row.planned_qty_in_kgs=d.planned_qty_in_kgs
+					row.planned_value=k.planned_value
+					row.scale=k.scale
 			return True
 

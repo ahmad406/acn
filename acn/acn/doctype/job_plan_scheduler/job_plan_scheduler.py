@@ -43,12 +43,14 @@ class JobPlanScheduler(Document):
 
 					
 	def validate(self):
-		if self.is_new():
-			self.update_job_card_table()
+		pass
+		# if self.is_new():
+		# 	self.update_job_card_table()
 	@frappe.whitelist()		
 	def update_job_card_table(self):
 		self.set_job_paramenters()
 		self.set_consolidatedjob_paramenters()
+		return True
 	def set_job_paramenters(self):
 		jobs = list({d.job_card_id for d in self.job_card_details if d.job_card_id})
 
@@ -60,16 +62,18 @@ class JobPlanScheduler(Document):
 		for job_id in jobs:
 			job_doc = frappe.get_doc("Job Card for process", job_id)
 			for param in job_doc.parameters_with_acceptance_criteria:
-				row = self.append("parameters_with_acceptance_criteria", {})
-				row.job_card_id = job_doc.name
-				row.lot_no = param.lot_no
-				row.internal_process = param.internal_process
-				row.control_parameter = param.control_parameter
-				row.minimum_value = param.minimum_value
-				row.maximum_value = param.maximum_value
-				row.scale = param.scale
-				row.microstructure_cutoff = param.microstructure_cutoff
-				row.information = param.information
+				frappe.errprint([param.internal_process , self.internal_process])
+				if param.internal_process == self.internal_process:
+					row = self.append("parameters_with_acceptance_criteria", {})
+					row.job_card_id = job_doc.name
+					row.lot_no = param.lot_no
+					row.internal_process = param.internal_process
+					row.control_parameter = param.control_parameter
+					row.minimum_value = param.minimum_value
+					row.maximum_value = param.maximum_value
+					row.scale = param.scale
+					row.microstructure_cutoff = param.microstructure_cutoff
+					row.information = param.information
 
 	def set_consolidatedjob_paramenters(self):
 		jobs = list({d.job_card_id for d in self.job_card_details if d.job_card_id})
@@ -84,21 +88,23 @@ class JobPlanScheduler(Document):
 		for job_id in jobs:
 			job_doc = frappe.get_doc("Job Card for process", job_id)
 			for param in job_doc.parameters_with_acceptance_criteria:
-				if param.control_parameter in existing_processes:
-					continue  
+				if param.internal_process == self.internal_process:
+					
+					if param.control_parameter in existing_processes:
+						continue  
 
-				existing_processes.add(param.control_parameter)
+					existing_processes.add(param.control_parameter)
 
-				row = self.append("parameters_plan", {})
-				row.job_card_id = job_doc.name
-				row.lot_no = param.lot_no
-				row.internal_process = param.internal_process
-				row.control_parameter = param.control_parameter
-				row.minimum_value = param.minimum_value
-				row.maximum_value = param.maximum_value
-				row.scale = param.scale
-				row.microstructure_cutoff = param.microstructure_cutoff
-				row.information = param.information
+					row = self.append("parameters_plan", {})
+					row.job_card_id = job_doc.name
+					row.lot_no = param.lot_no
+					row.internal_process = param.internal_process
+					row.control_parameter = param.control_parameter
+					row.minimum_value = param.minimum_value
+					row.maximum_value = param.maximum_value
+					row.scale = param.scale
+					row.microstructure_cutoff = param.microstructure_cutoff
+					row.information = param.information
 
 	@frappe.whitelist()
 	def get_job_details(self,row):

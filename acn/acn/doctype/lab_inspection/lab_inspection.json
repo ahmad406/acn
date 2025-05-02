@@ -670,15 +670,14 @@
    "fieldname": "lab_entry_no",
    "fieldtype": "Data",
    "label": "Lab Entry No.",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-28 23:31:42.700681",
+ "modified": "2025-05-02 19:49:01.595483",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Lab inspection",

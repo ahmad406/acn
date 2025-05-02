@@ -53,14 +53,23 @@ frappe.ui.form.on("Customer DC", {
 
     },
 
-    calculate_total: function (frm) {
-        var total = 0;
-        $.each(frm.doc.items || [], function (i, d) {
-            if (d.qty) {
-                total += d.qty;
+    calculate_total: function(frm) {
+        if (cur_frm.doc.docstatus == 0) {
+        var total_nos = 0;
+        var total_kgs = 0;
+        
+        $.each(frm.doc.items || [], function(i, d) {
+            if (d.qty_nos) {
+                total_nos += d.qty_nos;
+            }
+            if (d.qty_kgs) {
+                total_kgs += d.qty_kgs;
             }
         });
-        frm.set_value("total_qty", total);
+        
+        frm.set_value("total_qty__nos", total_nos);
+        frm.set_value("total_qty", total_kgs);
+    }
     },
 });
 

@@ -8,10 +8,22 @@ frappe.ui.form.on("Lab Inspection Entry", {
 	},
     job_plan_id(frm) {
 		frappe.call({
-            method: "get_job_plan_id_details",
+            method: "set_job_plan_details",
 			doc: cur_frm.doc,
             callback: function(r) {
                 if (r.message) {
+                   cur_frm.refresh()
+                }
+            }
+        });
+	},
+    set_parameters:function(frm) {
+		frappe.call({
+            method: "set_plan",
+			doc: cur_frm.doc,
+            callback: function(r) {
+                if (r.message) {
+                    cur_frm.dirty()
                    cur_frm.refresh()
                 }
             }
@@ -185,7 +197,7 @@ function showCaseDepthDialog(frm, row) {
                 label: __('Lab Entry No.'),
                 fieldname: 'lab_entry_no',
                 fieldtype: 'Data',
-                reqd: 1,
+                // reqd: 1,
                 colspan: 6
             }
         ],

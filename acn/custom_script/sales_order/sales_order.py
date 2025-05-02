@@ -2,8 +2,10 @@
 import frappe
 
 def validate(self,method=None):
-	pass
-	# for d in self.get("items"):
+	for d in self.get("items"):
+		d.custom_bal_qty_in_kgs=d.custom_qty_in_kgs
+		d.custom_bal_qty_in_nos=d.custom_qty_in_nos
+
 		# if d.custom_part_no and self.customer:
 		# 	process_details = get_process_rate(d.custom_part_no, self.customer)
 		# 	d.custom_process_type = process_details.process_type

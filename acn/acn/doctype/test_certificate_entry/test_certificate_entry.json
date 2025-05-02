@@ -10,7 +10,16 @@
   "date",
   "lab_inspection_id",
   "job_card_id",
-  "lab_inspection",
+  "customer_dc_id",
+  "customer_dc_date",
+  "customer",
+  "item",
+  "column_break_pzei",
+  "part_no",
+  "material",
+  "accepted_qty_in_nos",
+  "accepted_qty_in_kgs",
+  "section_break_f0nb",
   "test_parameters_details",
   "amended_from"
  ],
@@ -40,16 +49,61 @@
    "options": "Job Card for process"
   },
   {
-   "fieldname": "lab_inspection",
-   "fieldtype": "Table",
-   "label": "Lab Inspection",
-   "options": "lab Inspection Grid"
-  },
-  {
    "fieldname": "test_parameters_details",
    "fieldtype": "Table",
    "label": "Test Parameters Details",
    "options": "Test Parameters Details"
+  },
+  {
+   "fieldname": "customer_dc_id",
+   "fieldtype": "Data",
+   "label": "Customer DC ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "label": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Data",
+   "label": "Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "part_no",
+   "fieldtype": "Link",
+   "label": "Part No",
+   "options": "Part no",
+   "read_only": 1
+  },
+  {
+   "fieldname": "material",
+   "fieldtype": "Data",
+   "label": "Material",
+   "read_only": 1
+  },
+  {
+   "fieldname": "accepted_qty_in_nos",
+   "fieldtype": "Float",
+   "label": "Accepted Qty In Nos",
+   "read_only": 1
+  },
+  {
+   "fieldname": "accepted_qty_in_kgs",
+   "fieldtype": "Float",
+   "label": "Accepted Qty In Kgs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_pzei",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_f0nb",
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "amended_from",
@@ -60,13 +114,19 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fetch_from": "job_card_id.customer_dc_date",
+   "fieldname": "customer_dc_date",
+   "fieldtype": "Date",
+   "label": "Customer DC Date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-04-20 15:30:45.620098",
+ "modified": "2025-05-02 22:32:50.012987",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Test Certificate entry",

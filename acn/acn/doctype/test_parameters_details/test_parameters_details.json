@@ -10,11 +10,13 @@
   "qty_checked",
   "reference_standard",
   "print_sequence_no",
+  "column_break_mkcj",
   "acceptance_criteria_from",
   "acceptance_criteria_to",
   "scale",
   "measurement_from",
-  "measurement_to"
+  "measurement_to",
+  "section_break_ajwg"
  ],
  "fields": [
   {
@@ -80,13 +82,21 @@
    "in_list_view": 1,
    "label": "Measurement to",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_mkcj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_ajwg",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-20 15:36:05.182637",
+ "modified": "2025-05-02 22:43:15.295548",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Test Parameters Details",

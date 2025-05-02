@@ -13,6 +13,8 @@
   "item_name",
   "qty_nos",
   "qty_kgs",
+  "balance_qty_nos",
+  "balance_qty_kgs",
   "qty",
   "customer_process_ref_no",
   "customer_dc_no",
@@ -103,13 +105,27 @@
   {
    "fieldname": "sales_order_item",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Sales Order Item",
    "read_only": 1
   },
   {
    "fieldname": "qty",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "balance_qty_nos",
+   "fieldtype": "Float",
+   "label": "Balance QTY NOs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "balance_qty_kgs",
+   "fieldtype": "Float",
+   "label": "Balance QTY KGs",
    "read_only": 1
   }
  ],
@@ -117,7 +133,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-16 17:19:24.420497",
+ "modified": "2025-04-30 18:36:43.639330",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer DC child",

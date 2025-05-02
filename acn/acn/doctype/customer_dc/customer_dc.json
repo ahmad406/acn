@@ -19,7 +19,10 @@
   "customer_order_date",
   "section_break_19fl",
   "items",
+  "section_break_2zbz",
   "total_qty",
+  "column_break_i4d5",
+  "total_qty__nos",
   "amended_from"
  ],
  "fields": [
@@ -97,7 +100,7 @@
   {
    "fieldname": "total_qty",
    "fieldtype": "Float",
-   "label": "Total Qty",
+   "label": "Total Qty Kgs",
    "read_only": 1
   },
   {
@@ -115,13 +118,27 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "total_qty__nos",
+   "fieldtype": "Float",
+   "label": "Total Qty  NOs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_2zbz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_i4d5",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-04-16 19:29:04.285510",
+ "modified": "2025-04-30 18:35:33.923388",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer DC",
