@@ -12,6 +12,7 @@
   {
    "fieldname": "document_name",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Document Name",
    "options": "Documents enclosed"
   }
@@ -20,7 +21,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-21 22:04:18.920574",
+ "modified": "2025-05-06 22:47:42.816762",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Document enclosed for dispatch",

@@ -26,6 +26,27 @@ frappe.ui.form.on("Job Plan Scheduler", {
 			}	
 		});
 
+
+
+		$(frm.wrapper).on("grid-row-render", function (e, grid_row) {
+			if (in_list(["Job Card details"], grid_row.doc.doctype)) {
+				if (grid_row){
+					let cl=grid_row.columns
+				if (grid_row.doc.lot_no==1) {
+					if ('planned_qty_in_kgs' in cl){grid_row.columns_list[cl.planned_qty_in_kgs.column_index].df.read_only = 1}
+					if ('planned_qty_in_nos' in cl){ grid_row.columns_list[cl.planned_qty_in_nos.column_index].df.read_only = 1}
+				
+				}
+				else {
+					if ('planned_qty_in_kgs' in cl){grid_row.columns_list[cl.planned_qty_in_kgs.column_index].df.read_only = 0}
+					if ('planned_qty_in_nos' in cl){ grid_row.columns_list[cl.planned_qty_in_nos.column_index].df.read_only = 0}
+
+				}
+				
+			}
+		}
+	});
+
 	},
 	internal_process(frm) {
 		frappe.call({
@@ -73,9 +94,9 @@ frappe.ui.form.on("Job Card details", {
             },
             doc: cur_frm.doc,  
             callback: function(r) {
-                if (r.message) {
+                // if (r.message) {
                     cur_frm.refresh(); 
-                }
+                // }
             }
         });
     },

@@ -5,6 +5,15 @@ frappe.ui.form.on("Job Execution Logsheet", {
 	refresh(frm) {
 
 	},
+    setup(frm) {
+        cur_frm.set_query("job_plan_id", function (frm) {
+			return {
+				 query: 'acn.acn.doctype.job_execution_logsheet.job_execution_logsheet.job_plan',
+				//  filters: {"project":cur_frm.doc.project,"start_date":cur_frm.doc.planned_start_date}
+
+			}	
+		});
+    },
     job_plan_id:function(frm){
         frappe.call({
             method: "set_job_plan_details",

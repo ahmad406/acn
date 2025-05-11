@@ -21,6 +21,113 @@
   "accepted_qty_in_kgs",
   "section_break_f0nb",
   "test_parameters_details",
+  "section_break_m97g",
+  "other_detail_1",
+  "column_break_zpfw",
+  "other_detail_2",
+  "column_break_4kaw",
+  "other_detail_3",
+  "column_break_z96s",
+  "other_detail_4",
+  "column_break_lobz",
+  "other_detail_5",
+  "column_break_yvr5",
+  "other_detail_6",
+  "column_break_jtpt",
+  "other_detail_7",
+  "column_break_9dyj",
+  "other_detail_8",
+  "column_break_uulo",
+  "other_detail_9",
+  "column_break_yc9i",
+  "ref_standard",
+  "column_break_winz",
+  "core",
+  "column_break_prhi",
+  "case",
+  "hardness_survey_section",
+  "case_depth_1_1",
+  "column_break_a6uq",
+  "case_depth_1_2",
+  "column_break_hvus",
+  "case_depth_1_3",
+  "column_break_fipe",
+  "case_depth_1_4",
+  "column_break_yffn",
+  "case_depth_1_5",
+  "column_break_ganh",
+  "case_depth_1_6",
+  "column_break_sfxy",
+  "case_depth_1_8",
+  "column_break_vm9l",
+  "case_depth_1_9",
+  "column_break_vfuu",
+  "case_depth_1_10",
+  "hardness_section",
+  "hardness_1_1",
+  "column_break_tnjb",
+  "hardness_1_2",
+  "column_break_2ed4",
+  "hardness_1_3",
+  "column_break_3qvn",
+  "hardness_1_4",
+  "column_break_rib2",
+  "hardness_1_5",
+  "column_break_vrbe",
+  "hardness_1_6",
+  "column_break_6pvy",
+  "hardness_1_7",
+  "column_break_tuhf",
+  "hardness_1_8",
+  "column_break_eajc",
+  "hardness_1_9",
+  "column_break_utcb",
+  "hardness_1_10",
+  "case_depth_section",
+  "case_depth_2_1",
+  "column_break_oork",
+  "case_depth_2_2",
+  "column_break_xyms",
+  "case_depth_2_3",
+  "column_break_9emm",
+  "case_depth_2_4",
+  "column_break_9xz4",
+  "case_depth_2_5",
+  "column_break_kudm",
+  "case_depth_2_6",
+  "column_break_cjpa",
+  "case_depth_2_7",
+  "column_break_jpen",
+  "case_depth_2_8",
+  "column_break_helo",
+  "case_depth_2_9",
+  "column_break_qric",
+  "case_depth_2_10",
+  "hardness_2_section",
+  "hardness_2_1",
+  "column_break_rz7i",
+  "hardness_2_2",
+  "column_break_sovl",
+  "hardness_2_3",
+  "column_break_y6wf",
+  "hardness_2_4",
+  "column_break_lzqd",
+  "hardness_2_5",
+  "column_break_mdnl",
+  "hardness_2_6",
+  "column_break_gx4g",
+  "hardness_2_7",
+  "column_break_s20d",
+  "hardness_2_8",
+  "column_break_hddr",
+  "hardness_2_9",
+  "column_break_iala",
+  "hardness_2_10",
+  "section_break_t5v3",
+  "lab_entry_no",
+  "operation_details_section_section",
+  "process_name",
+  "parameters",
   "amended_from"
  ],
  "fields": [
@@ -106,6 +213,499 @@
    "fieldtype": "Section Break"
   },
   {
+   "fetch_from": "job_card_id.customer_dc_date",
+   "fieldname": "customer_dc_date",
+   "fieldtype": "Date",
+   "label": "Customer DC Date"
+  },
+  {
+   "fieldname": "section_break_m97g",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "other_detail_1",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "other_detail_2",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "other_detail_3",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "other_detail_4",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "other_detail_5",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "other_detail_6",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "other_detail_7",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "other_detail_8",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "other_detail_9",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ref_standard",
+   "fieldtype": "Data",
+   "label": "Micro Structure Ref. Std",
+   "read_only": 1
+  },
+  {
+   "fieldname": "core",
+   "fieldtype": "Data",
+   "label": "Core",
+   "read_only": 1
+  },
+  {
+   "fieldname": "case",
+   "fieldtype": "Data",
+   "label": "Case",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_section",
+   "fieldtype": "Section Break",
+   "label": "Hardness"
+  },
+  {
+   "fieldname": "hardness_1_1",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_1_2",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_1_3",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_1_4",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_1_5",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_1_6",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_1_7",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_1_8",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_1_9",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_1_10",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "case_depth_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "case_depth_2_1",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "case_depth_2_2",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "case_depth_2_3",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "case_depth_2_4",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "case_depth_2_5",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "case_depth_2_6",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "case_depth_2_7",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "case_depth_2_8",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "case_depth_2_9",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "case_depth_2_10",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_2_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "hardness_2_1",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_2_2",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_2_3",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_2_4",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_2_5",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_2_6",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_2_7",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_2_8",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_2_9",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hardness_2_10",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_t5v3",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "lab_entry_no",
+   "fieldtype": "Data",
+   "label": "Lab Entry No.",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_iala",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_hddr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_s20d",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_gx4g",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_mdnl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_lzqd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_y6wf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_sovl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_rz7i",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_qric",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_helo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_jpen",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_cjpa",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_kudm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_9xz4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_9emm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_xyms",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_oork",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_utcb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_eajc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_tuhf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_6pvy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_vrbe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_rib2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_3qvn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_2ed4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_tnjb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_prhi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_winz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_yc9i",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_uulo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_9dyj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_jtpt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_yvr5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_lobz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_z96s",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_4kaw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_zpfw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hardness_survey_section",
+   "fieldtype": "Section Break",
+   "label": "Hardness Survey"
+  },
+  {
+   "fieldname": "case_depth_1_1",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_a6uq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "case_depth_1_2",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hvus",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "case_depth_1_3",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_fipe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "case_depth_1_4",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_yffn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "case_depth_1_5",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ganh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "case_depth_1_6",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_sfxy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "case_depth_1_8",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_vm9l",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "case_depth_1_9",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_vfuu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "case_depth_1_10",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "operation_details_section_section",
+   "fieldtype": "Section Break",
+   "label": "Operation Details"
+  },
+  {
+   "fetch_from": "job_card_id.process_name",
+   "fieldname": "process_name",
+   "fieldtype": "Data",
+   "label": "Process Name",
+   "read_only": 1
+  },
+  {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
@@ -116,17 +716,17 @@
    "search_index": 1
   },
   {
-   "fetch_from": "job_card_id.customer_dc_date",
-   "fieldname": "customer_dc_date",
-   "fieldtype": "Date",
-   "label": "Customer DC Date"
+   "fieldname": "parameters",
+   "fieldtype": "Table",
+   "options": "Test Parameters",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-05-02 22:32:50.012987",
+ "modified": "2025-05-05 22:40:32.678006",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Test Certificate entry",

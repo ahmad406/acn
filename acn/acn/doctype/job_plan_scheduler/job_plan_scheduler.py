@@ -4,9 +4,18 @@
 import frappe
 from frappe.model.document import Document
 from frappe import _
+from frappe.utils import flt
+
 
 
 class JobPlanScheduler(Document):
+	def on_validate(self):
+		if not self.parameters_with_acceptance_criteria:
+			frappe.throw("Click at Set Job Parameters button and update Planned Value in Parameters plan grid")
+		for k in self.parameters_plan:
+			if flt(k.planned_value) <= 0:
+				frappe.throw("Planned value can't be negative or zero.")
+
 	def on_submit(self):
 		self.update_jb_card()
 
@@ -16,9 +25,9 @@ class JobPlanScheduler(Document):
 	def update_jb_card(self, cancel=0):
 		for d in self.job_card_details:
 			jb = frappe.get_doc("Job Card for process", d.job_card_id)
-			for j in jb.sequence_lot_wise_internal_process:
+			process_list = jb.sequence_lot_wise_internal_process
+			for idx, j in enumerate(process_list):
 				if j.internal_process == self.internal_process:
-					
 					if cancel:
 						new_nos = j.balance_qty_in_nos + d.planned_qty_in_nos
 						new_kgs = j.balance_qty_in_kgs + d.planned_qty_in_kgs
@@ -37,8 +46,20 @@ class JobPlanScheduler(Document):
 						"is_planned": fullyis_planned
 					})
 
-					break
+					if idx + 1 < len(process_list):
+						next_row = process_list[idx + 1]
+						if cancel:
+							next_row.db_set({
+								"balance_qty_in_nos": 0,
+								"balance_qty_in_kgs": 0,
+							})
+						else:
+							next_row.db_set({
+								"balance_qty_in_nos": d.planned_qty_in_nos,
+								"balance_qty_in_kgs": d.planned_qty_in_kgs,
+							})
 
+					break
 
 
 					
@@ -110,26 +131,28 @@ class JobPlanScheduler(Document):
 	def get_job_details(self,row):
 		for d in self.job_card_details:
 			if str(d.idx)==str(row.get("idx")):
-				j=self.get_job(d.job_card_id)
-				d.customer_dc_id=j.customer_dc
-				d.item_code=j.item_code
-				d.item_name=j.item_name
-				d.part_no=j.part_no
-				d.customer_code=j.customer_code
-				d.customer_name=j.customer_name
-				d.process_type=j.process_type
-				d.process_name=j.process_name
-				d.material=j.material
-				d.customer_process_ref_no=j.customer_process_ref_no
-				d.customer_dc_no=j.customer_dc_no
-				d.commitment_date=j.commitment_date
-				for k in j.sequence_lot_wise_internal_process:
-					if k.internal_process == self.internal_process:
-						d.balance_plan_qty_in_nos=k.balance_qty_in_nos
-						d.balance_plan_qty_in_kgs=k.balance_qty_in_kgs
-						d.planned_qty_in_nos=k.balance_qty_in_nos
-						d.planned_qty_in_kgs=k.balance_qty_in_kgs
-						break
+				if d.job_card_id:
+					j=self.get_job(d.job_card_id)
+					d.customer_dc_id=j.customer_dc
+					d.item_code=j.item_code
+					d.item_name=j.item_name
+					d.part_no=j.part_no
+					d.customer_code=j.customer_code
+					d.customer_name=j.customer_name
+					d.process_type=j.process_type
+					d.process_name=j.process_name
+					d.material=j.material
+					d.customer_process_ref_no=j.customer_process_ref_no
+					d.customer_dc_no=j.customer_dc_no
+					d.commitment_date=j.commitment_date
+					for k in j.sequence_lot_wise_internal_process:
+						if k.internal_process == self.internal_process:
+							d.balance_plan_qty_in_nos=k.balance_qty_in_nos
+							d.balance_plan_qty_in_kgs=k.balance_qty_in_kgs
+							d.planned_qty_in_nos=k.balance_qty_in_nos
+							d.planned_qty_in_kgs=k.balance_qty_in_kgs
+							d.lot_no=k.lot_no
+							break
 		return True
 
 	def get_job(self,job):
@@ -146,7 +169,7 @@ class JobPlanScheduler(Document):
 		if self.internal_process:
 			query = """
 			SELECT 
-						c.internal_process,c.furnace_process,c.media
+						c.internal_process,c.furnace_process,c.media,c.lot_no
 					FROM 
 						`tabJob Card for process` p
 					INNER JOIN 
@@ -169,7 +192,8 @@ class JobPlanScheduler(Document):
 		result = frappe.db.sql(query, as_dict=True)
 		if result:
 			self.furnace_process= result[0].furnace_process
-			self.media= result[0].media
+			self.media = result[0].media
+			self.lot_no =result[0].lot_no
 		return True
 	# @frappe.whitelist()
 	# def get_furnace_code_details(self):
@@ -182,7 +206,7 @@ def get_internal_process(doctype, txt, searchfield, start, page_len, filters):
 	args = {
 		'start': start,
 		'page_len': page_len,
-		'txt': f"%{txt}%",
+		'txt': f"%{txt}%"
 	}
 
 	query = """
@@ -194,15 +218,15 @@ def get_internal_process(doctype, txt, searchfield, start, page_len, filters):
 			`tabSequence Lot wise Internal Process` c 
 			ON p.name = c.parent
 		WHERE 
-			c.is_planned = 0
-			AND NOT EXISTS (
-				SELECT 1 
-				FROM `tabSequence Lot wise Internal Process` c2
-				WHERE 
-					c2.parent = c.parent
-					AND c2.is_planned = 0
-					AND c2.lot_no < c.lot_no
-			)
+			c.balance_qty_in_nos > 0
+		--	AND NOT EXISTS (
+		--		SELECT 1 
+		--		FROM `tabSequence Lot wise Internal Process` c2
+		--		WHERE 
+		--			c2.parent = c.parent
+		--			AND c2.balance_qty_in_nos > 0
+		--			AND c2.lot_no < c.lot_no
+		--	)
 			AND c.internal_process LIKE %(txt)s
 		GROUP BY c.internal_process
 		ORDER BY c.internal_process
@@ -210,6 +234,7 @@ def get_internal_process(doctype, txt, searchfield, start, page_len, filters):
 	"""
 
 	return frappe.db.sql(query, args)
+
 
 
 
@@ -265,16 +290,10 @@ def get_job_card(doctype, txt, searchfield, start, page_len, filters):
 		WHERE 
 			c.is_planned = 0 and
 			p.docstatus=1 and
-			c.internal_process = %(internal_process)s
-			AND NOT EXISTS (
-				SELECT 1 
-				FROM `tabSequence Lot wise Internal Process` c2
-				WHERE 
-					c2.parent = c.parent
-					AND c2.is_planned = 0
-					AND c2.lot_no < c.lot_no
-			)
-			AND c.internal_process LIKE %(txt)s
+			c.internal_process = %(internal_process)s and
+				c.balance_qty_in_nos > 0
+			
+			AND p.name LIKE %(txt)s
 		GROUP BY c.internal_process
 		ORDER BY c.internal_process
 		LIMIT %(start)s, %(page_len)s

@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-05-05 22:27:31.567071",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "process_parameter",
+  "minimum_value",
+  "maximum_value",
+  "scale",
+  "microstructure_cutoff"
+ ],
+ "fields": [
+  {
+   "fieldname": "process_parameter",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Process Parameter",
+   "options": "Process Parameters",
+   "reqd": 1
+  },
+  {
+   "fieldname": "minimum_value",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Minimum Value"
+  },
+  {
+   "fieldname": "maximum_value",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Maximum Value"
+  },
+  {
+   "fieldname": "scale",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Scale",
+   "options": "Scale"
+  },
+  {
+   "fieldname": "microstructure_cutoff",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Microstructure/Cut-off"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-05-05 22:27:38.354111",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Test Parameters",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
