@@ -6,6 +6,15 @@ frappe.ui.form.on("Lab Inspection Entry", {
       
 
 	},
+    setup(frm) {
+        cur_frm.set_query("job_plan_id", function (frm) {
+			return {
+				 query: 'acn.acn.doctype.job_execution_logsheet.job_execution_logsheet.job_plan',
+				 filters: {"internal_process_for":"Lab Inspection"}
+
+			}	
+		});
+    },
     job_plan_id(frm) {
 		frappe.call({
             method: "set_job_plan_details",
@@ -42,7 +51,7 @@ frappe.ui.form.on("Lab inspection", {
         let row = locals[cdt][cdn];
         showCaseDepthDialog(frm, row);
     }
-});
+}); 
 
 function showOtherDetailsDialog(frm, row) {
     let dialog = new frappe.ui.Dialog({

@@ -55,6 +55,7 @@ frappe.ui.form.on("Job Plan Scheduler", {
             callback: function(r) {
                 if (r.message) {
                    cur_frm.refresh()
+				   cur_frm.dirty()
                 }
             }
         });
@@ -66,6 +67,8 @@ frappe.ui.form.on("Job Plan Scheduler", {
             callback: function(r) {
                 if (r.message) {
                    cur_frm.refresh()
+				   cur_frm.dirty()
+
                 }
             }
         });

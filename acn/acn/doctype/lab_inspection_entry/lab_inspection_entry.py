@@ -6,6 +6,17 @@ from frappe.model.document import Document
 
 
 class LabInspectionEntry(Document):
+	def on_submit(self):
+		self.update_jb_plan()
+
+	def on_cancel(self):
+		self.update_jb_plan(cancel=1)
+
+	def update_jb_plan(self, cancel=0):
+		if self.job_plan_id:
+			jb = frappe.get_doc("Job Plan Scheduler", self.job_plan_id)
+			status = 0 if cancel else 1
+			jb.db_set("job_execution", status)
 	@frappe.whitelist()
 	def set_job_plan_details(self):
 		if self.job_plan_id:
@@ -49,7 +60,7 @@ class LabInspectionEntry(Document):
 			# 	row_2.part_no=k.part_no
 			# 	row_2.part_no=k.part_no
 
-
+		self.set_plan()
 		return True
 	
 	@frappe.whitelist()
@@ -78,4 +89,42 @@ class LabInspectionEntry(Document):
 					row.planned_value=k.planned_value
 					row.scale=k.scale
 			return True
+		
+@frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
+def job_plan(doctype, txt, searchfield, start, page_len, filters):
+    args = {
+        'start': start,
+        'page_len': page_len,
+        'txt': f'%{txt}%'
+    }
+    
+    job_plans = frappe.db.sql("""
+        SELECT DISTINCT p.name 
+        FROM `tabJob Plan Scheduler` p
+        INNER JOIN `tabJob Card details` c ON p.name = c.parent
+        WHERE p.docstatus = 1 
+        AND p.job_execution = 0
+		and p.internal_process_for='Lab Inspection'
+        AND (
+         
+            c.lot_no = 1
+            OR
+   
+            EXISTS (
+                SELECT 1 
+                FROM `tabJob Plan Scheduler` prev_p
+                INNER JOIN `tabJob Card details` prev_c ON prev_p.name = prev_c.parent
+                WHERE prev_p.docstatus = 1
+                AND prev_p.job_execution = 1
+                AND prev_c.job_card_id = c.job_card_id  -- Make sure this column exists in your table
+                AND prev_c.lot_no = c.lot_no - 1
+            )
+        )
+        AND p.name LIKE %(txt)s
+        ORDER BY p.name
+        LIMIT %(start)s, %(page_len)s
+    """, args, as_dict=False)
+    
+    return job_plans
 

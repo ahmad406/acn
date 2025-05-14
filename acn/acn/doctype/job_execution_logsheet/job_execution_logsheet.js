@@ -9,7 +9,7 @@ frappe.ui.form.on("Job Execution Logsheet", {
         cur_frm.set_query("job_plan_id", function (frm) {
 			return {
 				 query: 'acn.acn.doctype.job_execution_logsheet.job_execution_logsheet.job_plan',
-				//  filters: {"project":cur_frm.doc.project,"start_date":cur_frm.doc.planned_start_date}
+				 filters: {"internal_process_for":"Production"}
 
 			}	
 		});

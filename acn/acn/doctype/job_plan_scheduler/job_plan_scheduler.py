@@ -9,12 +9,13 @@ from frappe.utils import flt
 
 
 class JobPlanScheduler(Document):
-	def on_validate(self):
+	def validate(self):
 		if not self.parameters_with_acceptance_criteria:
 			frappe.throw("Click at Set Job Parameters button and update Planned Value in Parameters plan grid")
 		for k in self.parameters_plan:
-			if flt(k.planned_value) <= 0:
-				frappe.throw("Planned value can't be negative or zero.")
+			if flt(k.planned_value) < 0:
+				frappe.throw(f"Planned value cannot be negative for parameter: {k.parameter or 'Unknown'}")
+
 
 	def on_submit(self):
 		self.update_jb_card()
@@ -46,25 +47,31 @@ class JobPlanScheduler(Document):
 						"is_planned": fullyis_planned
 					})
 
+					# Update next row's balance correctly
 					if idx + 1 < len(process_list):
 						next_row = process_list[idx + 1]
 						if cancel:
-							next_row.db_set({
-								"balance_qty_in_nos": 0,
-								"balance_qty_in_kgs": 0,
-							})
+							new_next_nos = next_row.balance_qty_in_nos - d.planned_qty_in_nos
+							new_next_kgs = next_row.balance_qty_in_kgs - d.planned_qty_in_kgs
 						else:
-							next_row.db_set({
-								"balance_qty_in_nos": d.planned_qty_in_nos,
-								"balance_qty_in_kgs": d.planned_qty_in_kgs,
-							})
+							new_next_nos = next_row.balance_qty_in_nos + d.planned_qty_in_nos
+							new_next_kgs = next_row.balance_qty_in_kgs + d.planned_qty_in_kgs
+
+						# if new_next_nos < 0 or new_next_kgs < 0:
+						# 	raise frappe.ValidationError(_("Next process balance cannot go negative."))
+
+						next_row.db_set({
+							"balance_qty_in_nos": new_next_nos,
+							"balance_qty_in_kgs": new_next_kgs,
+						})
 
 					break
 
 
+
 					
-	def validate(self):
-		pass
+	# def validate(self):
+	# 	pass
 		# if self.is_new():
 		# 	self.update_job_card_table()
 	@frappe.whitelist()		
@@ -218,15 +225,10 @@ def get_internal_process(doctype, txt, searchfield, start, page_len, filters):
 			`tabSequence Lot wise Internal Process` c 
 			ON p.name = c.parent
 		WHERE 
-			c.balance_qty_in_nos > 0
-		--	AND NOT EXISTS (
-		--		SELECT 1 
-		--		FROM `tabSequence Lot wise Internal Process` c2
-		--		WHERE 
-		--			c2.parent = c.parent
-		--			AND c2.balance_qty_in_nos > 0
-		--			AND c2.lot_no < c.lot_no
-		--	)
+			c.balance_qty_in_nos > 0 and
+			c.is_planned = 0 and
+			p.docstatus=1 
+		
 			AND c.internal_process LIKE %(txt)s
 		GROUP BY c.internal_process
 		ORDER BY c.internal_process
@@ -234,39 +236,6 @@ def get_internal_process(doctype, txt, searchfield, start, page_len, filters):
 	"""
 
 	return frappe.db.sql(query, args)
-
-
-
-
-@frappe.whitelist()
-@frappe.validate_and_sanitize_search_inputs
-def furnace_code(doctype, txt, searchfield, start, page_len, filters):
-	furnace_process = filters.get('furnace_process')
-	args = {
-		'start': start,
-		'page_len': page_len,
-		'furnace_process': furnace_process,
-		'txt': f"%{txt}%",
-	}
-
-	query = """
-		SELECT 
-			c.furnace_code
-		FROM 
-			`tabFurnace Process`  p 
-			inner join `tabFurnace Details` c on p.name = c.parent
-		
-		WHERE 
-			p.name = %(furnace_process)s
-			AND c.furnace_code LIKE %(txt)s
-		
-		LIMIT %(start)s, %(page_len)s
-	"""
-
-	return frappe.db.sql(query, args)
-
-
-
 
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
@@ -294,8 +263,35 @@ def get_job_card(doctype, txt, searchfield, start, page_len, filters):
 				c.balance_qty_in_nos > 0
 			
 			AND p.name LIKE %(txt)s
-		GROUP BY c.internal_process
-		ORDER BY c.internal_process
+	
+		LIMIT %(start)s, %(page_len)s
+	"""
+
+	return frappe.db.sql(query, args)
+
+
+@frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
+def furnace_code(doctype, txt, searchfield, start, page_len, filters):
+	furnace_process = filters.get('furnace_process')
+	args = {
+		'start': start,
+		'page_len': page_len,
+		'furnace_process': furnace_process,
+		'txt': f"%{txt}%",
+	}
+
+	query = """
+		SELECT 
+			c.furnace_code
+		FROM 
+			`tabFurnace Process`  p 
+			inner join `tabFurnace Details` c on p.name = c.parent
+		
+		WHERE 
+			p.name = %(furnace_process)s
+			AND c.furnace_code LIKE %(txt)s
+		
 		LIMIT %(start)s, %(page_len)s
 	"""
 
