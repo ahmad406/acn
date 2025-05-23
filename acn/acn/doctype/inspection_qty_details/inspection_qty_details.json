@@ -37,9 +37,10 @@
  "fields": [
   {
    "fieldname": "job_card_id",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Job Card ID"
+   "label": "Job Card ID",
+   "options": "Job Card for process"
   },
   {
    "fieldname": "customer_dc_id",
@@ -183,7 +184,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-06 21:21:45.675430",
+ "modified": "2025-05-22 21:39:28.826027",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Inspection Qty Details",

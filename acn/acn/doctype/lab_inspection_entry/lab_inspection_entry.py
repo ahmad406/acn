@@ -8,9 +8,30 @@ from frappe.model.document import Document
 class LabInspectionEntry(Document):
 	def on_submit(self):
 		self.update_jb_plan()
+		self.update_job_card()
 
 	def on_cancel(self):
 		self.update_jb_plan(cancel=1)
+		self.update_job_card(is_cancelled=1)
+	@frappe.whitelist()
+	def update_job_card(self, is_cancelled=0):
+		for d in self.inspection_qty_details:
+			if d.job_card_id:
+				jb = frappe.get_doc("Job Card for process", d.job_card_id)
+
+				if jb.sequence_lot_wise_internal_process:
+					last_row = max(
+						jb.sequence_lot_wise_internal_process,
+						key=lambda x: int(x.lot_no or 0)
+					)
+
+					if last_row.internal_process == self.internal_process:
+						qty = -d.planned_qty_in_nos if is_cancelled else d.planned_qty_in_nos
+						new_qty = (last_row.inspection_qty or 0) + qty
+						last_row.db_set("inspection_qty", new_qty)
+
+				
+
 
 	def update_jb_plan(self, cancel=0):
 		if self.job_plan_id:
@@ -50,6 +71,8 @@ class LabInspectionEntry(Document):
 				row.customer_dc_no=d.customer_dc_no
 				row.planned_qty_in_nos=d.planned_qty_in_nos
 				row.planned_qty_in_kgs=d.planned_qty_in_kgs
+				row.accepted_qty_in_nos=d.planned_qty_in_nos
+				row.accepted_qty_in_kgs=d.planned_qty_in_kgs
 			# for k in self.inspection_qty_details:
 			# 	row_2=self.append("parameters",{})
 			# 	row_2.job_card_id=k.job_card_id

@@ -12,7 +12,8 @@
   "media",
   "is_planned",
   "balance_qty_in_nos",
-  "balance_qty_in_kgs"
+  "balance_qty_in_kgs",
+  "inspection_qty"
  ],
  "fields": [
   {
@@ -63,13 +64,19 @@
    "fieldtype": "Float",
    "label": "Balance Qty in Kgs",
    "read_only": 1
+  },
+  {
+   "fieldname": "inspection_qty",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Inspection Qty"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-19 21:25:22.866879",
+ "modified": "2025-05-23 19:20:04.179348",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Sequence Lot wise Internal Process",

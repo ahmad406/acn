@@ -47,7 +47,6 @@ class JobPlanScheduler(Document):
 						"is_planned": fullyis_planned
 					})
 
-					# Update next row's balance correctly
 					if idx + 1 < len(process_list):
 						next_row = process_list[idx + 1]
 						if cancel:
@@ -57,8 +56,6 @@ class JobPlanScheduler(Document):
 							new_next_nos = next_row.balance_qty_in_nos + d.planned_qty_in_nos
 							new_next_kgs = next_row.balance_qty_in_kgs + d.planned_qty_in_kgs
 
-						# if new_next_nos < 0 or new_next_kgs < 0:
-						# 	raise frappe.ValidationError(_("Next process balance cannot go negative."))
 
 						next_row.db_set({
 							"balance_qty_in_nos": new_next_nos,
@@ -153,7 +150,10 @@ class JobPlanScheduler(Document):
 					d.customer_dc_no=j.customer_dc_no
 					d.commitment_date=j.commitment_date
 					for k in j.sequence_lot_wise_internal_process:
+						frappe.errprint([k.internal_process ,"yep", self.internal_process])
 						if k.internal_process == self.internal_process:
+							frappe.errprint([k.internal_process ,"eyeyeyeyey", self.internal_process])
+
 							d.balance_plan_qty_in_nos=k.balance_qty_in_nos
 							d.balance_plan_qty_in_kgs=k.balance_qty_in_kgs
 							d.planned_qty_in_nos=k.balance_qty_in_nos
