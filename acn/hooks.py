@@ -46,6 +46,7 @@ app_license = "mit"
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 doctype_list_js = {
      "Sales Order" : "custom_script/sales_order/sales_order.js",
+      "Delivery Note" : "custom_script/delivery_note/delivery_note.js",
     }
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -143,6 +144,10 @@ doc_events = {
  "Sales Order": {
         "validate": "acn.custom_script.sales_order.sales_order.validate",
         
+	},
+    "Delivery Note": {
+        "on_submit": "acn.custom_script.sales_order.sales_order.on_submit",
+        "on_cancel": "acn.custom_script.sales_order.sales_order.on_cancel",
 	},
 }
 

@@ -1,5 +1,6 @@
 frappe.ui.form.on('Delivery Note', {
     setup: function (frm) {
+        console.log("yeys")
         cur_frm.set_query("customer_dc_id", "items", function (frm, cdt, cdn) {
             var child = locals[cdt][cdn];
             return {
@@ -15,6 +16,6 @@ frappe.ui.form.on('Delivery Note', {
 
             }
         });
-    }
+    } 
 
 })

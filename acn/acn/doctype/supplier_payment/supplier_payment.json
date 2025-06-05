@@ -1,0 +1,115 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-06-03 20:39:01.565367",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "date_of_cheque",
+  "company",
+  "bank",
+  "column_break_awnm",
+  "cheque_no",
+  "cheque_amount",
+  "section_break_9bmm",
+  "supplier_details",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "SP-.FY.-.#####."
+  },
+  {
+   "default": "Today",
+   "fieldname": "date_of_cheque",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date of cheque",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "remember_last_selected_value": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "bank",
+   "fieldtype": "Link",
+   "label": "Bank",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cheque_no",
+   "fieldtype": "Data",
+   "label": "Cheque No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cheque_amount",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Cheque Amount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_awnm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_9bmm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "supplier_details",
+   "fieldtype": "Table",
+   "label": "Supplier Details",
+   "options": "Supplier Payment Details"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Supplier Payment",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-06-03 21:20:35.232195",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Supplier Payment",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

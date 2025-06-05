@@ -65,31 +65,36 @@ def job_plan(doctype, txt, searchfield, start, page_len, filters):
 	}
 	
 	job_plans = frappe.db.sql("""
-		select name,internal_process,internal_process_for from (
-		SELECT DISTINCT p.name,p.internal_process_for,p.internal_process
-		FROM `tabJob Plan Scheduler` p
-		INNER JOIN `tabJob Card details` c ON p.name = c.parent
-		WHERE p.docstatus = 1 
-		AND p.job_execution = 0
-		
-		AND (
-			
-			c.lot_no = 1
-			OR
-		   
-			EXISTS (
-				SELECT 1 
-				FROM `tabJob Plan Scheduler` prev_p
-				INNER JOIN `tabJob Card details` prev_c ON prev_p.name = prev_c.parent
-				WHERE prev_p.docstatus = 1
-				AND prev_p.job_execution = 1
-				AND prev_c.job_card_id = c.job_card_id  -- Make sure this column exists in your table
-				AND prev_c.lot_no = c.lot_no - 1
-			)
-		)
-		AND p.name LIKE %(txt)s
-		ORDER BY p.name
-		)x where internal_process_for=%(internal_process_for)s limit  %(start)s, %(page_len)s
+		SELECT name, internal_process, internal_process_for
+FROM (
+    SELECT p.name, p.internal_process_for, p.internal_process
+    FROM `tabJob Plan Scheduler` p
+    WHERE 
+        p.docstatus = 1 
+        AND p.job_execution = 0
+        AND NOT EXISTS (
+            SELECT 1
+            FROM `tabJob Card details` c
+            WHERE c.parent = p.name
+            AND NOT (
+                c.lot_no = 1 OR
+                EXISTS (
+                    SELECT 1 
+                    FROM `tabJob Plan Scheduler` prev_p
+                    INNER JOIN `tabJob Card details` prev_c ON prev_p.name = prev_c.parent
+                    WHERE prev_p.docstatus = 1
+                    AND prev_p.job_execution = 1
+                    AND prev_c.job_card_id = c.job_card_id
+                    AND prev_c.lot_no = c.lot_no - 1
+                )
+            )
+        )
+        AND p.name LIKE %(txt)s
+    ORDER BY p.name
+) x
+WHERE internal_process_for = %(internal_process_for)s
+LIMIT %(start)s, %(page_len)s
+
 	""", args, as_dict=False)
 	
 	return job_plans

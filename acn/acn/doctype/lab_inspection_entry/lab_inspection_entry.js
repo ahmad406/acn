@@ -7,6 +7,7 @@ frappe.ui.form.on("Lab Inspection Entry", {
 
 	},
     setup(frm) {
+        console.log("lep")
         cur_frm.set_query("job_plan_id", function (frm) {
 			return {
 				 query: 'acn.acn.doctype.job_execution_logsheet.job_execution_logsheet.job_plan',

@@ -110,9 +110,10 @@ class CustomerDC(Document):
 					new_bal_kgs = so_item.custom_bal_qty_in_kgs + sign * item.qty_kgs
 
 					if new_bal_nos < 0 or new_bal_kgs < 0:
-						frappe.throw(
-							f"Cannot update Sales Order Item {so_item.name} — resulting balance qty would be negative."
-						)
+						pass
+						# frappe.throw(
+						# 	f"Cannot update Sales Order Item {so_item.name} — resulting balance qty would be negative."
+						# )
 
 					so_item.db_set("custom_bal_qty_in_nos", new_bal_nos)
 					so_item.db_set("custom_bal_qty_in_kgs", new_bal_kgs)
