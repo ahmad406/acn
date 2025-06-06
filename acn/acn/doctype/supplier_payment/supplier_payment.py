@@ -13,6 +13,36 @@ class SupplierPayment(Document):
 		self.validate_allocated_amount()
 		self.validate_total_vs_cheque()
 
+	@frappe.whitelist()
+	def get_ref_doc_details(self, row):
+		for d in self.supplier_details:
+			if str(d.idx) == str(row.get("idx")):
+				if d.type == "Purchase Invoice":
+					out, grand = frappe.get_value("Purchase Invoice", d.name_ref, ["outstanding_amount", "grand_total"])
+					d.grand_total = grand
+					d.outstanding = out
+					d.allocated_amount = out
+					return
+
+				if d.type == "Journal Entry":
+					sql = """
+						SELECT
+							SUM(amount) AS outstanding,
+							SUM(CASE WHEN against_voucher_no = voucher_no THEN amount ELSE 0 END) AS grand_total
+						FROM `tabPayment Ledger Entry`
+						WHERE against_voucher_type = 'Journal Entry'
+						AND against_voucher_no = %s
+						AND DeLinked = 0
+					"""
+					data = frappe.db.sql(sql, (d.name_ref,), as_dict=True)
+					if data and data[0]:
+						d.grand_total = data[0].grand_total or 0
+						d.outstanding = data[0].outstanding or 0
+						d.allocated_amount = d.outstanding
+					return
+
+
+
 	def validate_required_fields(self):
 		if not self.date_of_cheque:
 			frappe.throw(_("Date of cheque is required."))
@@ -51,7 +81,6 @@ class SupplierPayment(Document):
 
 	def validate_allocated_amount(self):
 		for row in self.supplier_details:
-			if row.type=="Purchase Invoice":
 				if row.allocated_amount > row.outstanding:
 					frappe.throw(_("Row {0}: Allocated Amount cannot exceed Outstanding Amount.").format(row.idx))
 
@@ -81,12 +110,13 @@ class SupplierPayment(Document):
 
 	def create_journal_entry(self):
 		je = frappe.new_doc("Journal Entry")
-		je.voucher_type = "Bank Entry"
+		je.voucher_type = "Journal Entry"
 		je.posting_date = self.date_of_cheque
 		je.company = self.company
 		je.reference_number = self.cheque_no
 		je.reference_date = self.date_of_cheque
 		je.user_remark = f"Auto created from Supplier Payment with {self.name}"
+
 
 		je.append("accounts", {
 			"account": self.bank,
@@ -154,50 +184,45 @@ def get_reference_docs(doctype, txt, searchfield, start, page_len, filters=None)
             "page_len": page_len
         })
 
-        results = frappe.db.sql(query, params, as_dict=True)
-
-        # Return list of dicts with 'name' key as expected by autocomplete
-        return results
+        return frappe.db.sql(query, params)
 
     elif doctype_filter == "Journal Entry":
-        # For Journal Entry we need to join with child table and filter on parent
         conditions = [
-            "je.docstatus = 1",
-            "jea.party_type = 'Supplier'",
-            "jea.party = %(party_name)s",
-            "jea.outstanding_amount > 0"
+            "against_voucher_type = 'Journal Entry'",
+            "DeLinked = 0",
+            "party = %(party_name)s"
         ]
         params = {
-            "party_name": party_name
+            "party_name": party_name,
+            "start": start,
+            "page_len": page_len
         }
 
         if company:
-            conditions.append("je.company = %(company)s")
+            conditions.append("company = %(company)s")
             params["company"] = company
 
-        if txt:
-            conditions.append(f"je.name LIKE %(txt)s")
-            params["txt"] = f"%{txt}%"
-
-        where_clause = " AND ".join(conditions)
+        where_clause = " AND " + " AND ".join(conditions)
 
         query = f"""
-            SELECT DISTINCT jea.parent AS name
-            FROM `tabJournal Entry Account` jea
-            INNER JOIN `tabJournal Entry` je ON je.name = jea.parent
-            WHERE {where_clause}
-            ORDER BY je.posting_date DESC
+            SELECT against_voucher_no, SUM(amount)
+            FROM `tabPayment Ledger Entry`
+            WHERE 1=1 {where_clause}
+            GROUP BY against_voucher_no
+            HAVING SUM(amount) > 0
+            ORDER BY against_voucher_no DESC
             LIMIT %(start)s, %(page_len)s
         """
 
-        params.update({
-            "start": start,
-            "page_len": page_len
-        })
+        # Use as_dict=False to avoid KeyError
+        raw_results = frappe.db.sql(query, params, as_dict=False)
 
-        results = frappe.db.sql(query, params, as_dict=True)
+        # Filter by txt manually if needed
+        if txt:
+            raw_results = [r for r in raw_results if txt.lower() in r[0].lower()]
 
-        return results
+        # Return only voucher numbers for autocomplete
+        return [[r[0]] for r in raw_results]
 
     else:
         return []

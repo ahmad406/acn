@@ -149,7 +149,11 @@ doc_events = {
         "on_submit": "acn.custom_script.sales_order.sales_order.on_submit",
         "on_cancel": "acn.custom_script.sales_order.sales_order.on_cancel",
 	},
+    "Journal Entry": {
+        "on_cancel": "acn.custom_script.journal_entry.journal_entry.on_cancel",
+	},
 }
+
 
 # Scheduled Tasks
 # ---------------

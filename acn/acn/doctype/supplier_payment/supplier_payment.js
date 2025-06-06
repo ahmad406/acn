@@ -2,8 +2,11 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on("Supplier Payment", {
- setup: function (frm) {
-    frm.set_query('bank', function(doc) {
+  onload:function(frm){
+frm.ignore_doctypes_on_cancel_all = ["Journal Entry"];
+  },
+  setup: function (frm) {
+    frm.set_query('bank', function (doc) {
       return {
         filters: {
           company: doc.company,
@@ -13,7 +16,7 @@ frappe.ui.form.on("Supplier Payment", {
         }
       };
     });
-    frm.fields_dict.supplier_details.grid.get_field('account').get_query = function(doc, cdt, cdn) {
+    frm.fields_dict.supplier_details.grid.get_field('account').get_query = function (doc, cdt, cdn) {
       return {
         filters: {
           company: doc.company,
@@ -33,7 +36,7 @@ frappe.ui.form.on("Supplier Payment", {
         return;
       }
 
-       return {
+      return {
         query: "acn.acn.doctype.supplier_payment.supplier_payment.get_reference_docs",
         filters: {
           doctype: row.type,
@@ -46,21 +49,22 @@ frappe.ui.form.on("Supplier Payment", {
 });
 
 frappe.ui.form.on('Supplier Payment Details', {
-  name_ref: function(frm, cdt, cdn) {
+  name_ref: function (frm, cdt, cdn) {
     const row = locals[cdt][cdn];
 
     if (!row.type || !row.name_ref) {
       return;
     }
-    if (row.type=="Purchase Invoice"){
-        
-        frappe.db.get_doc(row.type, row.name_ref).then(doc => {
-            frappe.model.set_value(cdt, cdn, 'grand_total', doc.grand_total || doc.total || 0);
-            frappe.model.set_value(cdt, cdn, 'outstanding', doc.outstanding_amount || 0);
-            frappe.model.set_value(cdt, cdn, 'allocated_amount', doc.outstanding_amount || 0);
-        }).catch(() => {
-            frappe.msgprint(__('Unable to fetch document data for {0}', [row.name_ref]));
-        });
-    }
+    frappe.call({
+      method: "get_ref_doc_details",
+      doc: cur_frm.doc,
+      args:{"row":row},
+      callback: function (r) {
+        if (r.message) {
+          cur_frm.referesh()
+
+        }
+      }
+    });
   }
 });
