@@ -152,6 +152,10 @@ doc_events = {
     "Journal Entry": {
         "on_cancel": "acn.custom_script.journal_entry.journal_entry.on_cancel",
 	},
+ "Purchase Invoice": {
+        "validate": "acn.custom_script.purchase_invoice.purchase_invoice.validate",
+
+        },
 }
 
 
