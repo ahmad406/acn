@@ -19,7 +19,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Process Parameter",
-   "options": "Process Parameters",
+   "options": "Internal Control Parameter",
    "reqd": 1
   },
   {
@@ -52,12 +52,13 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-05 22:27:38.354111",
+ "modified": "2025-06-20 10:55:39.290540",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Test Parameters",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
