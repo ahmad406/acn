@@ -60,6 +60,8 @@ class CustomerProcess(Document):
 			item.item_name = self.item_name
 			item.item_group = "Customer item"
 			item.is_stock_item=0
+			item.gst_hsn_code="998873"
+
 			item.stock_uom = stock.stock_uom
 			item.save()
 

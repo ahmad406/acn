@@ -133,6 +133,7 @@ class SupplierPayment(Document):
 				"reference_name": row.name_ref
 			})
 		je.supplier_payment=self.name
+		je.title="Supplier Payment Ref-{0} ".format(self.name)
 		je.save()
 		je.submit()
 
