@@ -1,0 +1,119 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-01 19:55:55.682165",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "service_name",
+  "customer_dc_id",
+  "customer_name",
+  "process_name",
+  "part_name",
+  "part_no",
+  "dc_qty_nos",
+  "dc_qty_kgs",
+  "delivery_qty_nos",
+  "delivery_qty_kgs",
+  "expected_receipt_date",
+  "rate",
+  "rate_uom",
+  "received_qty_in_nos",
+  "received_qty_in_kgs"
+ ],
+ "fields": [
+  {
+   "fieldname": "service_name",
+   "fieldtype": "Link",
+   "label": "Service name",
+   "options": "Item"
+  },
+  {
+   "fieldname": "customer_dc_id",
+   "fieldtype": "Link",
+   "label": "Customer DC ID",
+   "options": "Customer DC"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "process_name",
+   "fieldtype": "Data",
+   "label": "Process Name"
+  },
+  {
+   "fieldname": "part_name",
+   "fieldtype": "Data",
+   "label": "Part Name"
+  },
+  {
+   "fieldname": "part_no",
+   "fieldtype": "Data",
+   "label": "Part No"
+  },
+  {
+   "fieldname": "dc_qty_nos",
+   "fieldtype": "Float",
+   "label": "DC Qty Nos"
+  },
+  {
+   "fieldname": "dc_qty_kgs",
+   "fieldtype": "Float",
+   "label": "DC Qty Kgs"
+  },
+  {
+   "fieldname": "delivery_qty_nos",
+   "fieldtype": "Float",
+   "label": "Delivery Qty Nos"
+  },
+  {
+   "fieldname": "delivery_qty_kgs",
+   "fieldtype": "Float",
+   "label": "Delivery Qty Kgs"
+  },
+  {
+   "fieldname": "expected_receipt_date",
+   "fieldtype": "Data",
+   "label": "Expected Receipt Date"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Float",
+   "label": "Rate"
+  },
+  {
+   "fieldname": "rate_uom",
+   "fieldtype": "Data",
+   "label": "Rate UoM"
+  },
+  {
+   "fieldname": "received_qty_in_nos",
+   "fieldtype": "Float",
+   "label": "Received Qty in Nos"
+  },
+  {
+   "fieldname": "received_qty_in_kgs",
+   "fieldtype": "Float",
+   "label": "Received Qty in Kgs"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-01 20:01:32.657314",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Subcontract Delivery Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
