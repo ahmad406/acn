@@ -49,6 +49,7 @@ doctype_list_js = {
      "Sales Invoice" : "custom_script/sales_invoice/sales_invoice.js",
      "Delivery Note" : "custom_script/delivery_note/delivery_note.js",
      "Journal Entry" : "custom_script/journal_entry/journal_entry.js",
+     "Purchase Invoice" : "custom_script/purchase_invoice/purchase_invoice.js",
     }
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
