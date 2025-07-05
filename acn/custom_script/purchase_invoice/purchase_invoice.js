@@ -1,7 +1,7 @@
 frappe.ui.form.on("Purchase Invoice", {
     refresh: function(frm) {
 	console.log("wokring")
-        if (frm.doc.is_new() && frm.doc.payment_terms_template) {
+        if (frm.is_new() && frm.doc.payment_terms_template) {
             let posting_date = frm.doc.posting_date || frm.doc.transaction_date;
 
             frappe.call({
