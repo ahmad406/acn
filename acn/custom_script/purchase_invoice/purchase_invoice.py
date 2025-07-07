@@ -12,5 +12,5 @@ def validate(self, method=None):
             is_open_order = frappe.get_value("Purchase Order", d.purchase_order, "open_order")
             if is_open_order:
                 d.po_detail=None
-		d.apply_tds=1
+                d.apply_tds=1
                 # d.purchase_order=None
