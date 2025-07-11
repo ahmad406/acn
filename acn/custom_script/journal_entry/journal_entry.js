@@ -40,11 +40,10 @@ frappe.ui.form.on('Journal Entry', {
     },
 
     async onload(frm) {
-        if (cur_frm.is_new()){
+        // if (cur_frm.is_new()){
 
-            cur_frm.set_value("accounts", [])
-        }
-        console.log("iop")
+        //     cur_frm.set_value("accounts", [])
+        // }
         if (frm.doc.company) {
             const company_doc = await frappe.db.get_doc("Company", frm.doc.company);
             frm.default_bank_account = company_doc.default_bank_account;
