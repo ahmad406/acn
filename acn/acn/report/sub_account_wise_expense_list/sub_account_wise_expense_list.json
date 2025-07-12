@@ -1,5 +1,5 @@
 {
- "add_total_row": 1,
+ "add_total_row": 0,
  "add_translate_data": 0,
  "columns": [],
  "creation": "2025-07-12 12:50:04.624955",
@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letterhead": null,
- "modified": "2025-07-12 12:50:04.624955",
+ "modified": "2025-07-12 23:20:20.140441",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Sub Account wise Expense List",
