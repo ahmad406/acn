@@ -1,0 +1,34 @@
+{
+ "add_total_row": 1,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-07-12 12:50:04.624955",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2025-07-12 12:50:04.624955",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Sub Account wise Expense List",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "GL Entry",
+ "report_name": "Sub Account wise Expense List",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "ACE-Accounts"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Auditor"
+  }
+ ],
+ "timeout": 0
+}
