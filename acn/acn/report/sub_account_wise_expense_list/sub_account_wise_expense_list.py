@@ -17,7 +17,7 @@ def get_columns():
     ]
 
 def get_data(filters):
-    conditions = []
+    conditions = ["IFNULL(sub_account, '') != ''"]
 
     if filters.get("company"):
         conditions.append("company = %(company)s")
@@ -40,7 +40,7 @@ def get_data(filters):
             SUM(debit) as debit_amount
         FROM
             `tabGL Entry`
-        WHERE sub_account is not null
+        WHERE
             {where_clause if where_clause else "1=1"}
         GROUP BY
             company, account, sub_account
