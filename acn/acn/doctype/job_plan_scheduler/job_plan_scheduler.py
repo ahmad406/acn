@@ -226,7 +226,7 @@ def get_internal_process(doctype, txt, searchfield, start, page_len, filters):
 			ON p.name = c.parent
 		WHERE 
 			c.balance_qty_in_nos > 0 and
-			c.is_planned = 0 and
+			
 			p.docstatus=1 
 		
 			AND c.internal_process LIKE %(txt)s
@@ -257,7 +257,7 @@ def get_job_card(doctype, txt, searchfield, start, page_len, filters):
 			`tabSequence Lot wise Internal Process` c 
 			ON p.name = c.parent
 		WHERE 
-			c.is_planned = 0 and
+			
 			p.docstatus=1 and
 			c.internal_process = %(internal_process)s and
 				c.balance_qty_in_nos > 0
