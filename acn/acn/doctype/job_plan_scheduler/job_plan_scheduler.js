@@ -18,6 +18,13 @@ frappe.ui.form.on("Job Plan Scheduler", {
 
 			}	
 		});
+		cur_frm.set_query("furnace_code","parameters_with_acceptance_criteria", function (frm) {
+			return {
+				 query: 'acn.acn.doctype.job_plan_scheduler.job_plan_scheduler.furnace_code',
+				 filters: {"furnace_process":cur_frm.doc.furnace_process}
+
+			}	
+		});
 		cur_frm.set_query("job_card_id","job_card_details", function (frm) {
 			return {
 				 query: 'acn.acn.doctype.job_plan_scheduler.job_plan_scheduler.get_job_card',
@@ -49,8 +56,23 @@ frappe.ui.form.on("Job Plan Scheduler", {
 
 	},
 	internal_process(frm) {
+		if(frm.doc.internal_process){
+
+			frappe.call({
+				method: "get_internal_process_details",
+				doc: cur_frm.doc,
+				callback: function(r) {
+					if (r.message) {
+					   cur_frm.refresh()
+					   cur_frm.dirty()
+					}
+				}
+			});
+		}
+	},
+	calculate_end_datetime(frm) {
 		frappe.call({
-            method: "get_internal_process_details",
+            method: "calculated_end",
 			doc: cur_frm.doc,
             callback: function(r) {
                 if (r.message) {

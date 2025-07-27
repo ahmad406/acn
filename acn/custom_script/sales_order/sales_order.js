@@ -74,7 +74,7 @@ frappe.ui.form.on('Sales Order Item', {
 						// frappe.model.set_value(cdt, cdn, "item_code", r.message.item_code);
 						row.custom_process_type =  r.message.process_type
 						row.custom_process_name =  r.message.process_name
-						row.material =  r.message.material
+						row.custom_material =  r.message.material
 						row.custom_rate_uom =  r.message.rate_uom
 						row.custom_customer_process_ref_no =  r.message.customer_ref
 						if (r.message.rate_uom=="Minimum") {

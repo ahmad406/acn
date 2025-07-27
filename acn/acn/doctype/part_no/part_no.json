@@ -7,7 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "part_no",
-  "customer"
+  "customer",
+  "image"
  ],
  "fields": [
   {
@@ -21,12 +22,19 @@
    "fieldtype": "Link",
    "label": "Customer",
    "options": "Customer"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "hidden": 1,
+   "label": "Image"
   }
  ],
  "grid_page_length": 50,
+ "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-26 21:29:14.895495",
+ "modified": "2025-07-15 19:43:43.116172",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Part no",
@@ -46,6 +54,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

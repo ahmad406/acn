@@ -13,6 +13,7 @@
   "item_code",
   "item_name",
   "part_no",
+  "image",
   "customer_code",
   "customer_name",
   "column_break_xrgf",
@@ -26,6 +27,7 @@
   "qty_in_kgs",
   "commitment_date",
   "card_colour",
+  "customer_req",
   "section_break_5zor",
   "customer_requirements",
   "sequence_lot_wise_internal_process",
@@ -177,13 +179,26 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "hidden": 1,
+   "label": "Image"
+  },
+  {
+   "fieldname": "customer_req",
+   "fieldtype": "Text",
+   "label": "Customer Req",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
+ "image_field": "image",
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-04-16 17:37:31.794288",
+ "modified": "2025-07-27 13:49:06.445650",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Card for process",
@@ -203,6 +218,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

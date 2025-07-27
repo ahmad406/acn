@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestSubcontractReceiptNote(FrappeTestCase):
+class TestChecklistTemplate(FrappeTestCase):
 	pass

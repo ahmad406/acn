@@ -49,6 +49,7 @@ class CustomerDC(Document):
 			doc.customer_dc_date=d.customer_dc_date
 			doc.commitment_date=d.commitment_date
 			doc.card_colour=frappe.get_value("Process Type",doc.process_type,"job_card_color")
+			doc.image=frappe.get_value("Part no",d.part_no,"image")
 			doc.customer_code=self.customer
 			doc.customer_name=self.customer_name
 			doc.qty_in_kgs=d.qty_kgs
@@ -57,7 +58,8 @@ class CustomerDC(Document):
 
 
 
-			
+			cr_list = []
+
 
 			for c in  cp.customer_requirements:
 				row_c=doc.append("customer_requirements", {})
@@ -66,6 +68,16 @@ class CustomerDC(Document):
 				row_c.minimum_value=c.minimum_value
 				row_c.scale=c.scale
 				row_c.microstructure_cutoff=c.microstructure_cutoff
+				row_c.cr="{0},{1}-{2},{3}".format(c.process_parameter,c.minimum_value,c.maximum_value,c.scale)
+				formatted = "{0},{1}-{2},{3}".format(
+				c.process_parameter, c.minimum_value, c.maximum_value, c.scale
+			)
+				cr_list.append(formatted)
+			merged_cr = ", ".join(cr_list)
+
+			doc.customer_req = merged_cr
+
+
 			for s in cp.sequence_lot_wise_internal_process:
 				row_s=doc.append("sequence_lot_wise_internal_process", {})
 				row_s.furnace_process=s.furnace_process

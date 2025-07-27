@@ -6,6 +6,9 @@ from frappe.model.document import Document
 
 
 class LabInspectionEntry(Document):
+	def before_insert(self):
+		self.lab_inspection_entry_id = self.name
+
 	def on_submit(self):
 		self.update_jb_plan()
 		self.update_job_card()
@@ -47,8 +50,8 @@ class LabInspectionEntry(Document):
 			jb=frappe.get_doc("Job Plan Scheduler",self.job_plan_id)
 			self.internal_process=jb.internal_process
 			self.furnace_process=jb.furnace_process
-			self.furnace_code=jb.furnace_code
-			self.furnace_name=jb.furnace_name
+			# self.furnace_code=jb.furnace_code
+			# self.furnace_name=jb.furnace_name
 			self.media=jb.media
 			self.job_loading_plan_date=jb.job_loading_plan_date
 			self.loading_plan_time=jb.loading_plan_time
@@ -111,8 +114,17 @@ class LabInspectionEntry(Document):
 					row.planned_qty_in_kgs=d.planned_qty_in_kgs
 					row.planned_value=k.planned_value
 					row.scale=k.scale
+					get_min_max(jb,row)
+				
 			return True
-		
+def get_min_max(jb,row):
+	for d in jb.parameters_with_acceptance_criteria:
+		if d.control_parameter==row.control_parameter:
+			row.maximum_value=d.maximum_value	
+			row.minimum_value=d.minimum_value
+			row.furnace_code=d.furnace_code
+			row.furnace_name=d.furnace_name
+			return
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def job_plan(doctype, txt, searchfield, start, page_len, filters):

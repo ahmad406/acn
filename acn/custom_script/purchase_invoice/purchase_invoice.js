@@ -1,6 +1,12 @@
 frappe.ui.form.on("Purchase Invoice", {
-    refresh: function(frm) {
-	console.log("wokring")
+     validate: function (frm) {
+        if (frm.doc.naming_series!='WR-.FY.-'){
+            cur_frm.set_value("subitem",[])
+        }
+     },
+    refresh: function (frm) {
+
+        // console.log("wokring")
         if (frm.is_new() && frm.doc.payment_terms_template) {
             let posting_date = frm.doc.posting_date || frm.doc.transaction_date;
 
@@ -13,7 +19,7 @@ frappe.ui.form.on("Purchase Invoice", {
                     base_grand_total: frm.doc.base_rounded_total || frm.doc.base_grand_total,
                     bill_date: frm.doc.bill_date
                 },
-                callback: function(r) {
+                callback: function (r) {
                     if (r.message) {
                         frm.set_value("payment_schedule", r.message);
 
@@ -23,5 +29,27 @@ frappe.ui.form.on("Purchase Invoice", {
                 }
             });
         }
+        
+        if (frm.doc.docstatus === 0 ) {
+            frm.add_custom_button(__('Subcontract Delivery Note'), function () {
+                erpnext.utils.map_current_doc({
+                    method: "acn.acn.doctype.subcontract_delivery_note.subcontract_delivery_note.make_purchase_invoice_from_subcontract_dn",
+                    source_doctype: "Subcontract Delivery Note",
+                    target: frm,
+                    date_field: "posting_date",
+                    setters: {
+                        subcontractor: frm.doc.supplier,
+                        company: frm.doc.company
+                    },
+                    get_query_filters: {
+                        docstatus: 1,
+                        Subcontractor: frm.doc.supplier,
+                        company: frm.doc.company
+                    }
+                });
+            }, __("Get Items From"));
+        }
+
+
     }
 });

@@ -1,11 +1,12 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "CPR-.#####",
+ "autoname": "naming_series:",
  "creation": "2025-03-21 21:17:32.134505",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "naming_series",
   "customer",
   "customer_process_template",
   "item_code",
@@ -22,7 +23,8 @@
   "sequence_lot_wise_internal_process",
   "parameters_with_acceptance_criteria",
   "note",
-  "title_data"
+  "title_data",
+  "amended_from"
  ],
  "fields": [
   {
@@ -77,8 +79,9 @@
   {
    "fieldname": "customer_ref",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Customer Process Ref. No",
-   "reqd": 1
+   "no_copy": 1
   },
   {
    "fieldname": "ref_date",
@@ -123,16 +126,32 @@
    "fieldtype": "Data",
    "label": "Title data",
    "read_only": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Customer Process",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2025-06-30 14:18:02.595936",
+ "modified": "2025-07-15 20:39:41.373128",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer Process",
- "naming_rule": "Expression (old style)",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -149,9 +168,8 @@
   }
  ],
  "row_format": "Dynamic",
- "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "title_data"
+ "title_field": "customer"
 }

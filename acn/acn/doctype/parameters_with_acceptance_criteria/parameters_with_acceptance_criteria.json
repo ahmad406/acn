@@ -9,6 +9,9 @@
   "internal_process",
   "control_parameter",
   "minimum_value",
+  "furnace_code",
+  "furnace_name",
+  "column_break_veqn",
   "maximum_value",
   "scale",
   "microstructure_cutoff",
@@ -73,18 +76,37 @@
    "fieldtype": "Data",
    "label": "Job",
    "read_only": 1
+  },
+  {
+   "fieldname": "furnace_code",
+   "fieldtype": "Link",
+   "label": "Instrument Code",
+   "options": "Furnace",
+   "read_only_depends_on": "eval:parent.internal_process_for==\"Production\""
+  },
+  {
+   "fetch_from": "furnace_code.furnace_name",
+   "fieldname": "furnace_name",
+   "fieldtype": "Data",
+   "label": "Instrument name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_veqn",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-16 21:44:46.223750",
+ "modified": "2025-07-23 22:39:13.621544",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Parameters with Acceptance criteria",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

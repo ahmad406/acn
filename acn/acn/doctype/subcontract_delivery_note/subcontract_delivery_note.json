@@ -7,12 +7,12 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
-  "date",
-  "company",
-  "column_break_ayw6",
   "subcontractor",
   "work_order_no",
   "work_order_date",
+  "column_break_ayw6",
+  "company",
+  "date",
   "section_break_aurg",
   "items",
   "amended_from"
@@ -40,9 +40,10 @@
    "fieldname": "work_order_no",
    "fieldtype": "Link",
    "label": "Work Order No",
-   "options": "Work Order"
+   "options": "Purchase Order"
   },
   {
+   "fetch_from": "work_order_no.transaction_date",
    "fieldname": "work_order_date",
    "fieldtype": "Date",
    "label": "Work Order Date",
@@ -83,7 +84,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-01 20:56:58.711336",
+ "modified": "2025-07-03 21:08:21.627460",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Subcontract Delivery Note",

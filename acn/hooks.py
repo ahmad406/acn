@@ -157,7 +157,8 @@ doc_events = {
 	},
  "Purchase Invoice": {
         "validate": "acn.custom_script.purchase_invoice.purchase_invoice.validate",
-
+	 "on_submit": "acn.custom_script.purchase_invoice.purchase_invoice.on_submit",
+	 "on_cancel": "acn.custom_script.purchase_invoice.purchase_invoice.on_cancel",
         },
 }
 

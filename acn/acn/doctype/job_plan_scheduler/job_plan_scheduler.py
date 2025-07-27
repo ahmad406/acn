@@ -6,6 +6,7 @@ from frappe.model.document import Document
 from frappe import _
 from frappe.utils import flt
 
+from datetime import datetime, timedelta
 
 
 class JobPlanScheduler(Document):
@@ -15,6 +16,23 @@ class JobPlanScheduler(Document):
 		for k in self.parameters_plan:
 			if flt(k.planned_value) < 0:
 				frappe.throw(f"Planned value cannot be negative for parameter: {k.parameter or 'Unknown'}")
+	@frappe.whitelist()
+	def calculated_end(self):
+		total_minutes = 0
+		for d in self.parameters_plan:
+			if d.scale == "MIN":
+				total_minutes += float(d.planned_value or 0)
+
+		if self.job_loading_plan_date:
+			# Convert to datetime if it's a string
+			if isinstance(self.job_loading_plan_date, str):
+				job_start = datetime.strptime(self.job_loading_plan_date, "%Y-%m-%d %H:%M:%S")
+			else:
+				job_start = self.job_loading_plan_date
+
+			self.job_ending_plan_date = job_start + timedelta(minutes=total_minutes)
+		return True
+
 
 
 	def on_submit(self):
@@ -140,6 +158,7 @@ class JobPlanScheduler(Document):
 					d.customer_dc_id=j.customer_dc
 					d.item_code=j.item_code
 					d.item_name=j.item_name
+					d.customer_requirements=j.customer_req
 					d.part_no=j.part_no
 					d.customer_code=j.customer_code
 					d.customer_name=j.customer_name
@@ -150,9 +169,7 @@ class JobPlanScheduler(Document):
 					d.customer_dc_no=j.customer_dc_no
 					d.commitment_date=j.commitment_date
 					for k in j.sequence_lot_wise_internal_process:
-						frappe.errprint([k.internal_process ,"yep", self.internal_process])
 						if k.internal_process == self.internal_process:
-							frappe.errprint([k.internal_process ,"eyeyeyeyey", self.internal_process])
 
 							d.balance_plan_qty_in_nos=k.balance_qty_in_nos
 							d.balance_plan_qty_in_kgs=k.balance_qty_in_kgs

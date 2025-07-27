@@ -12,6 +12,10 @@
   "part_no",
   "control_parameter",
   "planned_value",
+  "minimum_value",
+  "maximum_value",
+  "furnace_code",
+  "furnace_name",
   "result_value_from",
   "result_value_to",
   "scale",
@@ -26,8 +30,8 @@
   "other_detail_7",
   "other_detail_8",
   "other_detail_9",
-  "core",
   "case",
+  "core",
   "ref_standard",
   "micro",
   "section_break_h8wr",
@@ -152,6 +156,7 @@
   {
    "fieldname": "planned_value",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Planned Value",
    "read_only": 1
   },
@@ -230,13 +235,13 @@
   {
    "fieldname": "core",
    "fieldtype": "Data",
-   "label": "core",
+   "label": "Core",
    "read_only": 1
   },
   {
    "fieldname": "case",
    "fieldtype": "Data",
-   "label": "case",
+   "label": "Case",
    "read_only": 1
   },
   {
@@ -664,6 +669,7 @@
   {
    "fieldname": "section_break_ksp4",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "read_only": 1
   },
   {
@@ -671,18 +677,42 @@
    "fieldtype": "Data",
    "label": "Lab Entry No.",
    "read_only": 1
+  },
+  {
+   "fieldname": "minimum_value",
+   "fieldtype": "Float",
+   "label": "Minimum Value"
+  },
+  {
+   "fieldname": "maximum_value",
+   "fieldtype": "Float",
+   "label": "Maximum Value"
+  },
+  {
+   "fieldname": "furnace_code",
+   "fieldtype": "Link",
+   "label": "Instrument Code",
+   "options": "Furnace",
+   "read_only": 1
+  },
+  {
+   "fieldname": "furnace_name",
+   "fieldtype": "Data",
+   "label": "Instrument Name",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-02 19:49:01.595483",
+ "modified": "2025-07-23 22:46:16.638034",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Lab inspection",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

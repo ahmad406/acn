@@ -15,6 +15,7 @@
   "customer_code",
   "customer_name",
   "column_break_phuq",
+  "customer_requirements",
   "process_type",
   "process_name",
   "material",
@@ -153,18 +154,24 @@
    "fieldtype": "Int",
    "label": "Lot No",
    "read_only": 1
+  },
+  {
+   "fieldname": "customer_requirements",
+   "fieldtype": "Small Text",
+   "label": "Customer Requirements"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-29 21:17:34.349895",
+ "modified": "2025-07-24 21:53:02.033042",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Card details",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

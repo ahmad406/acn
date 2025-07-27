@@ -203,13 +203,7 @@ function showCaseDepthDialog(frm, row) {
             {fieldtype: 'Column Break'},
             {fieldtype: 'Section Break'},
             
-            {
-                label: __('Lab Entry No.'),
-                fieldname: 'lab_entry_no',
-                fieldtype: 'Data',
-                // reqd: 1,
-                colspan: 6
-            }
+          
         ],
         size: 'extra-large',
         primary_action: function() {
@@ -252,9 +246,7 @@ function showCaseDepthDialog(frm, row) {
         }
     }
     
-    if (row.lab_entry_no) {
-        prefilled.lab_entry_no = row.lab_entry_no;
-    }
+    
     
     dialog.set_values(prefilled);
     dialog.show();

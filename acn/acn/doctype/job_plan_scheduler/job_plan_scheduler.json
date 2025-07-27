@@ -18,11 +18,17 @@
   "furnace_job_cards_list_section",
   "furnace_code",
   "furnace_name",
+  "section_break_xwkf",
   "job_card_details",
+  "section_break_ehjz",
   "job_loading_plan_date",
   "loading_plan_time",
   "energy_starting_reading",
+  "column_break_a6kq",
+  "calculate_end_datetime",
+  "job_ending_plan_date",
   "energy_ending_reading",
+  "section_break_aupf",
   "update_job_paramenters",
   "parameters_with_acceptance_criteria",
   "parameters_plan",
@@ -52,6 +58,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:doc.internal_process_for==\"Production\"",
    "fieldname": "furnace_job_cards_list_section",
    "fieldtype": "Section Break",
    "label": "Furnace & Job Cards list "
@@ -77,22 +84,25 @@
   },
   {
    "fieldname": "job_loading_plan_date",
-   "fieldtype": "Date",
+   "fieldtype": "Datetime",
    "label": "Job loading plan date"
   },
   {
    "fieldname": "loading_plan_time",
    "fieldtype": "Time",
+   "hidden": 1,
    "label": "Loading plan Time"
   },
   {
    "fieldname": "energy_starting_reading",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Energy Starting reading"
   },
   {
    "fieldname": "energy_ending_reading",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Energy Ending reading"
   },
   {
@@ -100,9 +110,10 @@
    "fieldtype": "Table",
    "label": "Parameters with Acceptance criteria",
    "options": "Parameters with Acceptance criteria",
-   "read_only": 1
+   "read_only_depends_on": "eval:parent.internal_process_for==\"Production\""
   },
   {
+   "depends_on": "eval:doc.internal_process_for==\"Production\"",
    "fieldname": "parameters_plan",
    "fieldtype": "Table",
    "label": "Parameters plan",
@@ -162,13 +173,40 @@
    "hidden": 1,
    "label": "Lot No",
    "read_only": 1
+  },
+  {
+   "fieldname": "job_ending_plan_date",
+   "fieldtype": "Datetime",
+   "label": "Job Ending Plan date"
+  },
+  {
+   "fieldname": "section_break_xwkf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_ehjz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_a6kq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "calculate_end_datetime",
+   "fieldtype": "Button",
+   "label": "Calculate End DateTime"
+  },
+  {
+   "fieldname": "section_break_aupf",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_calendar_and_gantt": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-05-09 14:13:13.152654",
+ "modified": "2025-07-24 22:02:00.725891",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Plan Scheduler",
@@ -188,6 +226,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
