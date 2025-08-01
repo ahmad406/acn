@@ -6,6 +6,39 @@ from frappe.model.document import Document
 
 
 class LabInspectionEntry(Document):
+	@frappe.whitelist()
+	def get_checklist(self):
+		return frappe.db.sql("""
+			SELECT 
+				p.header, c.to_check
+			FROM 
+				`tabChecklist Template` p
+			INNER JOIN 
+				`tabTo be checked` c ON p.name = c.parent
+			WHERE 
+				p.internal_process = %s
+			ORDER BY 
+				p.header, c.to_check
+		""", (self.internal_process,), as_dict=True)
+
+	@frappe.whitelist()
+	def save_inspection_data(self, data):
+		import json
+
+		data = json.loads(data) if isinstance(data, str) else data
+		self.set("inspect_info", [])
+
+		for row in data:
+			self.append("inspect_info", {
+				"header": row["header"],
+				"to_check": row["to_check"],
+				"result": row["result"],
+				"remarks": row["remarks"],
+				"image": row.get("image")
+			})
+		return True
+		
+
 	def before_insert(self):
 		self.lab_inspection_entry_id = self.name
 

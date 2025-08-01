@@ -2,85 +2,87 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on("Lab Inspection Entry", {
-	refresh(frm) {
-      
+    refresh(frm) {
 
-	},
+        frm.add_custom_button("Open Checklist", () => {
+            open_checklist_dialog(frm);
+        });
+    },
     setup(frm) {
         console.log("lep")
         cur_frm.set_query("job_plan_id", function (frm) {
-			return {
-				 query: 'acn.acn.doctype.job_execution_logsheet.job_execution_logsheet.job_plan',
-				 filters: {"internal_process_for":"Lab Inspection"}
+            return {
+                query: 'acn.acn.doctype.job_execution_logsheet.job_execution_logsheet.job_plan',
+                filters: { "internal_process_for": "Lab Inspection" }
 
-			}	
-		});
+            }
+        });
     },
     job_plan_id(frm) {
-		frappe.call({
+        frappe.call({
             method: "set_job_plan_details",
-			doc: cur_frm.doc,
-            callback: function(r) {
+            doc: cur_frm.doc,
+            callback: function (r) {
                 if (r.message) {
-                   cur_frm.refresh()
+                    cur_frm.refresh()
                 }
             }
         });
-	},
-    set_parameters:function(frm) {
-		frappe.call({
+    },
+    set_parameters: function (frm) {
+        frappe.call({
             method: "set_plan",
-			doc: cur_frm.doc,
-            callback: function(r) {
+            doc: cur_frm.doc,
+            callback: function (r) {
                 if (r.message) {
                     cur_frm.dirty()
-                   cur_frm.refresh()
+                    cur_frm.refresh()
                 }
             }
         });
-	},
+    },
 });
 
 
 
 frappe.ui.form.on("Lab inspection", {
-    other_details: function(frm, cdt, cdn) {
+    other_details: function (frm, cdt, cdn) {
         let row = locals[cdt][cdn];
         showOtherDetailsDialog(frm, row);
     },
-    traverse_readings: function(frm, cdt, cdn) {
+    traverse_readings: function (frm, cdt, cdn) {
         let row = locals[cdt][cdn];
         showCaseDepthDialog(frm, row);
     }
-}); 
+});
 
 function showOtherDetailsDialog(frm, row) {
     let dialog = new frappe.ui.Dialog({
         title: __('Other Details'),
         fields: [
-            {label: __('Other Detail'), fieldname: 'other_detail_1', fieldtype: 'Data'},
-            {fieldname: 'other_detail_2', fieldtype: 'Data'},
-            {fieldname: 'other_detail_3', fieldtype: 'Data'},
-            {fieldname: 'other_detail_4', fieldtype: 'Data'},
-            {fieldname: 'other_detail_5', fieldtype: 'Data'},
-            {label: __('Micro Structure'), fieldname: 'micro', fieldtype: 'Check', reqd: 1},
-            {label: __('Reference Standard'), fieldname: 'ref_standard', fieldtype: 'Data'},
-            {label: __('Core'), fieldname: 'core', fieldtype: 'Data'},
-            {label: __('case'), fieldname: 'case', fieldtype: 'Data'},
-            {fieldname: 'col_break', fieldtype: 'Column Break'},
-            {fieldname: 'other_detail_6', fieldtype: 'Data'},
-            {fieldname: 'other_detail_7', fieldtype: 'Data'},
-            {fieldname: 'other_detail_8', fieldtype: 'Data'},
-            {fieldname: 'other_detail_9', fieldtype: 'Data'}
+            { label: __('Other Detail'), fieldname: 'other_detail_1', fieldtype: 'Data' },
+            { fieldname: 'other_detail_2', fieldtype: 'Data' },
+            { fieldname: 'other_detail_3', fieldtype: 'Data' },
+            { fieldname: 'other_detail_4', fieldtype: 'Data' },
+            { fieldname: 'other_detail_5', fieldtype: 'Data' },
+            { label: __('Micro Structure'), fieldname: 'micro', fieldtype: 'Check', reqd: 1 },
+            { label: __('Reference Standard'), fieldname: 'ref_standard', fieldtype: 'Data' },
+            { label: __('Core'), fieldname: 'core', fieldtype: 'Data' },
+            { label: __('case'), fieldname: 'case', fieldtype: 'Data' },
+            { fieldname: 'col_break', fieldtype: 'Column Break' },
+            { fieldname: 'other_detail_6', fieldtype: 'Data' },
+            { fieldname: 'other_detail_7', fieldtype: 'Data' },
+            { fieldname: 'other_detail_8', fieldtype: 'Data' },
+            { fieldname: 'other_detail_9', fieldtype: 'Data' }
         ],
         size: 'large',
-        primary_action: function() {
+        primary_action: function () {
             let values = dialog.get_values();
-            
+
             Object.assign(row, values);
-            
-            frm.refresh(); 
-            
+
+            frm.refresh();
+
             frappe.show_alert(__('Row updated successfully'));
             dialog.hide();
         },
@@ -92,14 +94,14 @@ function showOtherDetailsDialog(frm, row) {
         'micro', 'ref_standard', 'core', 'case',
         'other_detail_6', 'other_detail_7', 'other_detail_8', 'other_detail_9'
     ];
-    
+
     let prefilled_values = {};
     fieldnames.forEach(field => {
         if (row[field] !== undefined) {
             prefilled_values[field] = row[field];
         }
     });
-    
+
     dialog.set_values(prefilled_values);
     dialog.show();
 }
@@ -114,99 +116,99 @@ function showCaseDepthDialog(frm, row) {
         title: __('Case Depth Measurements'),
         fields: [
             // First Case Depth Row (10 fields)
-            {label: __('Case Depth'), fieldname: 'case_depth_1_1', fieldtype: 'Data'},
-            {fieldname: 'case_depth_1_2', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_1_3', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_1_4', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_1_5', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_1_6', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_1_7', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_1_8', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_1_9', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_1_10', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            
+            { label: __('Case Depth'), fieldname: 'case_depth_1_1', fieldtype: 'Data' },
+            { fieldname: 'case_depth_1_2', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_1_3', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_1_4', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_1_5', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_1_6', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_1_7', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_1_8', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_1_9', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_1_10', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+
             // First Hardness Row (10 fields)
-            {fieldtype: 'Section Break'},
-            {label: __('Hardness'), fieldname: 'hardness_1_1', fieldtype: 'Data'},
-            {fieldname: 'hardness_1_2', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
+            { fieldtype: 'Section Break' },
+            { label: __('Hardness'), fieldname: 'hardness_1_1', fieldtype: 'Data' },
+            { fieldname: 'hardness_1_2', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
 
-            {fieldname: 'hardness_1_3', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
+            { fieldname: 'hardness_1_3', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
 
-            {fieldname: 'hardness_1_4', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_1_5', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_1_6', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_1_7', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_1_8', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_1_9', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_1_10', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            
+            { fieldname: 'hardness_1_4', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_1_5', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_1_6', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_1_7', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_1_8', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_1_9', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_1_10', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+
             // Second Case Depth Row (10 fields)
-            {fieldtype: 'Section Break'},
-            {label: __('Case Depth'), fieldname: 'case_depth_2_1', fieldtype: 'Data'},
-            {fieldname: 'case_depth_2_2', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_2_3', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_2_4', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_2_5', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_2_6', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_2_7', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_2_8', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_2_9', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'case_depth_2_10', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            
+            { fieldtype: 'Section Break' },
+            { label: __('Case Depth'), fieldname: 'case_depth_2_1', fieldtype: 'Data' },
+            { fieldname: 'case_depth_2_2', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_2_3', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_2_4', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_2_5', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_2_6', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_2_7', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_2_8', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_2_9', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'case_depth_2_10', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+
             // Second Hardness Row (10 fields)
-            {fieldtype: 'Section Break'},
-            {label: __('Hardness'), fieldname: 'hardness_2_1', fieldtype: 'Data'},
-            {fieldname: 'hardness_2_2', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_2_3', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_2_4', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_2_5', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_2_6', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_2_7', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_2_8', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_2_9', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldname: 'hardness_2_10', fieldtype: 'Data'},
-            {fieldtype: 'Column Break'},
-            {fieldtype: 'Section Break'},
-            
-          
+            { fieldtype: 'Section Break' },
+            { label: __('Hardness'), fieldname: 'hardness_2_1', fieldtype: 'Data' },
+            { fieldname: 'hardness_2_2', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_2_3', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_2_4', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_2_5', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_2_6', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_2_7', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_2_8', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_2_9', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldname: 'hardness_2_10', fieldtype: 'Data' },
+            { fieldtype: 'Column Break' },
+            { fieldtype: 'Section Break' },
+
+
         ],
         size: 'extra-large',
-        primary_action: function() {
+        primary_action: function () {
             let values = dialog.get_values();
             Object.assign(row, values);
             frm.refresh_field('items');
@@ -217,37 +219,199 @@ function showCaseDepthDialog(frm, row) {
     });
 
     let prefilled = {};
-    
+
     // Case Depth 1
     for (let col = 1; col <= 10; col++) {
         if (row['case_depth_1_' + col] !== undefined) {
             prefilled['case_depth_1_' + col] = row['case_depth_1_' + col];
         }
     }
-    
+
     // Hardness 1
     for (let col = 1; col <= 10; col++) {
         if (row['hardness_1_' + col] !== undefined) {
             prefilled['hardness_1_' + col] = row['hardness_1_' + col];
         }
     }
-    
+
     // Case Depth 2
     for (let col = 1; col <= 10; col++) {
         if (row['case_depth_2_' + col] !== undefined) {
             prefilled['case_depth_2_' + col] = row['case_depth_2_' + col];
         }
     }
-    
+
     // Hardness 2
     for (let col = 1; col <= 10; col++) {
         if (row['hardness_2_' + col] !== undefined) {
             prefilled['hardness_2_' + col] = row['hardness_2_' + col];
         }
     }
-    
-    
-    
+
+
+
     dialog.set_values(prefilled);
     dialog.show();
 }
+
+
+
+function open_checklist_dialog(frm) {
+    let existing_data = frm.doc.inspect_info || [];
+
+    if (existing_data.length > 0) {
+        console.log("in")
+        let grouped = group_by_header(existing_data);
+        render_checklist_dialog(frm, grouped);
+    } else {
+        frappe.call({
+            method: "get_checklist",
+            doc: frm.doc,
+            callback: function (r) {
+                if (r.message) {
+                    let grouped = group_by_header(r.message);
+                    render_checklist_dialog(frm, grouped);
+                }
+            }
+        });
+    }
+}
+
+
+function group_by_header(data) {
+    const grouped = {};
+    for (const row of data) {
+        if (!grouped[row.header]) grouped[row.header] = [];
+        grouped[row.header].push(row);
+    }
+    return grouped;
+}
+
+function render_checklist_dialog(frm, grouped_data) {
+    let d = new frappe.ui.Dialog({
+        title: 'Inspection Checklist',
+        fields: [
+            { fieldtype: 'HTML', fieldname: 'checklist_html' }
+        ],
+        size: 'extra-large',
+        primary_action_label: 'Save',
+        primary_action: async function () {
+            const rows = $(d.wrapper).find('.checklist-row');
+            let has_error = false;
+            let data = [];
+
+            rows.each(function () {
+                const $row = $(this);
+                const header = $row.data('header');
+                const to_check = $row.data('check');
+                const result = $row.find('select.result-select').val();
+                const remarks = $row.find('textarea').val();
+                const file_input = $row.find('input.image-upload')[0];
+
+                if (!result) {
+                    has_error = true;
+                    return false;
+                }
+
+                data.push({ header, to_check, result, remarks, file_input });
+            });
+
+            if (has_error) {
+                return frappe.msgprint("Please select Yes/No/NA for all rows.");
+            }
+
+            // Ensure parent is saved
+            if (!frm.doc.name) {
+                await frm.save();
+            }
+
+            frm.clear_table('inspect_info');
+
+            for (const row of data) {
+                let image_url = null;
+
+                if (row.file_input?.files?.length) {
+                    const file = row.file_input.files[0];
+                    const form_data = new FormData();
+                    form_data.append("file", file);
+                    form_data.append("is_private", "0");
+                    form_data.append("folder", "Home/Attachments");
+                    form_data.append("doctype", frm.doctype);
+                    form_data.append("docname", frm.doc.name);
+
+                    const response = await fetch("/api/method/upload_file", {
+                        method: "POST",
+                        body: form_data,
+                        headers: {
+                            "X-Frappe-CSRF-Token": frappe.csrf_token,
+                        },
+
+                        body: form_data,
+                        credentials: 'same-origin'
+
+                    });
+
+                    const json = await response.json();
+                    if (json.message?.file_url) {
+                        image_url = json.message.file_url;
+                    }
+                }
+
+                frm.add_child("inspect_info", {
+                    header: row.header,
+                    to_check: row.to_check,
+                    result: row.result,
+                    remarks: row.remarks,
+                    image: image_url
+                });
+            }
+
+            await frm.save();
+            frappe.msgprint("Checklist saved successfully.");
+            d.hide();
+        }
+
+    });
+
+    // Render HTML checklist
+    let html = '';
+    for (let header in grouped_data) {
+        html += `<h4 style="margin-top: 20px;">${header}</h4>`;
+        html += `<table class="table table-bordered" style="width:100%;"><thead>
+            <tr>
+                <th style="width: 30%">To Be Checked</th>
+                <th style="width: 10%">Result</th>
+                <th style="width: 30%">Remarks</th>
+                <th style="width: 30%">Image</th>
+            </tr></thead><tbody>`;
+
+      grouped_data[header].forEach(row => {
+    const saved_image_url = row.image || "";
+    html += `
+        <tr class="checklist-row" data-header="${header}" data-check="${row.to_check}" data-saved-image="${saved_image_url}">
+            <td>${row.to_check}</td>
+            <td>
+                <select class="form-control result-select">
+                    <option value="">Select</option>
+                    <option value="Yes" ${row.result === "Yes" ? "selected" : ""}>Yes</option>
+                    <option value="No" ${row.result === "No" ? "selected" : ""}>No</option>
+                    <option value="NA" ${row.result === "NA" ? "selected" : ""}>NA</option>
+                </select>
+            </td>
+            <td><textarea class="form-control" rows="2">${row.remarks || ""}</textarea></td>
+            <td>
+                ${saved_image_url ? `<a href="${saved_image_url}" target="_blank">View Image</a><br>` : ""}
+                <input type="file" class="image-upload" accept="image/*" />
+            </td>
+        </tr>
+    `;
+});
+
+
+        html += '</tbody></table>';
+    }
+
+    d.fields_dict.checklist_html.$wrapper.html(html);
+    d.show();
+}
+

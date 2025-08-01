@@ -27,7 +27,8 @@
   "section_break_ace2",
   "set_parameters",
   "parameters",
-  "amended_from"
+  "amended_from",
+  "inspect_info"
  ],
  "fields": [
   {
@@ -155,13 +156,19 @@
    "fieldtype": "Data",
    "label": "Lab Inspection Entry ID",
    "read_only": 1
+  },
+  {
+   "fieldname": "inspect_info",
+   "fieldtype": "Table",
+   "label": "Inspect Info",
+   "options": "Inspect Info"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-23 21:40:44.448103",
+ "modified": "2025-08-01 20:10:50.564662",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Lab Inspection Entry",
