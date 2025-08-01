@@ -3,10 +3,12 @@
 
 frappe.ui.form.on("Lab Inspection Entry", {
     refresh(frm) {
-
-        frm.add_custom_button("Open Checklist", () => {
-            open_checklist_dialog(frm);
-        });
+        if(cur_frm.doc.docstatus==0){
+            
+            frm.add_custom_button("Open Checklist", () => {
+                open_checklist_dialog(frm);
+            });
+        }
     },
     setup(frm) {
         console.log("lep")
@@ -376,7 +378,6 @@ function render_checklist_dialog(frm, grouped_data) {
         }
     });
 
-    // Render HTML checklist
     let html = '';
     for (let header in grouped_data) {
         html += `<h4 style="margin-top: 20px;">${header}</h4>`;
@@ -430,7 +431,6 @@ function render_checklist_dialog(frm, grouped_data) {
     d.fields_dict.checklist_html.$wrapper.html(html);
     d.show();
 
-    // Add live image preview
     $(d.wrapper).find('.image-upload').on('change', function () {
         const file = this.files[0];
         if (file && file.type.startsWith('image/')) {

@@ -12,7 +12,9 @@
   "item_code",
   "item_name",
   "qty_nos",
+  "material",
   "qty_kgs",
+  "column_break_9ks2",
   "balance_qty_nos",
   "balance_qty_kgs",
   "qty",
@@ -127,18 +129,29 @@
    "fieldtype": "Float",
    "label": "Balance QTY KGs",
    "read_only": 1
+  },
+  {
+   "fieldname": "material",
+   "fieldtype": "Data",
+   "label": "Material",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_9ks2",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-30 18:36:43.639330",
+ "modified": "2025-08-01 22:24:59.222284",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer DC child",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

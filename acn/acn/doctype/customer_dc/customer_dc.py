@@ -161,6 +161,7 @@ class CustomerDC(Document):
 						d.process_name=data[0].custom_process_name
 						d.commitment_date=data[0].delivery_date
 						d.sales_order_item=data[0].name
+						d.material=data[0].custom_material
 
 						break
 		return True
