@@ -20,7 +20,7 @@ class JobPlanScheduler(Document):
 	def calculated_end(self):
 		total_minutes = 0
 		for d in self.parameters_plan:
-			if d.scale == "MIN":
+			if d.scale == "mins":
 				total_minutes += float(d.planned_value or 0)
 
 		if self.job_loading_plan_date:
