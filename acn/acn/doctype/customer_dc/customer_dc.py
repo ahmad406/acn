@@ -61,19 +61,23 @@ class CustomerDC(Document):
 			cr_list = []
 
 
-			for c in  cp.customer_requirements:
-				row_c=doc.append("customer_requirements", {})
-				row_c.process_parameter=c.process_parameter
-				row_c.maximum_value=c.maximum_value
-				row_c.minimum_value=c.minimum_value
-				row_c.scale=c.scale
-				row_c.microstructure_cutoff=c.microstructure_cutoff
-				row_c.cr="{0},{1}-{2},{3}".format(c.process_parameter,c.minimum_value,c.maximum_value,c.scale)
-				formatted = "{0},{1}-{2},{3}".format(
-				c.process_parameter, c.minimum_value, c.maximum_value, c.scale
-			)
+
+			for c in cp.customer_requirements:
+				row_c = doc.append("customer_requirements", {})
+
+				row_c.process_parameter = c.process_parameter
+				row_c.maximum_value = c.maximum_value
+				row_c.minimum_value = c.minimum_value
+				row_c.scale = c.scale
+				row_c.microstructure_cutoff = c.microstructure_cutoff
+
+				row_c.cr = f"{c.process_parameter} {c.minimum_value}-{c.maximum_value} {c.scale}"
+
+				formatted = f"{c.process_parameter} {c.minimum_value}-{c.maximum_value} {c.scale}"
 				cr_list.append(formatted)
+
 			merged_cr = ", ".join(cr_list)
+
 
 			doc.customer_req = merged_cr
 
