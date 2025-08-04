@@ -7,21 +7,6 @@ from frappe.model.document import Document
 
 class LabInspectionEntry(Document):
 	@frappe.whitelist()
-	def get_checklist(self):
-		return frappe.db.sql("""
-			SELECT 
-				p.header, c.to_check
-			FROM 
-				`tabChecklist Template` p
-			INNER JOIN 
-				`tabTo be checked` c ON p.name = c.parent
-			WHERE 
-				p.internal_process = %s
-			ORDER BY 
-				p.header, c.to_check
-		""", (self.internal_process,), as_dict=True)
-
-	@frappe.whitelist()
 	def save_inspection_data(self, data):
 		import json
 
@@ -199,3 +184,19 @@ def job_plan(doctype, txt, searchfield, start, page_len, filters):
     
     return job_plans
 
+
+
+@frappe.whitelist()
+def get_checklist(internal_process):
+	return frappe.db.sql("""
+		SELECT 
+			p.header, c.to_check
+		FROM 
+			`tabChecklist Template` p
+		INNER JOIN 
+			`tabTo be checked` c ON p.name = c.parent
+		WHERE 
+			p.internal_process = %s
+		ORDER BY 
+			p.header, c.to_check
+	""", (internal_process,), as_dict=True)

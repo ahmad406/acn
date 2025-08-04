@@ -3,12 +3,12 @@
 
 frappe.ui.form.on("Lab Inspection Entry", {
     refresh(frm) {
-        if(cur_frm.doc.docstatus==0){
-            
-            frm.add_custom_button("Open Checklist", () => {
+        if (cur_frm.doc.docstatus === 0 && cur_frm.doc.inspect_info && cur_frm.doc.inspect_info.length > 0) {
+            frm.add_custom_button("View checklist", () => {
                 open_checklist_dialog(frm);
             });
         }
+
     },
     setup(frm) {
         console.log("lep")
@@ -21,15 +21,19 @@ frappe.ui.form.on("Lab Inspection Entry", {
         });
     },
     job_plan_id(frm) {
-        frappe.call({
-            method: "set_job_plan_details",
-            doc: cur_frm.doc,
-            callback: function (r) {
-                if (r.message) {
-                    cur_frm.refresh()
+        if(cur_frm.doc.job_plan_id){
+
+            frappe.call({
+                method: "set_job_plan_details",
+                doc: cur_frm.doc,
+                callback: function (r) {
+                    if (r.message) {
+                        cur_frm.refresh()
+                        open_checklist_dialog(frm);
+                    }
                 }
-            }
-        });
+            });
+        }
     },
     set_parameters: function (frm) {
         frappe.call({
@@ -267,8 +271,8 @@ function open_checklist_dialog(frm) {
         render_checklist_dialog(frm, grouped);
     } else {
         frappe.call({
-            method: "get_checklist",
-            doc: frm.doc,
+            method: "acn.acn.doctype.lab_inspection_entry.lab_inspection_entry.get_checklist",
+            args: { "internal_process": cur_frm.doc.internal_process },
             callback: function (r) {
                 if (r.message) {
                     let grouped = group_by_header(r.message);
@@ -406,7 +410,7 @@ function render_checklist_dialog(frm, grouped_data) {
                     <td style="text-align: center;">
                         <div class="preview-wrapper">
                             ${saved_image_url
-                                ? `<div style="margin-bottom: 5px;">
+                    ? `<div style="margin-bottom: 5px;">
                                     <a href="${saved_image_url}" target="_blank" title="Click to view full image">
                                         <img src="${saved_image_url}" alt="Checklist Image"
                                             style="height: 60px; border-radius: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.15); transition: transform 0.2s;"
@@ -415,7 +419,7 @@ function render_checklist_dialog(frm, grouped_data) {
                                         />
                                     </a>
                                 </div>` : ''
-                            }
+                }
                         </div>
                         <label class="btn btn-sm btn-primary" style="margin-top: 2px;">
                             Upload <input type="file" class="image-upload" accept="image/*" hidden />
