@@ -9,7 +9,7 @@
   "checklist_name",
   "header",
   "column_break_0ues",
-  "internal_process",
+  "internal_process_list",
   "section_break_6c7o",
   "to_be_checked"
  ],
@@ -26,12 +26,6 @@
    "label": "Header"
   },
   {
-   "fieldname": "internal_process",
-   "fieldtype": "Link",
-   "label": "Internal Process",
-   "options": "Internal Process"
-  },
-  {
    "fieldname": "column_break_0ues",
    "fieldtype": "Column Break"
   },
@@ -44,12 +38,18 @@
    "fieldtype": "Table",
    "label": "To be checked",
    "options": "To be checked"
+  },
+  {
+   "fieldname": "internal_process_list",
+   "fieldtype": "Table",
+   "label": "Internal Process List",
+   "options": "Internal Process List"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-18 14:40:31.868401",
+ "modified": "2025-08-04 20:44:33.686816",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Checklist Template",

@@ -195,8 +195,10 @@ def get_checklist(internal_process):
 			`tabChecklist Template` p
 		INNER JOIN 
 			`tabTo be checked` c ON p.name = c.parent
+		INNER JOIN 
+			`tabInternal Process List` i ON p.name = i.parent
 		WHERE 
-			p.internal_process = %s
+			i.internal_process = %s
 		ORDER BY 
 			p.header, c.to_check
 	""", (internal_process,), as_dict=True)
