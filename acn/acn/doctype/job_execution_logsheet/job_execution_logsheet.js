@@ -3,7 +3,7 @@
 
 frappe.ui.form.on("Job Execution Logsheet", {
     refresh(frm) {
-        if (cur_frm.doc.docstatus === 0 && cur_frm.doc.inspect_info && cur_frm.doc.inspect_info.length > 0) {
+        if (cur_frm.doc.inspect_info && cur_frm.doc.inspect_info.length > 0) {
             frm.add_custom_button("View checklist", () => {
                 open_checklist_dialog(frm);
             });
@@ -38,7 +38,6 @@ function open_checklist_dialog(frm) {
     let existing_data = frm.doc.inspect_info || [];
 
     if (existing_data.length > 0) {
-        console.log("in")
         let grouped = group_by_header(existing_data);
         render_checklist_dialog(frm, grouped);
     } else {
@@ -152,7 +151,16 @@ function render_checklist_dialog(frm, grouped_data) {
             frappe.msgprint("Checklist saved successfully.");
             d.hide();
         }
+
     });
+    setTimeout(() => {
+    if (frm.doc.docstatus !== 0) {
+        const $btn = d.get_primary_btn();
+        if ($btn) $btn.prop("disabled", true);
+    }
+}, 100);
+
+
 
     let html = '';
     for (let header in grouped_data) {
