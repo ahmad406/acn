@@ -200,5 +200,5 @@ def get_checklist(internal_process):
 		WHERE 
 			i.internal_process = %s
 		ORDER BY 
-			p.header, c.to_check
+			p.header, c.idx
 	""", (internal_process,), as_dict=True)
