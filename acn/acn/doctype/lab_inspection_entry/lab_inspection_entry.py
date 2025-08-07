@@ -188,6 +188,7 @@ def job_plan(doctype, txt, searchfield, start, page_len, filters):
 
 @frappe.whitelist()
 def get_checklist(internal_process):
+	
 	return frappe.db.sql("""
 		SELECT 
 			p.header, c.to_check
