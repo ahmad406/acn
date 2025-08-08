@@ -26,6 +26,8 @@ def get_data(filters):
         conditions.append("account = %(account)s")
     if filters.get("sub_account"):
         conditions.append("sub_account = %(sub_account)s")
+    if filters.get("cost_center"):
+        conditions.append("cost_center = %(cost_center)s")
 
     where_clause = " AND ".join(conditions)
     query = f"""

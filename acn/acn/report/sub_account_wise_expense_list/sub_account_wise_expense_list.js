@@ -25,6 +25,13 @@ frappe.query_reports["Sub Account wise Expense List"] = {
             "default": frappe.datetime.get_today(),
             "reqd": 1
         },
+              {
+            "fieldname": "cost_center",
+            "label": "Cost Center",
+            "fieldtype": "Link",
+            "options": "Cost Center"
+        },
+
         {
             "fieldname": "account",
             "label": "Account",
@@ -35,6 +42,8 @@ frappe.query_reports["Sub Account wise Expense List"] = {
             "fieldname": "sub_account",
             "label": "Sub Account",
             "fieldtype": "Data"
-        }
+        },
+         
+        
     ]
 };
