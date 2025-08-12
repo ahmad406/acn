@@ -29,6 +29,7 @@ class CustomerProcess(Document):
         'process_type': self.process_type,
         'item_code': self.item_code,
         'customer_ref': self.customer_ref,
+		 'docstatus': ['!=', 2],
         'name': ['!=', self.name]  
     })
     
