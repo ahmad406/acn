@@ -54,7 +54,6 @@ function open_checklist_dialog(frm) {
     }
 }
 
-
 function group_by_header(data) {
     const grouped = {};
     for (const row of data) {
@@ -88,18 +87,27 @@ function render_checklist_dialog(frm, grouped_data) {
                 const file_input = $row.find('input.image-upload')[0];
                 const preview_img = $row.find('.preview-wrapper img');
                 const existing_image_url = preview_img.length ? preview_img.attr('src') : null;
+                 const options = $row.data('options'); 
 
                 if (!result) {
                     has_error = true;
                     return false;
                 }
 
-                data.push({ header, to_check, result, remarks, file_input, existing_image_url });
+                data.push({ 
+                header, 
+                to_check, 
+                result, 
+                remarks, 
+                file_input, 
+                existing_image_url,
+                options: $row.data('options') 
+                });
             });
 
             if (has_error) {
                 frappe.dom.unfreeze();
-                return frappe.msgprint("Please select Yes/No/NA for all rows.");
+                return frappe.msgprint("Please select an option for all rows.");
             }
 
             if (!frm.doc.name) {
@@ -142,7 +150,8 @@ function render_checklist_dialog(frm, grouped_data) {
                     to_check: row.to_check,
                     result: row.result,
                     remarks: row.remarks,
-                    image: image_url
+                    image: image_url,
+                    options: row.options
                 });
             }
 
@@ -151,17 +160,17 @@ function render_checklist_dialog(frm, grouped_data) {
             frappe.msgprint("Checklist saved successfully.");
             d.hide();
         }
-
     });
+
+    // Disable save if doc is submitted
     setTimeout(() => {
-    if (frm.doc.docstatus !== 0) {
-        const $btn = d.get_primary_btn();
-        if ($btn) $btn.prop("disabled", true);
-    }
-}, 100);
+        if (frm.doc.docstatus !== 0) {
+            const $btn = d.get_primary_btn();
+            if ($btn) $btn.prop("disabled", true);
+        }
+    }, 100);
 
-
-
+    // Generate HTML dynamically
     let html = '';
     for (let header in grouped_data) {
         html += `<h4 style="margin-top: 20px;">${header}</h4>`;
@@ -174,36 +183,41 @@ function render_checklist_dialog(frm, grouped_data) {
             </tr></thead><tbody>`;
 
         grouped_data[header].forEach(row => {
-            const saved_image_url = row.image || "";
+            const saved_image_url = row.image || row.default_image || "";
+            const options_list = (row.options || "").split(',').map(o => o.trim());
+
             html += `
-                <tr class="checklist-row" data-header="${header}" data-check="${row.to_check}">
+             <tr class="checklist-row" 
+    data-header="${header}" 
+    data-check="${row.to_check}" 
+    data-options="${options_list.join(',')}">
+
                     <td>${row.to_check}</td>
                     <td>
                         <select class="form-control result-select">
                             <option value="">Select</option>
-                            <option value="Yes" ${row.result === "Yes" ? "selected" : ""}>Yes</option>
-                            <option value="No" ${row.result === "No" ? "selected" : ""}>No</option>
-                            <option value="NA" ${row.result === "NA" ? "selected" : ""}>NA</option>
+                            ${options_list.map(opt => `
+                                <option value="${opt}" ${row.result === opt ? "selected" : ""}>${opt}</option>
+                            `).join('')}
                         </select>
                     </td>
                     <td><textarea class="form-control" rows="2">${row.remarks || ""}</textarea></td>
                     <td style="text-align: center;">
                         <div class="preview-wrapper">
-                            ${saved_image_url
-                    ? `<div style="margin-bottom: 5px;">
-                                    <a href="${saved_image_url}" target="_blank" title="Click to view full image">
-                                        <img src="${saved_image_url}" alt="Checklist Image"
-                                            style="height: 60px; border-radius: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.15); transition: transform 0.2s;"
-                                            onmouseover="this.style.transform='scale(1.1)'"
-                                            onmouseout="this.style.transform='scale(1)'"
-                                        />
-                                    </a>
-                                </div>` : ''
-                }
+                            ${saved_image_url ? `<div style="margin-bottom:5px;">
+                                <a href="${saved_image_url}" target="_blank" title="Click to view full image">
+                                    <img src="${saved_image_url}" alt="Checklist Image"
+                                        style="height:60px;border-radius:6px;box-shadow:0 0 5px rgba(0,0,0,0.15);transition:transform 0.2s;"
+                                        onmouseover="this.style.transform='scale(1.1)'"
+                                        onmouseout="this.style.transform='scale(1)'"
+                                    />
+                                </a>
+                            </div>` : ''}
                         </div>
                         <label class="btn btn-sm btn-primary" style="margin-top: 2px;">
-                            Upload <input type="file" class="image-upload" accept="image/*" hidden />
-                        </label>
+        Capture
+        <input type="file" class="image-upload" accept="image/*" capture="environment" hidden />
+    </label>
                     </td>
                 </tr>
             `;
@@ -215,6 +229,7 @@ function render_checklist_dialog(frm, grouped_data) {
     d.fields_dict.checklist_html.$wrapper.html(html);
     d.show();
 
+    // Image preview functionality
     $(d.wrapper).find('.image-upload').on('change', function () {
         const file = this.files[0];
         if (file && file.type.startsWith('image/')) {
@@ -235,4 +250,3 @@ function render_checklist_dialog(frm, grouped_data) {
         }
     });
 }
-

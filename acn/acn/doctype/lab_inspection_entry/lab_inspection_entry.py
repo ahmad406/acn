@@ -191,15 +191,22 @@ def get_checklist(internal_process):
 	
 	return frappe.db.sql("""
 		SELECT 
-			p.header, c.to_check
-		FROM 
-			`tabChecklist Template` p
-		INNER JOIN 
-			`tabTo be checked` c ON p.name = c.parent
-		INNER JOIN 
-			`tabInternal Process List` i ON p.name = i.parent
-		WHERE 
-			i.internal_process = %s
-		ORDER BY 
-			p.header, c.idx
+    p.header, 
+    c.to_check,
+    GROUP_CONCAT(m.value ORDER BY m.idx SEPARATOR ',') AS options,default_image
+FROM 
+    `tabChecklist Template` p
+INNER JOIN 
+    `tabTo be checked` c ON p.name = c.parent
+INNER JOIN 
+    `tabList method` m ON m.parent = c.applicable_method
+INNER JOIN 
+    `tabInternal Process List` i ON p.name = i.parent
+WHERE 
+   i.internal_process = %s
+GROUP BY 
+    p.header, c.to_check
+ORDER BY 
+    p.header, c.idx;
+
 	""", (internal_process,), as_dict=True)

@@ -6,21 +6,38 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "to_check"
+  "to_check",
+  "applicable_method",
+  "default_image"
  ],
  "fields": [
   {
    "fieldname": "to_check",
    "fieldtype": "Text",
    "in_list_view": 1,
-   "label": "To Be Checked"
+   "label": "To Be Checked",
+   "reqd": 1
+  },
+  {
+   "fieldname": "applicable_method",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Applicable method",
+   "options": "Applicable method",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_image",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "Default Image"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-18 14:40:44.909176",
+ "modified": "2025-08-17 19:32:52.446483",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "To be checked",

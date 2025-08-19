@@ -10,7 +10,8 @@
   "to_check",
   "result",
   "remarks",
-  "image"
+  "image",
+  "options"
  ],
  "fields": [
   {
@@ -41,13 +42,18 @@
    "fieldname": "image",
    "fieldtype": "Attach Image",
    "label": "Image"
+  },
+  {
+   "fieldname": "options",
+   "fieldtype": "Data",
+   "label": "options"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-01 20:18:49.821212",
+ "modified": "2025-08-19 22:19:20.270033",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Inspect Info",
