@@ -6,6 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "lot_no",
+  "testing_method",
   "internal_process",
   "control_parameter",
   "minimum_value",
@@ -94,13 +95,19 @@
   {
    "fieldname": "column_break_veqn",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "testing_method",
+   "fieldtype": "Select",
+   "label": "Testing Method",
+   "options": "\n100% checking\nAs per Sampling Plan\nAs per Customer Contract"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-23 22:39:13.621544",
+ "modified": "2025-08-20 22:33:27.390751",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Parameters with Acceptance criteria",

@@ -21,6 +21,7 @@
   "part_no__process_rate",
   "customer_requirements",
   "sequence_lot_wise_internal_process",
+  "testing_slab_method",
   "parameters_with_acceptance_criteria",
   "note",
   "title_data",
@@ -141,13 +142,19 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "testing_slab_method",
+   "fieldtype": "Table",
+   "label": "Testing slab method",
+   "options": "Testing slab method"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-15 20:39:41.373128",
+ "modified": "2025-08-20 22:38:39.898138",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer Process",

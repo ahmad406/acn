@@ -77,14 +77,22 @@ frappe.ui.form.on('Sales Order Item', {
 						row.custom_material =  r.message.material
 						row.custom_rate_uom =  r.message.rate_uom
 						row.custom_customer_process_ref_no =  r.message.customer_ref
-						if (r.message.rate_uom=="Minimum") {
-							frappe.model.set_value(cdt, cdn, "qty",1);
+						if(cur_frm.doc.docstatus==0){
+							frappe.model.set_value(cdt, cdn, "item_code", r.message.item_code);
+
+							if (r.message.rate_uom=="Minimum") {
+								frappe.model.set_value(cdt, cdn, "qty",1);
+							}
+							setTimeout(() => {
+								
+								frappe.model.set_value(cdt, cdn, "rate", r.message.process_rate);
+							}, 900);
 						}
-						frappe.model.set_value(cdt, cdn, "item_code", r.message.item_code);
-						setTimeout(() => {
-							
-							frappe.model.set_value(cdt, cdn, "rate", r.message.process_rate);
-						}, 900);
+						if(cur_frm.doc.docstatus==1){
+							row.item_code=r.message.item_code
+							row.item_name=r.message.item_name
+						}
+					
 						cur_frm.refresh()
 
 					}
