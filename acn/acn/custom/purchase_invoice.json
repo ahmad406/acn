@@ -2311,15 +2311,15 @@
    "_comments": null,
    "_liked_by": null,
    "_user_tags": null,
-   "creation": "2025-08-05 16:44:42.834374",
+   "creation": "2025-09-10 22:54:13.286798",
    "default_value": null,
    "doc_type": "Purchase Invoice",
    "docstatus": 0,
    "doctype_or_field": "DocField",
    "field_name": "naming_series",
    "idx": 0,
-   "is_system_generated": 1,
-   "modified": "2025-09-10 21:55:26.184440",
+   "is_system_generated": 0,
+   "modified": "2025-09-10 22:54:13.286798",
    "modified_by": "Administrator",
    "module": null,
    "name": "Purchase Invoice-naming_series-options",
@@ -2327,7 +2327,7 @@
    "property": "options",
    "property_type": "Text",
    "row_name": null,
-   "value": "\nGRN-.FY.-\nWR-.FY.-\nCPI-.FY.-\nGRN-RET-.FY.-"
+   "value": ""
   },
   {
    "_assign": null,
