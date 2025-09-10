@@ -20,6 +20,7 @@ class CustomerProcess(Document):
 					part_no = frappe.new_doc("Part no")
 					part_no.part_no = d.part_no
 					part_no.customer= self.customer
+					part_no.image=d.part_image
 					part_no.save()
 
 

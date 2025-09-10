@@ -1613,7 +1613,7 @@
    "columns": 0,
    "creation": "2025-07-07 23:29:34.403979",
    "default": null,
-   "depends_on": "eval:doc.naming_series=='WR-.FY.-'",
+   "depends_on": "",
    "description": null,
    "docstatus": 0,
    "dt": "Purchase Invoice",
@@ -2219,7 +2219,7 @@
    "_comments": null,
    "_liked_by": null,
    "_user_tags": null,
-   "creation": "2025-07-24 22:25:02.960612",
+   "creation": "2025-09-10 23:00:21.939537",
    "default_value": null,
    "doc_type": "Purchase Invoice",
    "docstatus": 0,
@@ -2227,7 +2227,7 @@
    "field_name": "items",
    "idx": 0,
    "is_system_generated": 0,
-   "modified": "2025-07-24 22:25:02.960612",
+   "modified": "2025-09-10 23:00:21.939537",
    "modified_by": "Administrator",
    "module": null,
    "name": "Purchase Invoice-items-depends_on",
@@ -2235,7 +2235,7 @@
    "property": "depends_on",
    "property_type": "Data",
    "row_name": null,
-   "value": "eval:doc.naming_series!='WR-.FY.-'"
+   "value": ""
   },
   {
    "_assign": null,
@@ -2311,7 +2311,7 @@
    "_comments": null,
    "_liked_by": null,
    "_user_tags": null,
-   "creation": "2025-09-10 22:54:13.286798",
+   "creation": "2025-09-10 22:57:14.853480",
    "default_value": null,
    "doc_type": "Purchase Invoice",
    "docstatus": 0,
@@ -2319,7 +2319,7 @@
    "field_name": "naming_series",
    "idx": 0,
    "is_system_generated": 0,
-   "modified": "2025-09-10 22:54:13.286798",
+   "modified": "2025-09-10 22:57:14.853480",
    "modified_by": "Administrator",
    "module": null,
    "name": "Purchase Invoice-naming_series-options",
@@ -2327,7 +2327,7 @@
    "property": "options",
    "property_type": "Text",
    "row_name": null,
-   "value": ""
+   "value": "\nGRN-.FY.-\nWR-.FY.-\nCPI-.FY.-\nGRN-RET-.FY.-"
   },
   {
    "_assign": null,
