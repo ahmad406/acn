@@ -32,7 +32,8 @@
   "rejected_qty_in_kgs",
   "rework_process",
   "rework_cause",
-  "test_certified"
+  "test_certified",
+  "samplingcheckqty"
  ],
  "fields": [
   {
@@ -178,18 +179,25 @@
    "fieldname": "test_certified",
    "fieldtype": "Check",
    "label": "Test Certified"
+  },
+  {
+   "fieldname": "samplingcheckqty",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "samplingcheckqty"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-22 21:39:28.826027",
+ "modified": "2025-09-10 19:59:19.524138",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Inspection Qty Details",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

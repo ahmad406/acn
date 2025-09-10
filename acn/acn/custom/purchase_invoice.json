@@ -2288,7 +2288,7 @@
    "_comments": null,
    "_liked_by": null,
    "_user_tags": null,
-   "creation": "2025-07-12 06:36:11.236890",
+   "creation": "2025-08-05 16:44:42.933591",
    "default_value": null,
    "doc_type": "Purchase Invoice",
    "docstatus": 0,
@@ -2296,7 +2296,7 @@
    "field_name": "naming_series",
    "idx": 0,
    "is_system_generated": 1,
-   "modified": "2025-07-12 06:36:11.236890",
+   "modified": "2025-08-05 16:44:42.933591",
    "modified_by": "Administrator",
    "module": null,
    "name": "Purchase Invoice-naming_series-default",
@@ -2304,14 +2304,14 @@
    "property": "default",
    "property_type": "Text",
    "row_name": null,
-   "value": "GRN-.FY.-"
+   "value": ""
   },
   {
    "_assign": null,
    "_comments": null,
    "_liked_by": null,
    "_user_tags": null,
-   "creation": "2025-07-12 06:36:11.159110",
+   "creation": "2025-08-05 16:44:42.834374",
    "default_value": null,
    "doc_type": "Purchase Invoice",
    "docstatus": 0,
@@ -2319,7 +2319,7 @@
    "field_name": "naming_series",
    "idx": 0,
    "is_system_generated": 1,
-   "modified": "2025-07-12 06:36:11.159110",
+   "modified": "2025-08-05 16:44:42.834374",
    "modified_by": "Administrator",
    "module": null,
    "name": "Purchase Invoice-naming_series-options",
@@ -2327,7 +2327,7 @@
    "property": "options",
    "property_type": "Text",
    "row_name": null,
-   "value": "GRN-.FY.-\nWR-.FY.-\nGRN-RET-.FY.-"
+   "value": "\nGRN-.FY.-\nWR-.FY.-\nCPI-.FY.-\nGRN-RET-.FY.-"
   },
   {
    "_assign": null,

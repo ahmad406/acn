@@ -3,6 +3,8 @@
 
 import frappe
 from frappe.model.document import Document
+from frappe.utils import flt
+
 
 
 class LabInspectionEntry(Document):
@@ -28,8 +30,26 @@ class LabInspectionEntry(Document):
 		self.lab_inspection_entry_id = self.name
 
 	def on_submit(self):
+		self.validate_test_result()
 		self.update_jb_plan()
 		self.update_job_card()
+	def validate(self):
+		for row in self.inspection_qty_details:
+				if flt(row.samplingcheckqty) > 0:
+					row.checked_qty_in_nos = flt(row.samplingcheckqty)
+				
+		
+	def validate_test_result(self):
+		
+		missing_rows = []
+		for d in self.test_results:
+			if not d.result_value:
+				missing_rows.append(str(d.idx))
+
+		if missing_rows:
+			frappe.throw(
+				"Test Results are not updated in Row number(s): {}".format(", ".join(missing_rows))
+			)
 
 	def on_cancel(self):
 		self.update_jb_plan(cancel=1)
@@ -94,6 +114,8 @@ class LabInspectionEntry(Document):
 				row.planned_qty_in_kgs=d.planned_qty_in_kgs
 				row.accepted_qty_in_nos=d.planned_qty_in_nos
 				row.accepted_qty_in_kgs=d.planned_qty_in_kgs
+				row.location_image=d.location_image
+				row.fixturing_image=d.fixturing_image
 			# for k in self.inspection_qty_details:
 			# 	row_2=self.append("parameters",{})
 			# 	row_2.job_card_id=k.job_card_id
@@ -105,13 +127,19 @@ class LabInspectionEntry(Document):
 			# 	row_2.part_no=k.part_no
 
 		self.set_plan()
+		# self.set_check_qty()
 		return True
+	
+
+
 	
 	@frappe.whitelist()
 	def set_plan(self):
 		if self.job_plan_id:
 			# self.set("inspection_qty_details",[])
 			self.set("parameters",[])
+			self.set("test_results",[])
+
 
 			jb=frappe.get_doc("Job Plan Scheduler",self.job_plan_id)
 			for k in jb.parameters_plan:
@@ -122,7 +150,7 @@ class LabInspectionEntry(Document):
 					row.item_name=d.item_name
 					row.part_no=d.part_no
 					row.control_parameter=k.control_parameter
-					row.planned_value=d.customer_name
+					row.planned_value=d.customer_name 
 					row.result_value_from=d.process_type
 					row.result_value_to=d.process_name
 					row.material=d.material
@@ -132,9 +160,86 @@ class LabInspectionEntry(Document):
 					row.planned_qty_in_kgs=d.planned_qty_in_kgs
 					row.planned_value=k.planned_value
 					row.scale=k.scale
+					row.testing_method=k.testing_method
+					row.customer_process=k.customer_process
+
+					self.set_checked_qty(row)
+
 					get_min_max(jb,row)
+					self.insert_row_base_onchecked_Qty(row)
+			self.update_job_card_counts()
+
 				
 			return True
+	
+
+	def update_job_card_counts(self):
+		from collections import defaultdict
+		counts = defaultdict(int)
+		for row in self.test_results:
+			if row.job_card_id:
+				counts[row.job_card_id] += 1
+
+		for row in self.inspection_qty_details:
+			if row.job_card_id in counts:
+				row.checked_qty_in_nos = counts[row.job_card_id]
+				row.samplingcheckqty=row.checked_qty_in_nos
+			else:
+				
+				row.checked_qty_in_nos = 0
+				row.samplingcheckqty=row.checked_qty_in_nos
+
+
+	def insert_row_base_onchecked_Qty(self, d):
+		for _ in range(d.checked_qty_in_nos):
+			row = self.append("test_results", {})
+			row.job_card_id = d.job_card_id
+			row.control_parameters = d.control_parameter
+			row.minimum_value = d.minimum_value
+			row.maximum_value = d.maximum_value
+			row.scale = d.scale
+			row.testing_qty = 1
+
+	def set_checked_qty(self, row):
+		if row.testing_method:
+			if row.testing_method == "100% checking":
+				row.checked_qty_in_nos = row.planned_qty_in_nos
+
+			elif row.testing_method == "As per Sampling Plan":
+				qty = get_sample_plan_frm_scale(
+					row.scale, row.planned_qty_in_nos, self.internal_process
+				)
+				row.checked_qty_in_nos = qty or 0 
+
+			elif row.testing_method == "As per Customer Contract":
+				qty = get_sample_plan_frm_scale(
+					row, self.internal_process
+				)
+				row.checked_qty_in_nos = qty or 0 
+
+def get_sample_plan_frm_process(row, process):
+    doc = frappe.get_doc("Customer Pocess", row.customer_process)
+    if doc.test_req:
+        for child in doc.testing_slab_method:
+            if (
+                child.internal_process == process
+                and child.batch_qty_from <= row.planned_qty_in_nos <= child.batch_qty_to
+                and child.scale == row.scale
+            ):
+                return child.sample_qty_for_testing
+    return None
+
+def get_sample_plan_frm_scale(scale, qty, process):
+    doc = frappe.get_doc("Scale", scale)
+    if doc.test_req:
+        for row in doc.scale_sample:
+            if (
+                row.internal_process == process
+                and row.batch_qty_from <= qty <= row.batch_qty_to
+            ):
+                return row.sample_qty_for_testing
+    return None 
+
 def get_min_max(jb,row):
 	for d in jb.parameters_with_acceptance_criteria:
 		if d.control_parameter==row.control_parameter:

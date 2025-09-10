@@ -1,26 +1,17 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-08-20 22:34:12.790371",
+ "creation": "2025-09-03 21:24:22.710692",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "scale",
   "batch_qty_from",
   "batch_qty_to",
-  "column_break_owx0",
-  "internal_process",
-  "sample_qty_for_testing"
+  "sample_qty_for_testing",
+  "internal_process"
  ],
  "fields": [
-  {
-   "fieldname": "scale",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Scale",
-   "options": "Scale"
-  },
   {
    "fieldname": "batch_qty_from",
    "fieldtype": "Int",
@@ -34,8 +25,10 @@
    "label": "Batch Qty to"
   },
   {
-   "fieldname": "column_break_owx0",
-   "fieldtype": "Column Break"
+   "fieldname": "sample_qty_for_testing",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Sample Qty for Testing"
   },
   {
    "fieldname": "internal_process",
@@ -43,22 +36,16 @@
    "in_list_view": 1,
    "label": "Internal Process",
    "options": "Internal Process"
-  },
-  {
-   "fieldname": "sample_qty_for_testing",
-   "fieldtype": "Int",
-   "in_list_view": 1,
-   "label": "Sample Qty for Testing"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-09-07 13:09:03.711100",
+ "modified": "2025-09-03 21:26:35.221387",
  "modified_by": "Administrator",
  "module": "ACN",
- "name": "Testing slab method",
+ "name": "Scale Sample",
  "owner": "Administrator",
  "permissions": [],
  "row_format": "Dynamic",

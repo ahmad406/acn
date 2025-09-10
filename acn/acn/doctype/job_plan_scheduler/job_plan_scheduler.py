@@ -105,7 +105,6 @@ class JobPlanScheduler(Document):
 		for job_id in jobs:
 			job_doc = frappe.get_doc("Job Card for process", job_id)
 			for param in job_doc.parameters_with_acceptance_criteria:
-				frappe.errprint([param.internal_process , self.internal_process])
 				if param.internal_process == self.internal_process:
 					row = self.append("parameters_with_acceptance_criteria", {})
 					row.job_card_id = job_doc.name
@@ -117,6 +116,11 @@ class JobPlanScheduler(Document):
 					row.scale = param.scale
 					row.microstructure_cutoff = param.microstructure_cutoff
 					row.information = param.information
+					row.testing_method=param.testing_method
+
+					row.customer_process=param.customer_process
+
+
 
 	def set_consolidatedjob_paramenters(self):
 		jobs = list({d.job_card_id for d in self.job_card_details if d.job_card_id})
@@ -148,6 +152,10 @@ class JobPlanScheduler(Document):
 					row.scale = param.scale
 					row.microstructure_cutoff = param.microstructure_cutoff
 					row.information = param.information
+					row.testing_method=param.testing_method
+					row.customer_process=param.customer_process
+
+
 
 	@frappe.whitelist()
 	def get_job_details(self,row):
@@ -168,6 +176,8 @@ class JobPlanScheduler(Document):
 					d.customer_process_ref_no=j.customer_process_ref_no
 					d.customer_dc_no=j.customer_dc_no
 					d.commitment_date=j.commitment_date
+					d.location_image=j.location_image
+					# d.fixturing_image=j.fixturing_image
 					for k in j.sequence_lot_wise_internal_process:
 						if k.internal_process == self.internal_process:
 

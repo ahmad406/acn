@@ -19,7 +19,8 @@
   "customer_process_ref",
   "customer_dc_no",
   "planned_qty_in_nos",
-  "planned_qty_in_kgs"
+  "planned_qty_in_kgs",
+  "fixturing_image"
  ],
  "fields": [
   {
@@ -98,18 +99,24 @@
    "fieldname": "planned_qty_in_kgs",
    "fieldtype": "Float",
    "label": "Planned Qty in Kgs"
+  },
+  {
+   "fieldname": "fixturing_image",
+   "fieldtype": "Attach Image",
+   "label": "Fixturing Image"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-19 23:12:36.105549",
+ "modified": "2025-09-04 22:45:19.047543",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Execution Logsheet child",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

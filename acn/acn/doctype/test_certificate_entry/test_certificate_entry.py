@@ -42,6 +42,8 @@ class TestCertificateentry(Document):
 			frappe.throw("Select Job Card Id")
 
 		self.set("test_parameters_details",[])
+		self.set("test_results",[])
+
 		self.customer_dc_id=""
 		self.customer=""
 		self.item=""
@@ -61,6 +63,20 @@ class TestCertificateentry(Document):
 				self.accepted_qty_in_kgs=d.accepted_qty_in_kgs
 
 				break
+		for r in li.test_results:
+			if r.job_card_id==self.job_card_id:
+				re=self.append("test_results",{})
+				re.job_card_id=r.job_card_id
+				re.control_parameters=r.control_parameters
+				re.minimum_value=r.minimum_value
+				re.maximum_value=r.maximum_value
+				re.scale=r.scale
+				re.testing_time=r.testing_time
+				re.result_vaule=r.result_vaule
+				re.testing_qty=r.testing_qty
+
+
+
 		for k in li.parameters:
 			if self.job_card_id==k.job_card_id:
 				row=self.append("test_parameters_details",{})

@@ -40,13 +40,13 @@ frappe.ui.form.on("Job Plan Scheduler", {
 				if (grid_row){
 					let cl=grid_row.columns
 				if (grid_row.doc.lot_no==1) {
-					if ('planned_qty_in_kgs' in cl){grid_row.columns_list[cl.planned_qty_in_kgs.column_index].df.read_only = 1}
-					if ('planned_qty_in_nos' in cl){ grid_row.columns_list[cl.planned_qty_in_nos.column_index].df.read_only = 1}
+					if ('planned_qty_in_kgs' in cl){grid_row.columns_list[cl.planned_qty_in_kgs.column_index].df.read_only = 0}
+					if ('planned_qty_in_nos' in cl){ grid_row.columns_list[cl.planned_qty_in_nos.column_index].df.read_only = 0}
 				
 				}
 				else {
-					if ('planned_qty_in_kgs' in cl){grid_row.columns_list[cl.planned_qty_in_kgs.column_index].df.read_only = 0}
-					if ('planned_qty_in_nos' in cl){ grid_row.columns_list[cl.planned_qty_in_nos.column_index].df.read_only = 0}
+					if ('planned_qty_in_kgs' in cl){grid_row.columns_list[cl.planned_qty_in_kgs.column_index].df.read_only = 1}
+					if ('planned_qty_in_nos' in cl){ grid_row.columns_list[cl.planned_qty_in_nos.column_index].df.read_only = 1}
 
 				}
 				

@@ -98,6 +98,14 @@ class CustomerDC(Document):
 				row_p.scale=p.scale
 				row_p.microstructure_cutoff=p.microstructure_cutoff
 				row_p.information=p.information
+				row_p.testing_method=p.testing_method
+				row_p.customer_process=cp.name
+			for f in cp.part_no__process_rate:
+				if f.part_no==doc.part_no:
+					doc.fixturing_image=f.fixturing_image
+					doc.location_image=f.location_image
+					break
+
 			doc.reference=self.name
 			doc.save()
 			doc.submit()

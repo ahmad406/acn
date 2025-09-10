@@ -28,7 +28,8 @@
   "set_parameters",
   "parameters",
   "amended_from",
-  "inspect_info"
+  "inspect_info",
+  "test_results"
  ],
  "fields": [
   {
@@ -163,13 +164,19 @@
    "hidden": 1,
    "label": "Inspect Info",
    "options": "Inspect Info"
+  },
+  {
+   "fieldname": "test_results",
+   "fieldtype": "Table",
+   "label": "Test Results",
+   "options": "Test Results"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-08-03 12:08:47.829710",
+ "modified": "2025-09-03 22:23:15.004016",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Lab Inspection Entry",

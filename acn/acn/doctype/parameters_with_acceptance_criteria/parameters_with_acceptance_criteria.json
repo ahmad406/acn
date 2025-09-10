@@ -17,7 +17,8 @@
   "scale",
   "microstructure_cutoff",
   "information",
-  "job"
+  "job",
+  "customer_process"
  ],
  "fields": [
   {
@@ -97,17 +98,23 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "testing_method",
    "fieldtype": "Select",
    "label": "Testing Method",
    "options": "\n100% checking\nAs per Sampling Plan\nAs per Customer Contract"
+  },
+  {
+   "fieldname": "customer_process",
+   "fieldtype": "Data",
+   "label": "Customer Process"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-20 22:33:27.390751",
+ "modified": "2025-09-08 10:12:05.787868",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Parameters with Acceptance criteria",

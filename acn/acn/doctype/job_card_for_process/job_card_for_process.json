@@ -14,6 +14,8 @@
   "item_name",
   "part_no",
   "image",
+  "fixturing_image",
+  "location_image",
   "customer_code",
   "customer_name",
   "column_break_xrgf",
@@ -191,6 +193,16 @@
    "fieldtype": "Text",
    "label": "Customer Req",
    "read_only": 1
+  },
+  {
+   "fieldname": "fixturing_image",
+   "fieldtype": "Attach Image",
+   "label": "Fixturing Image"
+  },
+  {
+   "fieldname": "location_image",
+   "fieldtype": "Attach Image",
+   "label": "Location Image"
   }
  ],
  "grid_page_length": 50,
@@ -198,7 +210,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-27 13:49:06.445650",
+ "modified": "2025-09-04 22:30:09.903142",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Card for process",

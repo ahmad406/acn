@@ -8,9 +8,7 @@
  "field_order": [
   "scale",
   "test_req",
-  "batch_qty_from",
-  "batch_qty_to",
-  "internal_process"
+  "scale_sample"
  ],
  "fields": [
   {
@@ -29,28 +27,16 @@
   },
   {
    "depends_on": "test_req",
-   "fieldname": "batch_qty_from",
-   "fieldtype": "Int",
-   "label": "Batch Qty from"
-  },
-  {
-   "depends_on": "test_req",
-   "fieldname": "batch_qty_to",
-   "fieldtype": "Int",
-   "label": "Batch Qty to"
-  },
-  {
-   "depends_on": "test_req",
-   "fieldname": "internal_process",
-   "fieldtype": "Link",
-   "label": "Internal Process",
-   "options": "Internal Process"
+   "fieldname": "scale_sample",
+   "fieldtype": "Table",
+   "label": "Scale Sample",
+   "options": "Scale Sample"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-20 22:30:29.330673",
+ "modified": "2025-09-03 21:27:18.990649",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Scale",

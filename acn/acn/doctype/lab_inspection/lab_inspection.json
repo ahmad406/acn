@@ -20,6 +20,8 @@
   "result_value_to",
   "scale",
   "other_details",
+  "testing_method",
+  "customer_process",
   "column_break_ga5r",
   "other_detail_1",
   "other_detail_2",
@@ -34,6 +36,8 @@
   "core",
   "ref_standard",
   "micro",
+  "location_image",
+  "fixturing_image",
   "section_break_h8wr",
   "traverse_readings",
   "case_depth_1_1",
@@ -700,13 +704,35 @@
    "fieldtype": "Data",
    "label": "Instrument Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "testing_method",
+   "fieldtype": "Data",
+   "label": "Testing Method",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer_process",
+   "fieldtype": "Data",
+   "label": "Customer Process",
+   "read_only": 1
+  },
+  {
+   "fieldname": "location_image",
+   "fieldtype": "Attach Image",
+   "label": "Location Image"
+  },
+  {
+   "fieldname": "fixturing_image",
+   "fieldtype": "Attach Image",
+   "label": "Fixturing Image"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-23 22:46:16.638034",
+ "modified": "2025-09-04 22:38:01.751044",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Lab inspection",

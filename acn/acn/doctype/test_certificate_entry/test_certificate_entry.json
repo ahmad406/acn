@@ -21,6 +21,7 @@
   "accepted_qty_in_kgs",
   "section_break_f0nb",
   "test_parameters_details",
+  "test_results",
   "section_break_m97g",
   "other_detail_1",
   "column_break_zpfw",
@@ -720,13 +721,20 @@
    "fieldtype": "Table",
    "options": "Test Parameters",
    "read_only": 1
+  },
+  {
+   "fieldname": "test_results",
+   "fieldtype": "Table",
+   "label": "Test Results",
+   "options": "Test Results",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-16 20:26:20.161576",
+ "modified": "2025-09-10 20:23:26.665935",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Test Certificate entry",

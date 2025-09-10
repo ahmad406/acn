@@ -40,6 +40,7 @@ class CustomerProcess(Document):
 
 	def set_title(self):
 		self.title_data = "{0}-{1}-{2}-{3}".format(self.customer, self.process_type,self.item_code,self.customer_ref)
+		self.customer_ref=self.title_data
 
 
 	def on_trash(self):
