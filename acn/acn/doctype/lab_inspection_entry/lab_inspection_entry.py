@@ -162,6 +162,7 @@ class LabInspectionEntry(Document):
 					row.scale=k.scale
 					row.testing_method=k.testing_method
 					row.customer_process=k.customer_process
+					row.checked_qty_in_nos=0
 
 					self.set_checked_qty(row)
 
