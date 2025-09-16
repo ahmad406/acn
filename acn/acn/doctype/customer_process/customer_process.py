@@ -23,8 +23,8 @@ class CustomerProcess(Document):
 					part_no.image=d.part_image
 					part_no.save()
 	def validate_duplicate(self):
-		for row in self.get("part_no_process_rate"):
-			duplicates_in_doc = [r.part_no for r in self.get("part_no_process_rate") if r.part_no == row.part_no]
+		for row in self.get("part_no__process_rate"):
+			duplicates_in_doc = [r.part_no for r in self.get("part_no__process_rate") if r.part_no == row.part_no]
 			if len(duplicates_in_doc) > 1:
 				frappe.throw(_('Duplicate Part No. "{0}" found in this Customer Process.').format(row.part_no))
 
