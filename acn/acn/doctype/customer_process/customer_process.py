@@ -22,20 +22,28 @@ class CustomerProcess(Document):
 					part_no.customer= self.customer
 					part_no.image=d.part_image
 					part_no.save()
-
-
 	def validate_duplicate(self):
-		duplicate_exists = frappe.db.exists('Customer Process', {
-        'customer': self.customer,
-        'process_type': self.process_type,
-        'item_code': self.item_code,
-        'customer_ref': self.customer_ref,
-		 'docstatus': ['!=', 2],
-        'name': ['!=', self.name]  
-    })
-    
-		if duplicate_exists:
-			frappe.throw(_('Duplicate entry found: Customer, Process Type, Item Code, and Customer Process Ref. No. combination must be unique.'))
+		for row in self.get("part_no_process_rate"):
+			duplicates_in_doc = [r.part_no for r in self.get("part_no_process_rate") if r.part_no == row.part_no]
+			if len(duplicates_in_doc) > 1:
+				frappe.throw(_('Duplicate Part No. "{0}" found in this Customer Process.').format(row.part_no))
+
+			duplicate_exists = frappe.db.sql("""
+				SELECT 1
+				FROM `tabCustomer Process` cp
+				INNER JOIN `tabCustomer Process Item` cpi ON cpi.parent = cp.name
+				WHERE cp.customer = %s
+				AND cp.process_type = %s
+				AND cp.item_code = %s
+				AND cpi.part_no = %s
+				AND cp.docstatus != 2
+				AND cp.name != %s
+				LIMIT 1
+			""", (self.customer, self.process_type, self.item_code, row.part_no, self.name))
+
+			if duplicate_exists:
+				frappe.throw(_('Duplicate entry found: Customer "{0}", Process Type "{1}", Item Code "{2}", and Part No. "{3}" must be unique.')
+							.format(self.customer, self.process_type, self.item_code, row.part_no))
 
 	def after_insert(self):
 		self.set_title()
