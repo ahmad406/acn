@@ -37,12 +37,17 @@ class CustomerProcess(Document):
 		if duplicate_exists:
 			frappe.throw(_('Duplicate entry found: Customer, Process Type, Item Code, and Customer Process Ref. No. combination must be unique.'))
 
+	def after_insert(self):
+		self.set_title()
+		self.db_set("title_data", self.title_data)
+
 
 
 	def set_title(self):
-		self.title_data = "{0}-{1}-{2}-{3}".format(self.customer, self.process_type,self.item_code,self.customer_ref)
-		if not self.is_new():
-			self.customer_ref=self.name
+		self.customer_ref=self.name
+		self.title_data = "{0}-{1}-{2}-{3}".format(self.customer_ref, self.process_type,self.item_code,self.customer_ref)
+
+
 
 
 	def on_trash(self):
