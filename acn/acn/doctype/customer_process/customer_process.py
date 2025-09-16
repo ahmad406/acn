@@ -31,7 +31,7 @@ class CustomerProcess(Document):
 			duplicate_exists = frappe.db.sql("""
 				SELECT 1
 				FROM `tabCustomer Process` cp
-				INNER JOIN `tabCustomer Process Item` cpi ON cpi.parent = cp.name
+				INNER JOIN `tabPart No  Process Rate` cpi ON cpi.parent = cp.name
 				WHERE cp.customer = %s
 				AND cp.process_type = %s
 				AND cp.item_code = %s
