@@ -53,7 +53,7 @@ class CustomerProcess(Document):
 
 	def set_title(self):
 		self.customer_ref=self.name
-		self.title_data = "{0}-{1}-{2}-{3}".format(self.customer_ref, self.process_type,self.item_code,self.customer_ref)
+		self.title_data = "{0}-{1}-{2}".format(self.customer_ref, self.process_type,self.item_code)
 
 
 
