@@ -8,10 +8,24 @@ from frappe import _
 
 class CustomerProcess(Document):
 	def validate(self):
-		self.create_item()
 		self.set_title()
 		self.validate_duplicate()
+		
+	def submit(self):
+		self.create_item()
 		self.create_part_no()
+	def create_item(self):
+		if not  frappe.db.exists("Item", self.item_code):
+			stock=frappe.get_single("Stock Settings")
+			item = frappe.new_doc("Item")
+			item.item_code = self.item_code
+			item.item_name = self.item_name
+			item.item_group = "Customer item"
+			item.is_stock_item=0
+			item.gst_hsn_code="998873"
+			item.stock_uom = stock.stock_uom
+			item.save()
+
 
 	def create_part_no(self):
 		for d in self.part_no__process_rate:
@@ -22,6 +36,17 @@ class CustomerProcess(Document):
 					part_no.customer= self.customer
 					part_no.image=d.part_image
 					part_no.save()
+	def on_cancel(self):
+		if frappe.db.exists("Item", self.item_code):
+			itm = frappe.get_doc("Item", self.item_code)
+			itm.delete()
+
+		for d in self.part_no__process_rate:
+			if d.part_no and frappe.db.exists("Part no", d.part_no):
+				part = frappe.get_doc("Part no", d.part_no)
+				part.delete()
+
+
 	def validate_duplicate(self):
 		for row in self.get("part_no__process_rate"):
 			duplicates_in_doc = [r.part_no for r in self.get("part_no__process_rate") if r.part_no == row.part_no]
@@ -69,18 +94,6 @@ class CustomerProcess(Document):
 					item.delete()
 					frappe.msgprint(_("Item {0} deleted successfully").format(self.item_code))
 		
-	def create_item(self):
-		if not  frappe.db.exists("Item", self.item_code):
-			stock=frappe.get_single("Stock Settings")
-			item = frappe.new_doc("Item")
-			item.item_code = self.item_code
-			item.item_name = self.item_name
-			item.item_group = "Customer item"
-			item.is_stock_item=0
-			item.gst_hsn_code="998873"
-
-			item.stock_uom = stock.stock_uom
-			item.save()
 
 
 	@frappe.whitelist()
