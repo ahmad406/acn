@@ -43,7 +43,7 @@ class LabInspectionEntry(Document):
 		
 		missing_rows = []
 		for d in self.test_results:
-			if not d.result_value:
+			if not d.result_vaule:
 				missing_rows.append(str(d.idx))
 
 		if missing_rows:
