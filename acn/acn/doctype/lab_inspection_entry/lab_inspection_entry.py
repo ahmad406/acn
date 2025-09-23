@@ -42,7 +42,7 @@ class LabInspectionEntry(Document):
 	def validate_test_result(self):
 		
 		missing_rows = []
-		for d in self.test_results:
+		for d in self.test_results: 
 			if not d.result_vaule:
 				missing_rows.append(str(d.idx))
 

@@ -11,7 +11,7 @@ class CustomerProcess(Document):
 		self.set_title()
 		self.validate_duplicate()
 		
-	def submit(self):
+	def on_submit(self):
 		self.create_item()
 		self.create_part_no()
 	def create_item(self):
