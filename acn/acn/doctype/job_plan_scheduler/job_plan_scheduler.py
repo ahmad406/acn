@@ -210,16 +210,7 @@ class JobPlanScheduler(Document):
 						`tabSequence Lot wise Internal Process` c 
 						ON p.name = c.parent
 					WHERE 
-						c.is_planned = 0
-						AND NOT EXISTS (
-							SELECT 1 
-							FROM `tabSequence Lot wise Internal Process` c2
-							WHERE 
-								c2.parent = c.parent
-								AND c2.is_planned = 0
-								AND c2.lot_no < c.lot_no
-						)
-						AND c.internal_process="{0}"
+						 c.internal_process="{0}"
 						limit 1
 
 			""".format(self.internal_process)
@@ -229,6 +220,16 @@ class JobPlanScheduler(Document):
 			self.media = result[0].media
 			self.lot_no =result[0].lot_no
 		return True
+	# c.is_planned = 0
+	# 					AND NOT EXISTS (
+	# 						SELECT 1 
+	# 						FROM `tabSequence Lot wise Internal Process` c2
+	# 						WHERE 
+	# 							c2.parent = c.parent
+	# 							AND c2.is_planned = 0
+	# 							AND c2.lot_no < c.lot_no
+	# 					)
+	# 					AND
 	# @frappe.whitelist()
 	# def get_furnace_code_details(self):
 

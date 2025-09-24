@@ -7,9 +7,34 @@ from frappe import _
 
 
 class CustomerProcess(Document):
+	@frappe.whitelist()
+	def reset_lot_no(self):
+		
+
+		# Step 1: Build mapping between row.name and new lot_no
+		lot_map = {}
+		for idx, row in enumerate(self.sequence_lot_wise_internal_process, start=1):
+			lot_map[row.name] = idx   # unique row id
+			row.lot_no = idx          # update lot no in first grid
+
+		# Step 2: Update lot_no in second grid based on internal_process or rowid mapping
+		for row in self.parameters_with_acceptance_criteria:
+			# if your second grid stores the "link" to first grid row
+			if row.internal_process:
+				linked_row = next(
+					(x for x in self.sequence_lot_wise_internal_process if x.internal_process == row.internal_process),
+					None
+				)
+				if linked_row:
+					row.lot_no = linked_row.lot_no
+
+		return {"status": "success"}
+
+
 	def validate(self):
 		self.set_title()
 		self.validate_duplicate()
+		self.reset_lot_no()
 		
 	def on_submit(self):
 		self.create_item()
