@@ -213,33 +213,32 @@ class LabInspectionEntry(Document):
 				row.checked_qty_in_nos = qty or 0 
 
 			elif row.testing_method == "As per Customer Contract":
-				qty = get_sample_plan_frm_scale(
+				qty = get_sample_plan_frm_process(
 					row, self.internal_process
 				)
 				row.checked_qty_in_nos = qty or 0 
 
 def get_sample_plan_frm_process(row, process):
-    doc = frappe.get_doc("Customer Pocess", row.customer_process)
-    if doc.test_req:
-        for child in doc.testing_slab_method:
-            if (
-                child.internal_process == process
-                and child.batch_qty_from <= row.planned_qty_in_nos <= child.batch_qty_to
-                and child.scale == row.scale
-            ):
-                return child.sample_qty_for_testing
-    return None
+	doc = frappe.get_doc("Customer Process", row.customer_process)
+	for child in doc.testing_slab_method:
+		if (
+			child.internal_process == process
+			and child.batch_qty_from <= row.planned_qty_in_nos <= child.batch_qty_to
+			and child.scale == row.scale
+		):
+			return child.sample_qty_for_testing
+	return None
 
 def get_sample_plan_frm_scale(scale, qty, process):
-    doc = frappe.get_doc("Scale", scale)
-    if doc.test_req:
-        for row in doc.scale_sample:
-            if (
-                row.internal_process == process
-                and row.batch_qty_from <= qty <= row.batch_qty_to
-            ):
-                return row.sample_qty_for_testing
-    return None 
+	doc = frappe.get_doc("Scale", scale)
+	if doc.test_req:
+		for row in doc.scale_sample:
+			if (
+				row.internal_process == process
+				and row.batch_qty_from <= qty <= row.batch_qty_to
+			):
+				return row.sample_qty_for_testing
+	return None 
 
 def get_min_max(jb,row):
 	for d in jb.parameters_with_acceptance_criteria:
@@ -252,14 +251,13 @@ def get_min_max(jb,row):
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def job_plan(doctype, txt, searchfield, start, page_len, filters):
-    args = {
-        'start': start,
-        'page_len': page_len,
-        'txt': f'%{txt}%'
-    }
-    frappe.errprint("errp")
-    job_plans = frappe.db.sql("""
-        SELECT DISTINCT p.name 
+	args = {
+		'start': start,
+		'page_len': page_len,
+		'txt': f'%{txt}%'
+	}
+	job_plans = frappe.db.sql("""
+		SELECT DISTINCT p.name 
 			FROM `tabJob Plan Scheduler` p
 			WHERE 
 				p.docstatus = 1 
@@ -283,12 +281,12 @@ def job_plan(doctype, txt, searchfield, start, page_len, filters):
 					)
 				)
 
-        AND p.name LIKE %(txt)s
-        ORDER BY p.name
-        LIMIT %(start)s, %(page_len)s
-    """, args, as_dict=False)
-    
-    return job_plans
+		AND p.name LIKE %(txt)s
+		ORDER BY p.name
+		LIMIT %(start)s, %(page_len)s
+	""", args, as_dict=False)
+	
+	return job_plans
 
 
 
@@ -297,22 +295,22 @@ def get_checklist(internal_process):
 	
 	return frappe.db.sql("""
 		SELECT 
-    p.header, 
-    c.to_check,
-    GROUP_CONCAT(m.value ORDER BY m.idx SEPARATOR ',') AS options,default_image
+	p.header, 
+	c.to_check,
+	GROUP_CONCAT(m.value ORDER BY m.idx SEPARATOR ',') AS options,default_image
 FROM 
-    `tabChecklist Template` p
+	`tabChecklist Template` p
 INNER JOIN 
-    `tabTo be checked` c ON p.name = c.parent
+	`tabTo be checked` c ON p.name = c.parent
 INNER JOIN 
-    `tabList method` m ON m.parent = c.applicable_method
+	`tabList method` m ON m.parent = c.applicable_method
 INNER JOIN 
-    `tabInternal Process List` i ON p.name = i.parent
+	`tabInternal Process List` i ON p.name = i.parent
 WHERE 
    i.internal_process = %s
 GROUP BY 
-    p.header, c.to_check
+	p.header, c.to_check
 ORDER BY 
-    p.header, c.idx;
+	p.header, c.idx;
 
 	""", (internal_process,), as_dict=True)
