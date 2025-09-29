@@ -50,6 +50,8 @@ doctype_list_js = {
      "Delivery Note" : "custom_script/delivery_note/delivery_note.js",
      "Journal Entry" : "custom_script/journal_entry/journal_entry.js",
      "Purchase Invoice" : "custom_script/purchase_invoice/purchase_invoice.js",
+     "Purchase Order" : "custom_script/purchase_order/purchase_order.js",
+
     }
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -160,6 +162,10 @@ doc_events = {
 	 "on_submit": "acn.custom_script.purchase_invoice.purchase_invoice.on_submit",
 	 "on_cancel": "acn.custom_script.purchase_invoice.purchase_invoice.on_cancel",
         },
+
+         "Purchase Order": {
+        "before_submit": "acn.custom_script.purchase_order.purchase_order.before_submit"
+    }
 }
 
 
