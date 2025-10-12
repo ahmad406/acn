@@ -7,10 +7,26 @@ from frappe.model.document import Document
 
 class TestCertificateentry(Document):
 	def on_submit(self):
-		self.update_inspection_qty()
+		self.update_inspection_qty() 
+		self.update_customer_dc()
+
 
 	def on_cancel(self):
 		self.update_inspection_qty(is_canceled=1)
+		self.update_customer_dc(is_canceled=1)
+
+	def update_customer_dc(self,is_canceled=0):
+		cd=frappe.get_doc("Customer DC",self.customer_dc_id)
+		for d in cd.items:
+			if d.part_no==self.part_no:
+				if is_canceled:
+					d.db_set("balance_qty_kgs",d.balance_qty_kgs+self.accepted_qty_in_kgs)
+					d.db_set("balance_qty_nos",d.balance_qty_nos+self.accepted_qty_in_nos)
+
+				else:
+					d.db_set("balance_qty_kgs",d.balance_qty_kgs+self.accepted_qty_in_kgs)
+					d.db_set("balance_qty_nos",d.balance_qty_nos+self.accepted_qty_in_nos)
+		# frappe.throw("yes")
 
 	def update_inspection_qty(self, is_canceled=0):
 		li = frappe.get_doc("Lab Inspection Entry", self.lab_inspection_id)
@@ -19,7 +35,7 @@ class TestCertificateentry(Document):
 		for d in job.sequence_lot_wise_internal_process:
 			if d.internal_process == li.internal_process:
 				# Deduct on submit, add on cancel
-				qty_change = self.accepted_qty_in_nos if is_canceled else -self.accepted_qty_in_nos
+				qty_change = -self.accepted_qty_in_nos if is_canceled else self.accepted_qty_in_nos
 				new_qty = (d.inspection_qty or 0) + qty_change
 				d.db_set("inspection_qty", new_qty)
 
@@ -189,23 +205,30 @@ class TestCertificateentry(Document):
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def lab_inspection(doctype, txt, searchfield, start, page_len, filters):
-	args = {
-		'start': start,
-		'page_len': page_len,
-		'txt': f'%{txt}%'
-	}
-	
-	job_plans = frappe.db.sql("""
-		
-select name from `tabLab Inspection Entry` where internal_process in 
-(  select internal_process from `tabJob Card for process` p inner join 
-`tabSequence Lot wise Internal Process` c on p.name=c.parent where c.inspection_qty>0) and docstatus=1
-		AND name LIKE %(txt)s
-	 
-		LIMIT %(start)s, %(page_len)s
-	""", args, as_dict=False)
-	
-	return job_plans
+    args = {
+        'start': start,
+        'page_len': page_len,
+        'txt': f'%{txt}%'
+    }
+
+    job_plans = frappe.db.sql("""
+        SELECT DISTINCT l.name
+        FROM `tabLab Inspection Entry` l
+        INNER JOIN `tabInspection Qty Details` i 
+            ON l.name = i.parent
+        INNER JOIN `tabJob Card for process` p 
+            ON i.job_card_id = p.name
+        INNER JOIN `tabSequence Lot wise Internal Process` c 
+            ON p.name = c.parent
+        WHERE 
+            c.inspection_qty > 0
+            AND i.docstatus = 1
+            AND l.docstatus = 1
+            AND l.name LIKE %(txt)s
+        LIMIT %(start)s, %(page_len)s
+    """, args, as_dict=False)
+
+    return job_plans
 
 
 		

@@ -28,7 +28,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Control Parameters",
-   "options": "Process Parameters",
+   "options": "Internal Control Parameter",
    "read_only": 1
   },
   {
@@ -76,7 +76,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-09-03 22:22:12.662993",
+ "modified": "2025-10-04 14:47:46.758713",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Test Results",

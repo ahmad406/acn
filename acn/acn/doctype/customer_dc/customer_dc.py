@@ -9,8 +9,8 @@ from frappe.model.mapper import get_mapped_doc
 class CustomerDC(Document):
 	def validate(self):
 		for d in self.items:
-			d.balance_qty_nos=d.qty_kgs
-			d.balance_qty_kgs=d.qty_nos
+			d.balance_qty_nos=0
+			d.balance_qty_kgs=0
 
 	def on_submit(self):
 		self.update_qty_in_sales_order()

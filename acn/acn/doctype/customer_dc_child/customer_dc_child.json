@@ -14,6 +14,8 @@
   "qty_nos",
   "material",
   "qty_kgs",
+  "delivered_qty",
+  "delivery_qty_kgs",
   "column_break_9ks2",
   "balance_qty_nos",
   "balance_qty_kgs",
@@ -122,12 +124,14 @@
    "fieldname": "balance_qty_nos",
    "fieldtype": "Float",
    "label": "Balance QTY NOs",
+   "no_copy": 1,
    "read_only": 1
   },
   {
    "fieldname": "balance_qty_kgs",
    "fieldtype": "Float",
    "label": "Balance QTY KGs",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -139,13 +143,25 @@
   {
    "fieldname": "column_break_9ks2",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "delivered_qty",
+   "fieldtype": "Float",
+   "label": "Delivered Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "delivery_qty_kgs",
+   "fieldtype": "Float",
+   "label": "Delivery Qty Kgs",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-01 22:24:59.222284",
+ "modified": "2025-10-09 18:15:41.969001",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer DC child",
