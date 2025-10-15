@@ -101,17 +101,18 @@ class CustomerDC(Document):
 				row_p.testing_method=p.testing_method
 				row_p.customer_process=cp.name
 			for f in cp.part_no__process_rate:
-				if f.part_no==doc.part_no:
+				if f.part_no.strip()==doc.part_no:
 					doc.fixturing_image=f.fixturing_image
 					doc.location_image=f.location_image
 					break
 
+ 
 			doc.reference=self.name
 			doc.save()
 			doc.submit()
 
 	def get_customer_process(self,part_no):
-		sql="""select p.name from `tabCustomer Process` p inner join `tabPart No  Process Rate` c on p.name=c.parent where p.customer="{}" and c.part_no="{}" """.format(self.customer,part_no)
+		sql="""select p.name from `tabCustomer Process` p inner join `tabPart No  Process Rate` c on p.name=c.parent where p.customer="{}" and c.part_no="{}" and p.docstatus=1 """.format(self.customer,part_no)
 		data=frappe.db.sql(sql,as_dict=True)
 		if data:
 			return data[0].name

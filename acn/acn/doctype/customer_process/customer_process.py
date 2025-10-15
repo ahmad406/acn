@@ -42,12 +42,16 @@ class CustomerProcess(Document):
 	def create_item(self):
 		if not  frappe.db.exists("Item", self.item_code):
 			stock=frappe.get_single("Stock Settings")
+			self.item_code = self.item_code.strip()
+			self.item_name = (self.item_name or "").strip()
+
 			item = frappe.new_doc("Item")
 			item.item_code = self.item_code
 			item.item_name = self.item_name
 			item.item_group = "Customer item"
 			item.is_stock_item=0
 			item.gst_hsn_code="998873"
+			item.is_purchase_item=1
 			item.stock_uom = stock.stock_uom
 			item.save()
 
@@ -55,6 +59,7 @@ class CustomerProcess(Document):
 	def create_part_no(self):
 		for d in self.part_no__process_rate:
 			if  d.part_no:
+				d.part_no = d.part_no.strip()
 				if not frappe.db.exists("Part no", d.part_no):
 					part_no = frappe.new_doc("Part no")
 					part_no.part_no = d.part_no

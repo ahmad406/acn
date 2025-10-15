@@ -98,7 +98,6 @@ class TestCertificateentry(Document):
 				row=self.append("test_parameters_details",{})
 				row.test_parameters=k.control_parameter
 				row.qty_checked=self.accepted_qty_in_nos
-				frappe.errprint("in")
 
 				row.reference_standard=self.get_standard(k.control_parameter)
 				row.print_sequence_no = frappe.db.get_value('Internal Control Parameter', k.control_parameter, 'tc_order_no')

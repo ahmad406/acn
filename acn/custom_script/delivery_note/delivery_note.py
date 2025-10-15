@@ -35,7 +35,6 @@ def update_qty(self, is_cancel=False):
 	for d in self.items:
 		dc = frappe.get_doc("Customer DC", d.customer_dc_id)
 		for c in dc.items:
-			frappe.errprint([ c.part_no == d.part_no, c.part_no , d.part_no])
 			if c.part_no == d.part_no:
 
 				new_qty = c.delivered_qty - d.qty if is_cancel else c.delivered_qty + d.qty
