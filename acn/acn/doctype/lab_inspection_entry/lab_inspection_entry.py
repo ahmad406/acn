@@ -192,7 +192,7 @@ class LabInspectionEntry(Document):
 
 
 	def insert_row_base_onchecked_Qty(self, d):
-		for _ in range(d.checked_qty_in_nos):
+		for _ in range(int(d.checked_qty_in_nos)):
 			row = self.append("test_results", {})
 			row.job_card_id = d.job_card_id
 			row.control_parameters = d.control_parameter

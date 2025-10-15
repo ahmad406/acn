@@ -4,6 +4,25 @@
 frappe.ui.form.on("Customer Process", {
     refresh(frm) {
         frm.fields_dict["parameters_with_acceptance_criteria"].grid.wrapper.find('.grid-add-row, .grid-add-multiple-rows').hide();
+        if (frm.doc.docstatus === 1  && frappe.user.has_role("Customer Process Manager")) {
+            frm.add_custom_button("Open to Draft", function () {
+                frappe.confirm(
+                    "Are you sure you want to Open?",
+                    function () {
+                        frappe.call({
+                            method: "open_to_draft",
+                            doc: cur_frm.doc,
+                            callback: function (r) {
+                                if (!r.exc) {
+                                    frappe.msgprint("Document is now Draft");
+                                    frm.reload_doc();  // reload the doc in UI
+                                }
+                            }
+                        });
+                    }
+                );
+            });
+        }
 
 
     },

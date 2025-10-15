@@ -29,6 +29,19 @@ class CustomerProcess(Document):
 					row.lot_no = linked_row.lot_no
 
 		return {"status": "success"}
+	@frappe.whitelist()
+	def open_to_draft(self):
+		# Set main document to Draft
+		self.db_set("docstatus", 0)
+
+		# Loop through child tables
+		for df in self.meta.fields:
+			if df.fieldtype == "Table":  # Only Table fields
+				child_table_fieldname = df.fieldname
+				for row in getattr(self, child_table_fieldname):
+					row.db_set("docstatus", 0)
+
+
 
 
 	def validate(self):
@@ -107,7 +120,8 @@ class CustomerProcess(Document):
 
 
 	def set_title(self):
-		self.customer_ref=self.name
+		if self.is_new():
+			self.customer_ref=self.name
 		self.title_data = "{0}-{1}-{2}".format(self.customer_ref, self.process_type,self.item_code)
 
 
