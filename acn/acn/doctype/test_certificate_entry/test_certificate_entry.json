@@ -129,6 +129,9 @@
   "operation_details_section_section",
   "process_name",
   "parameters",
+  "result",
+  "checked_by",
+  "approved_by",
   "amended_from"
  ],
  "fields": [
@@ -719,8 +722,7 @@
   {
    "fieldname": "parameters",
    "fieldtype": "Table",
-   "options": "Test Parameters",
-   "read_only": 1
+   "options": "Test Parameters"
   },
   {
    "fieldname": "test_results",
@@ -728,13 +730,29 @@
    "label": "Test Results",
    "options": "Test Results",
    "read_only": 1
+  },
+  {
+   "fieldname": "result",
+   "fieldtype": "Select",
+   "label": "Result",
+   "options": "\nAccept\nReject"
+  },
+  {
+   "fieldname": "checked_by",
+   "fieldtype": "Data",
+   "label": "Checked By"
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Data",
+   "label": "Approved By"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-10 20:23:26.665935",
+ "modified": "2025-10-26 14:16:04.578714",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Test Certificate entry",

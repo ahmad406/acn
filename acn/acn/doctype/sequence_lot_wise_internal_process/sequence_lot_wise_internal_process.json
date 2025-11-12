@@ -13,7 +13,8 @@
   "is_planned",
   "balance_qty_in_nos",
   "balance_qty_in_kgs",
-  "inspection_qty"
+  "inspection_qty",
+  "certified"
  ],
  "fields": [
   {
@@ -68,20 +69,28 @@
   {
    "fieldname": "inspection_qty",
    "fieldtype": "Float",
-   "hidden": 1,
-   "label": "Inspection Qty"
+   "label": "Inspection Qty",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "certified",
+   "fieldtype": "Check",
+   "label": "Certified",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-23 19:20:04.179348",
+ "modified": "2025-10-27 21:22:16.780062",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Sequence Lot wise Internal Process",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

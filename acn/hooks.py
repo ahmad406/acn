@@ -45,14 +45,14 @@ app_license = "mit"
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 doctype_list_js = {
-     "Sales Order" : "custom_script/sales_order/sales_order.js",
-     "Sales Invoice" : "custom_script/sales_invoice/sales_invoice.js",
-     "Delivery Note" : "custom_script/delivery_note/delivery_note.js",
-     "Journal Entry" : "custom_script/journal_entry/journal_entry.js",
-     "Purchase Invoice" : "custom_script/purchase_invoice/purchase_invoice.js",
-     "Purchase Order" : "custom_script/purchase_order/purchase_order.js",
+	 "Sales Order" : "custom_script/sales_order/sales_order.js",
+	 "Sales Invoice" : "custom_script/sales_invoice/sales_invoice.js",
+	 "Delivery Note" : "custom_script/delivery_note/delivery_note.js",
+	 "Journal Entry" : "custom_script/journal_entry/journal_entry.js",
+	 "Purchase Invoice" : "custom_script/purchase_invoice/purchase_invoice.js",
+	 "Purchase Order" : "custom_script/purchase_order/purchase_order.js",
 
-    }
+	}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -147,26 +147,27 @@ doctype_list_js = {
 
 doc_events = {
  "Sales Order": {
-        "validate": "acn.custom_script.sales_order.sales_order.validate",
-        
+		"validate": "acn.custom_script.sales_order.sales_order.validate",
+        "before_submit": "acn.custom_script.sales_order.sales_order.before_submit"
+		
 	},
-    "Delivery Note": {
-        "on_submit": "acn.custom_script.delivery_note.delivery_note.on_submit",
-        "on_cancel": "acn.custom_script.delivery_note.delivery_note.on_cancel",
+	"Delivery Note": {
+		"on_submit": "acn.custom_script.delivery_note.delivery_note.on_submit",
+		"on_cancel": "acn.custom_script.delivery_note.delivery_note.on_cancel",
  "validate": "acn.custom_script.delivery_note.delivery_note.validate",
 	},
-    "Journal Entry": {
-        "on_cancel": "acn.custom_script.journal_entry.journal_entry.on_cancel",
+	"Journal Entry": {
+		"on_cancel": "acn.custom_script.journal_entry.journal_entry.on_cancel",
 	},
  "Purchase Invoice": {
-        "validate": "acn.custom_script.purchase_invoice.purchase_invoice.validate",
+		"validate": "acn.custom_script.purchase_invoice.purchase_invoice.validate",
 	 "on_submit": "acn.custom_script.purchase_invoice.purchase_invoice.on_submit",
 	 "on_cancel": "acn.custom_script.purchase_invoice.purchase_invoice.on_cancel",
-        },
+		},
 
-         "Purchase Order": {
-        "before_submit": "acn.custom_script.purchase_order.purchase_order.before_submit"
-    }
+	"Purchase Order": {
+		"before_submit": "acn.custom_script.purchase_order.purchase_order.before_submit"
+	}
 }
 
 

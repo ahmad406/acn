@@ -153,8 +153,8 @@ class CustomerDC(Document):
 			if data:
 				for d in self.items:
 					if str(d.idx)==str(row.get("idx")):
-						d.qty_nos = data[0].custom_bal_qty_in_nos
-						d.qty_kgs = data[0].custom_bal_qty_in_kgs
+						# d.qty_nos = data[0].custom_bal_qty_in_nos
+						# d.qty_kgs = data[0].custom_bal_qty_in_kgs
 						
 					
 						d.balance_qty_nos=data[0].custom_bal_qty_in_nos

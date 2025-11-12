@@ -3,7 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import flt
+from frappe.utils import flt,cint
 
 
 
@@ -33,6 +33,9 @@ class LabInspectionEntry(Document):
 		self.validate_test_result()
 		self.update_jb_plan()
 		self.update_job_card()
+		self.update_is_ready_for_next_lot(cancel=False)
+
+		
 	def validate(self):
 		for row in self.inspection_qty_details:
 				if flt(row.samplingcheckqty) > 0:
@@ -49,11 +52,181 @@ class LabInspectionEntry(Document):
 		if missing_rows:
 			frappe.throw(
 				"Test Results are not updated in Row number(s): {}".format(", ".join(missing_rows))
-			)
+			) 
 
 	def on_cancel(self):
+		# frappe.throw("Canceling not Allowed For this Doctype")
 		self.update_jb_plan(cancel=1)
 		self.update_job_card(is_cancelled=1)
+		self.update_is_ready_for_next_lot(cancel=True)
+
+	@frappe.whitelist()
+	def update_is_ready_for_next_lot(self, cancel=False):
+		"""
+		EXECUTION PHASE (Job Execution Submit)
+		--------------------------------------
+		When a lot is executed:
+			✅ Marks next-lot(s) as ready based on executed qty (nos/kgs).
+			✅ Keeps leftover (if any) as balance in the executed lot.
+			✅ Prevents readiness from exceeding planned qty.
+			✅ Handles cancel rollback cleanly.
+		"""
+
+		plan = frappe.get_doc("Job Plan Scheduler", self.job_plan_id)
+
+		for d in self.inspection_qty_details:
+			current_lot = cint(d.lot_no)
+
+			# 🛑 --- CANCEL PROTECTION ---
+			if cancel:
+				later_lots = frappe.db.sql("""
+					SELECT name,parent 
+					FROM `tabJob Card details`
+					WHERE parenttype='Job Plan Scheduler'
+						AND job_card_id=%s
+						AND lot_no > %s
+						AND docstatus=1
+						AND (
+							is_ready=1
+							OR EXISTS(
+								SELECT 1 
+								FROM `tabJob Plan Scheduler`
+								WHERE name=`tabJob Card details`.parent
+									AND job_execution=1
+									AND docstatus=1
+							)
+						)
+				""", (d.job_card_id, current_lot), as_dict=True)
+
+				if later_lots:
+					frappe.throw(f"❌ Cannot cancel Lot {current_lot} — later lots are already ready or executed. {later_lots[0].parent}")
+
+				# 🔄 Revert readiness added to *all* next lot(s)
+				next_lot_rows = frappe.db.sql("""
+					SELECT name, ready_qty_nos, ready_qty_kgs
+					FROM `tabJob Card details`
+					WHERE parenttype='Job Plan Scheduler'
+						AND job_card_id=%s
+						AND lot_no > %s
+						AND docstatus=1
+				""", (d.job_card_id, current_lot), as_dict=True)
+
+				for row in next_lot_rows:
+					to_sub_nos = min(flt(d.planned_qty_in_nos or 0), flt(row.ready_qty_nos or 0))
+					to_sub_kgs = min(flt(d.planned_qty_in_kgs or 0), flt(row.ready_qty_kgs or 0))
+
+					frappe.db.sql("""
+						UPDATE `tabJob Card details`
+						SET 
+							ready_qty_nos = GREATEST(ready_qty_nos - %s, 0),
+							ready_qty_kgs = GREATEST(ready_qty_kgs - %s, 0),
+							is_ready = IF(ready_qty_nos > 0 OR ready_qty_kgs > 0, 1, 0)
+						WHERE name = %s
+					""", (to_sub_nos, to_sub_kgs, row.name))
+				continue
+
+			# ✅ --- EXECUTION FLOW ---
+			executed_qty_nos = flt(d.planned_qty_in_nos or 0)
+			executed_qty_kgs = flt(d.planned_qty_in_kgs or 0)
+
+			# Fetch *all* next-lot(s) across all future plans (not just +1)
+			next_lot_rows = frappe.db.sql("""
+				SELECT 
+					c.name,
+					c.planned_qty_in_nos,
+					c.planned_qty_in_kgs,
+					COALESCE(c.ready_qty_nos,0) AS current_ready_nos,
+					COALESCE(c.ready_qty_kgs,0) AS current_ready_kgs,
+					c.lot_no,
+					c.parent AS plan_id
+				FROM `tabJob Card details` c
+				INNER JOIN `tabJob Plan Scheduler` p ON p.name = c.parent
+				WHERE 
+					c.parenttype='Job Plan Scheduler'
+					AND c.job_card_id=%s
+					AND c.lot_no > %s
+					AND p.docstatus=1
+					AND IFNULL(p.job_execution,0)=0
+				ORDER BY c.lot_no ASC, p.creation ASC
+			""", (d.job_card_id, current_lot), as_dict=True)
+
+			remaining_nos = executed_qty_nos
+			remaining_kgs = executed_qty_kgs
+			distributed_nos = 0
+			distributed_kgs = 0
+
+			# 🧮 --- DISTRIBUTE READY QTY TO NEXT LOT(S) ---
+			for row in next_lot_rows:
+				planned_nos = flt(row.planned_qty_in_nos or 0)
+				planned_kgs = flt(row.planned_qty_in_kgs or 0)
+				current_ready_nos = flt(row.current_ready_nos or 0)
+				current_ready_kgs = flt(row.current_ready_kgs or 0)
+
+				# Capacity still available in that row
+				alloc_nos = max(0, planned_nos - current_ready_nos)
+				alloc_kgs = max(0, planned_kgs - current_ready_kgs)
+
+				if alloc_nos <= 0 and alloc_kgs <= 0:
+					continue  # already full, skip
+
+				ready_nos = min(remaining_nos, alloc_nos)
+				ready_kgs = min(remaining_kgs, alloc_kgs)
+
+				# ✅ Atomic update with cap (never exceed planned qty)
+				frappe.db.sql("""
+					UPDATE `tabJob Card details` AS c
+					JOIN (
+						SELECT 
+							name,
+							LEAST(planned_qty_in_nos, COALESCE(ready_qty_nos,0) + %s) AS new_ready_nos,
+							LEAST(planned_qty_in_kgs, COALESCE(ready_qty_kgs,0) + %s) AS new_ready_kgs
+						FROM `tabJob Card details`
+						WHERE name = %s
+					) AS tmp ON tmp.name = c.name
+					SET 
+						c.is_ready = IF(tmp.new_ready_nos > 0 OR tmp.new_ready_kgs > 0, 1, 0),
+						c.ready_qty_nos = tmp.new_ready_nos,
+						c.ready_qty_kgs = tmp.new_ready_kgs,
+						c.balance_ready_qty_nos = 0,
+						c.balance_ready_qty_kgs = 0
+				""", (ready_nos, ready_kgs, row.name))
+
+				remaining_nos -= ready_nos
+				remaining_kgs -= ready_kgs
+				distributed_nos += ready_nos
+				distributed_kgs += ready_kgs
+
+				# ✅ Keep break only when actual remaining = 0
+				if remaining_nos <= 0 and remaining_kgs <= 0:
+					break
+
+			# ✅ --- Compute Remaining Balance (leftover from executed lot) ---
+			balance_nos = max(remaining_nos, 0)
+			balance_kgs = max(remaining_kgs, 0)
+
+			# 🧾 --- UPDATE CURRENT EXECUTED LOT ---
+			frappe.db.sql("""
+				UPDATE `tabJob Card details`
+				SET 
+					is_ready = 0,
+					ready_qty_nos = 0,
+					ready_qty_kgs = 0,
+					balance_ready_qty_nos = %s,
+					balance_ready_qty_kgs = %s
+				WHERE parenttype='Job Plan Scheduler'
+					AND parent=%s
+					AND job_card_id=%s
+					AND lot_no=%s
+			""", (balance_nos, balance_kgs, plan.name, d.job_card_id, current_lot))
+
+			# 🪣 --- LOG ANY REMAINDER ---
+			if (balance_nos > 0 or balance_kgs > 0) and not next_lot_rows:
+				frappe.logger().info(
+					f"[CarryForward] Lot {current_lot}: Remaining {balance_nos} nos, {balance_kgs} kgs unallocated."
+				)
+
+
+
 	@frappe.whitelist()
 	def update_job_card(self, is_cancelled=0):
 		for d in self.inspection_qty_details:
@@ -116,6 +289,8 @@ class LabInspectionEntry(Document):
 				row.accepted_qty_in_kgs=d.planned_qty_in_kgs
 				row.location_image=d.location_image
 				row.fixturing_image=d.fixturing_image
+				row.lot_no=d.lot_no
+
 			# for k in self.inspection_qty_details:
 			# 	row_2=self.append("parameters",{})
 			# 	row_2.job_card_id=k.job_card_id
@@ -314,3 +489,9 @@ ORDER BY
 	p.header, c.idx;
 
 	""", (internal_process,), as_dict=True)
+
+
+
+
+
+	

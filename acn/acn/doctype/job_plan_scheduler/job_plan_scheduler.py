@@ -4,18 +4,137 @@
 import frappe
 from frappe.model.document import Document
 from frappe import _
-from frappe.utils import flt
+from frappe.utils import cint, flt
+
 
 from datetime import datetime, timedelta
-
+ 
 
 class JobPlanScheduler(Document):
 	def validate(self):
+		# Step 1: Ensure job parameters are set
 		if not self.parameters_with_acceptance_criteria:
-			frappe.throw("Click at Set Job Parameters button and update Planned Value in Parameters plan grid")
+			frappe.throw("Click on 'Set Job Parameters' button and update Planned Value in Parameters Plan grid")
+
+		# Step 2: Validate parameter values
 		for k in self.parameters_plan:
 			if flt(k.planned_value) < 0:
 				frappe.throw(f"Planned value cannot be negative for parameter: {k.parameter or 'Unknown'}")
+
+	
+
+
+	
+	@frappe.whitelist()
+	def update_if_ready(self, cancel=False):
+		"""
+		PLANNING PHASE (Job Plan Scheduler)
+		-----------------------------------
+		- Determines 'ready_qty' for each lot based on balance from the previous executed lot.
+		- Deducts reserved (ready) qty from previous lot balance immediately.
+		- Does NOT allow negative balances.
+		"""
+
+		rows = sorted(self.job_card_details, key=lambda r: (cint(r.lot_no), r.idx or 0))
+
+		for d in rows:
+			lot_no = cint(d.lot_no)
+
+			# 🔒 Cancel mode: clear readiness and re-add balance
+			if cancel:
+				if cint(d.lot_no) > 1:
+					prev_lot_no = lot_no - 1
+					# Add back previously deducted balance
+					frappe.db.sql("""
+						UPDATE `tabJob Card details`
+						SET 
+							balance_ready_qty_nos = balance_ready_qty_nos + %s,
+							balance_ready_qty_kgs = balance_ready_qty_kgs + %s
+						WHERE parenttype='Job Plan Scheduler'
+							AND job_card_id=%s
+							AND lot_no=%s
+							AND docstatus=1
+					""", (d.ready_qty_nos, d.ready_qty_kgs, d.job_card_id, prev_lot_no))
+				d.is_ready = 0
+				d.ready_qty_nos = 0
+				d.ready_qty_kgs = 0
+				d.balance_ready_qty_nos = 0
+				d.balance_ready_qty_kgs = 0
+				continue
+
+			# 🟢 Lot 1 always ready
+			if lot_no == 1:
+				d.is_ready = 1
+				d.ready_qty_nos = flt(d.planned_qty_in_nos or 0)
+				d.ready_qty_kgs = flt(d.planned_qty_in_kgs or 0)
+				d.balance_ready_qty_nos = 0
+				d.balance_ready_qty_kgs = 0
+				continue
+
+			prev_lot_no = lot_no - 1
+
+			# 1️⃣ Get executed balance
+			executed = frappe.db.sql("""
+				SELECT
+					COALESCE(SUM(c.balance_ready_qty_nos), 0) AS nos,
+					COALESCE(SUM(c.balance_ready_qty_kgs), 0) AS kgs
+				FROM `tabJob Card details` c
+				INNER JOIN `tabJob Plan Scheduler` p ON p.name = c.parent
+				WHERE
+					p.docstatus=1
+					AND IFNULL(p.job_execution,0)=1
+					AND c.job_card_id=%s
+					AND c.lot_no=%s
+			""", (d.job_card_id, prev_lot_no), as_dict=True)
+
+			executed_nos = flt(executed[0].nos) if executed else 0
+			executed_kgs = flt(executed[0].kgs) if executed else 0
+
+			# 2️⃣ Compute how much is still free (no need for reserved query if we deduct live)
+			available_nos = max(0, executed_nos)
+			available_kgs = max(0, executed_kgs)
+
+			# 3️⃣ Allocate to this plan
+			planned_nos = flt(d.planned_qty_in_nos or 0)
+			planned_kgs = flt(d.planned_qty_in_kgs or 0)
+			ready_nos = max(0, min(available_nos, planned_nos))
+			ready_kgs = max(0, min(available_kgs, planned_kgs))
+
+			d.is_ready = 1 if (ready_nos > 0 or ready_kgs > 0) else 0
+			d.ready_qty_nos = ready_nos
+			d.ready_qty_kgs = ready_kgs
+			d.balance_ready_qty_nos = 0
+			d.balance_ready_qty_kgs = 0
+
+			# 4️⃣ Deduct immediately from previous lot balance
+			if not cancel:
+
+				if ready_nos > 0 or ready_kgs > 0:
+					frappe.db.sql("""
+						UPDATE `tabJob Card details`
+						SET 
+							balance_ready_qty_nos = GREATEST(balance_ready_qty_nos - %s, 0),
+							balance_ready_qty_kgs = GREATEST(balance_ready_qty_kgs - %s, 0)
+						WHERE parenttype='Job Plan Scheduler'
+							AND job_card_id=%s
+							AND lot_no=%s
+							AND docstatus=1
+					""", (ready_nos, ready_kgs, d.job_card_id, prev_lot_no))
+			else:
+				if d.ready_qty_nos > 0 or d.ready_qty_kgs > 0:
+					frappe.db.sql("""
+						UPDATE `tabJob Card details`
+						SET 
+							balance_ready_qty_nos = balance_ready_qty_nos + %s,
+							balance_ready_qty_kgs = balance_ready_qty_kgs + %s
+						WHERE parenttype='Job Plan Scheduler'
+							AND job_card_id=%s
+							AND lot_no=%s
+							AND docstatus=1
+					""", (d.ready_qty_nos, d.ready_qty_kgs, d.job_card_id, prev_lot_no))
+
+
+
 	@frappe.whitelist()
 	def calculated_end(self):
 		total_minutes = 0
@@ -35,11 +154,38 @@ class JobPlanScheduler(Document):
 
 
 
-	def on_submit(self):
+	def before_submit(self):
 		self.update_jb_card()
+			# Step 3: Update readiness flags for lots
+		self.update_if_ready()
 
-	def on_cancel(self):
+	def before_cancel(self):
 		self.update_jb_card(cancel=1)
+		self.update_if_ready(cancel=True)
+		self.validate_lot_cancel_restriction() 
+	
+
+	def validate_lot_cancel_restriction(self):
+		""" Prevent cancelling this Job Plan if any later lot of the same Job Card is marked ready."""
+		for d in self.job_card_details:
+			current_lot = cint(d.lot_no)
+
+			# 🔍 Check for any later lot that is marked ready (is_ready = 1)
+			later_lots = frappe.db.sql("""
+				SELECT c.name
+				FROM `tabJob Card details` c
+				WHERE 
+					c.parenttype = 'Job Plan Scheduler'
+					AND c.job_card_id = %s
+					AND c.lot_no > %s
+					AND c.is_ready = 1
+			""", (d.job_card_id, current_lot), as_dict=True)
+
+			if later_lots:
+				frappe.throw(
+					f"Cannot cancel Job Plan {self.name} because a later lot for Job Card {d.job_card_id} "
+					f"is already marked as ready."
+				)
 
 	def update_jb_card(self, cancel=0):
 		for d in self.job_card_details:
@@ -278,7 +424,7 @@ def get_job_card(doctype, txt, searchfield, start, page_len, filters):
 
 	query = """
 		SELECT 
-			p.name
+			p.name,p.customer_name,p.part_no,p.material,p.item_name,p.customer_dc
 		FROM 
 			`tabJob Card for process` p
 		INNER JOIN 
@@ -310,12 +456,18 @@ def furnace_code(doctype, txt, searchfield, start, page_len, filters):
 	}
 
 	query = """
-		SELECT 
-			c.furnace_code
-		FROM 
-			`tabFurnace Process`  p 
-			inner join `tabFurnace Details` c on p.name = c.parent
-		
+	SELECT 
+	c.furnace_code,
+	f.furnace_name
+FROM 
+	`tabFurnace Process` p
+INNER JOIN 
+	`tabFurnace Details` c 
+	ON p.name = c.parent
+INNER JOIN
+	`tabFurnace` f 
+	ON c.furnace_code = f.name
+
 		WHERE 
 			p.name = %(furnace_process)s
 			AND c.furnace_code LIKE %(txt)s

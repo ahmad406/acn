@@ -78,7 +78,7 @@ function showOtherDetailsDialog(frm, row) {
             { label: __('Micro Structure'), fieldname: 'micro', fieldtype: 'Check', reqd: 1 },
             { label: __('Reference Standard'), fieldname: 'ref_standard', fieldtype: 'Data' },
             { label: __('Core'), fieldname: 'core', fieldtype: 'Data' },
-            { label: __('case'), fieldname: 'case', fieldtype: 'Data' },
+            { label: __('Case'), fieldname: 'case', fieldtype: 'Data' },
             { fieldname: 'col_break', fieldtype: 'Column Break' },
             { fieldname: 'other_detail_6', fieldtype: 'Data' },
             { fieldname: 'other_detail_7', fieldtype: 'Data' },

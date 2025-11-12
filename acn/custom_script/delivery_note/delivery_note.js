@@ -52,23 +52,46 @@ frappe.ui.form.on('Delivery Note Item', {
             d.d_qty_in_nos = d.balance_qty_in_nos;
 
             d.d_qty_in_kgs = d.balance_qty_in_kgs;
+
             frm.refresh_field("items");
         } else {
 
             if (d.balance_qty_in_nos && d.balance_qty_in_kgs) {
 
                 d.d_qty_in_kgs = (d.d_qty_in_nos / d.balance_qty_in_nos) * d.balance_qty_in_kgs;
-                frm.refresh_field("items");
+
             }
         }
-        frappe.model.set_value(cdt, cdn, "qty",d.d_qty_in_nos);
+        setTimeout(() => {
+
+
+            if (d.rate_uom == "Nos") {
+
+                frappe.model.set_value(cdt, cdn, "qty", d.d_qty_in_nos);
+            }
+            if (d.rate_uom == "Kgs") {
+                frappe.model.set_value(cdt, cdn, "qty", d.d_qty_in_kgs);
+
+
+            }
+            if (d.rate_uom == "Minimum") {
+                frappe.model.set_value(cdt, cdn, "qty", 1);
+
+
+            }
+
+            frm.refresh_field("items");
+        }, 500);
+
 
     },
     customer_dc_id: function (frm, cdt, cdn) {
         var child = locals[cdt][cdn];
-        child.part_no=undefined
+        child.part_no = undefined
     },
     part_no: function (frm, cdt, cdn) {
+        frappe.flags.dont_fetch_price_list_rate = true;
+
         var child = locals[cdt][cdn];
 
         // Ensure customer_dc_id exists
@@ -90,7 +113,7 @@ frappe.ui.form.on('Delivery Note Item', {
                     child.customer_process_ref = r.message.customer_process_ref_no
                     child.customer_dc_date = r.message.customer_dc_date
                     child.commitment = r.message.commitment_date
-                    child.rate = r.message.rate
+                 
                     child.d_qty_in_kgs = r.message.balance_qty_kgs
                     child.d_qty_in_nos = r.message.balance_qty_nos
                     child.balance_qty_in_kgs = r.message.balance_qty_kgs
@@ -98,14 +121,29 @@ frappe.ui.form.on('Delivery Note Item', {
                     child.uom = r.message.uom
 
                     child.customer_ref_no = r.message.customer_ref_no
+                    child.customer_dc_no = r.message.customer_dc_no
+
                     child.so_date = r.message.so_date
+                    child.process_name = r.message.process_name
+
 
                     setTimeout(() => {
                         console.log(r.message.balance_qty_nos)
-                        frappe.model.set_value(cdt, cdn, "qty",r.message.balance_qty_nos);
+                        if (child.rate_uom == "Nos") {
+
+                            frappe.model.set_value(cdt, cdn, "qty", r.message.balance_qty_nos);
+                        }
+                        if (child.rate_uom == "Kgs") {
+                            frappe.model.set_value(cdt, cdn, "qty", r.message.balance_qty_kgs);
+
+                        }
+                        if (child.rate_uom == "Minimum") {
+                            frappe.model.set_value(cdt, cdn, "qty", 1);
+
+                        }
+                         frappe.model.set_value(cdt, cdn, "rate", r.message.rate);
 
                     }, 600);
-                    child.qty = r.message.balance_qty_nos
 
 
 

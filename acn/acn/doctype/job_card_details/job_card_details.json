@@ -16,6 +16,11 @@
   "customer_name",
   "fixturing_image",
   "location_image",
+  "is_ready",
+  "ready_qty_nos",
+  "ready_qty_kgs",
+  "balance_ready_qty_nos",
+  "balance_ready_qty_kgs",
   "column_break_phuq",
   "customer_requirements",
   "process_type",
@@ -171,13 +176,44 @@
    "fieldname": "location_image",
    "fieldtype": "Attach Image",
    "label": "Checking Location Image"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_ready",
+   "fieldtype": "Check",
+   "label": "Is Ready",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ready_qty_nos",
+   "fieldtype": "Float",
+   "label": "Ready Qty Nos",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ready_qty_kgs",
+   "fieldtype": "Float",
+   "label": "Ready Qty Kgs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "balance_ready_qty_nos",
+   "fieldtype": "Float",
+   "label": "Balance Ready Qty Nos",
+   "read_only": 1
+  },
+  {
+   "fieldname": "balance_ready_qty_kgs",
+   "fieldtype": "Float",
+   "label": "Balance Ready Qty kgs",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-09-04 21:50:57.865333",
+ "modified": "2025-11-05 08:38:39.514488",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Card details",

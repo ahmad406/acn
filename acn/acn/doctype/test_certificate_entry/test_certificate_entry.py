@@ -35,9 +35,10 @@ class TestCertificateentry(Document):
 		for d in job.sequence_lot_wise_internal_process:
 			if d.internal_process == li.internal_process:
 				# Deduct on submit, add on cancel
-				qty_change = -self.accepted_qty_in_nos if is_canceled else self.accepted_qty_in_nos
-				new_qty = (d.inspection_qty or 0) + qty_change
-				d.db_set("inspection_qty", new_qty)
+				# qty_change = -self.accepted_qty_in_nos if is_canceled else self.accepted_qty_in_nos
+				# new_qty = (d.inspection_qty or 0) + qty_change
+				d.db_set("certified", 0 if is_canceled  else 1)
+				
 
 
 	# def update_certifed_status(self,is_canceled=0):
@@ -200,7 +201,6 @@ class TestCertificateentry(Document):
 				return ""
 		else:
 			return ""
-		
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def lab_inspection(doctype, txt, searchfield, start, page_len, filters):
@@ -220,7 +220,7 @@ def lab_inspection(doctype, txt, searchfield, start, page_len, filters):
         INNER JOIN `tabSequence Lot wise Internal Process` c 
             ON p.name = c.parent
         WHERE 
-            c.inspection_qty > 0
+            c.certified = 0
             AND i.docstatus = 1
             AND l.docstatus = 1
             AND l.name LIKE %(txt)s
@@ -230,15 +230,19 @@ def lab_inspection(doctype, txt, searchfield, start, page_len, filters):
     return job_plans
 
 
+
 		
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def job_card_process(doctype, txt, searchfield, start, page_len, filters):
 	lab_inspection = filters.get('lab_inspection')
+	internal_process=frappe.db.get_value('Lab Inspection Entry',lab_inspection, 'internal_process')
+
 	args = {
 		'start': start,
 		'page_len': page_len,
 		'lab_inspection':lab_inspection,
+		'internal_process':internal_process,
 		'txt': f'%{txt}%'
 	}
 	
@@ -246,7 +250,8 @@ def job_card_process(doctype, txt, searchfield, start, page_len, filters):
 			select p.name,internal_process,i.parent from `tabJob Card for process` p inner join 
 	`tabSequence Lot wise Internal Process` c on p.name=c.parent  inner join
 	`tabInspection Qty Details` i on i.job_card_id=p.name
-	where c.inspection_qty >0  and  i.docstatus=1 and i.parent= %(lab_inspection)s and p.name LIKE %(txt)s
+	where (IFNULL(c.certified, 0) = 0) and internal_process= %(internal_process)s
+  and  i.docstatus=1 and i.parent= %(lab_inspection)s and p.name LIKE %(txt)s
 		LIMIT %(start)s, %(page_len)s
 	""", args, as_dict=False)
 	

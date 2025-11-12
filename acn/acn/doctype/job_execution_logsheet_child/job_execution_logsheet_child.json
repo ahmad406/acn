@@ -20,7 +20,8 @@
   "customer_dc_no",
   "planned_qty_in_nos",
   "planned_qty_in_kgs",
-  "fixturing_image"
+  "fixturing_image",
+  "lot_no"
  ],
  "fields": [
   {
@@ -104,13 +105,19 @@
    "fieldname": "fixturing_image",
    "fieldtype": "Attach Image",
    "label": "Fixturing Image"
+  },
+  {
+   "fieldname": "lot_no",
+   "fieldtype": "Int",
+   "label": "Lot No",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-09-04 22:45:19.047543",
+ "modified": "2025-11-01 18:50:42.824100",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Execution Logsheet child",

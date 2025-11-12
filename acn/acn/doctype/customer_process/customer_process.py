@@ -48,6 +48,29 @@ class CustomerProcess(Document):
 		self.set_title()
 		self.validate_duplicate()
 		self.reset_lot_no()
+		self.validate_duplicate_internal_process()
+
+
+	def validate_duplicate_internal_process(self):
+		seen = set()
+		duplicates = []
+
+		for row in self.sequence_lot_wise_internal_process:
+			if not row.internal_process:
+				continue
+
+			if row.internal_process in seen:
+				duplicates.append(row.internal_process)
+			else:
+				seen.add(row.internal_process)
+
+		if duplicates:
+			# Create a readable list of duplicates
+			duplicate_list = ", ".join(set(duplicates))
+			frappe.throw(
+				f"Duplicate Internal Process found in table <b>Sequence Lot Wise Internal Process</b>: {duplicate_list}"
+			)
+
 		
 	def on_submit(self):
 		self.create_item()

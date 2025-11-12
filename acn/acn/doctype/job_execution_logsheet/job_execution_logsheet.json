@@ -9,6 +9,9 @@
   "naming_series",
   "execution_date",
   "job_plan_id",
+  "column_break_gzxc",
+  "actual_start_date_time",
+  "actual_end_date_time",
   "rocessfurnace_section",
   "internal_process",
   "furnace_process",
@@ -111,7 +114,8 @@
    "fieldname": "production_jobs",
    "fieldtype": "Table",
    "label": "Production Jobs",
-   "options": "Job Execution Logsheet child"
+   "options": "Job Execution Logsheet child",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_ace2",
@@ -150,13 +154,27 @@
    "hidden": 1,
    "label": "Inspect Info",
    "options": "Inspect Info"
+  },
+  {
+   "fieldname": "column_break_gzxc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "actual_start_date_time",
+   "fieldtype": "Datetime",
+   "label": "Actual Start Date Time"
+  },
+  {
+   "fieldname": "actual_end_date_time",
+   "fieldtype": "Datetime",
+   "label": "Actual End Date Time"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-08-03 12:10:15.165406",
+ "modified": "2025-11-01 21:27:18.758607",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Execution Logsheet",

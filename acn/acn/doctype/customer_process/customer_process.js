@@ -4,7 +4,7 @@
 frappe.ui.form.on("Customer Process", {
     refresh(frm) {
         frm.fields_dict["parameters_with_acceptance_criteria"].grid.wrapper.find('.grid-add-row, .grid-add-multiple-rows').hide();
-        if (frm.doc.docstatus === 1  && frappe.user.has_role("Customer Process Manager")) {
+        if (frm.doc.docstatus === 1 && frappe.user.has_role("Customer Process Manager")) {
             frm.add_custom_button("Open to Draft", function () {
                 frappe.confirm(
                     "Are you sure you want to Open?",
@@ -94,6 +94,22 @@ frappe.ui.form.on("Customer Process", {
             return {
                 query: "acn.acn.doctype.customer_process_template.customer_process_template.get_param",
                 filters: { "process_type": frm.doc.process_type || "" }
+            };
+        };
+        frm.fields_dict["sequence_lot_wise_internal_process"].grid.get_field("internal_process").get_query = function (doc, cdt, cdn) {
+            // Get the child table data
+            let rows = frm.doc.sequence_lot_wise_internal_process || [];
+
+            // Collect all already-selected internal_process values (except the current row)
+            let selected = rows
+                .filter(r => r.internal_process)
+                .map(r => r.internal_process);
+
+            // Return dynamic filter
+            return {
+                filters: [
+                    ["Internal Process", "name", "not in", selected]
+                ]
             };
         };
     }

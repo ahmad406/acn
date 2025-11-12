@@ -12,20 +12,35 @@ def validate(self, method=None):
     errors = []
 
     for d in self.items:
-        if d.qty > d.balance_qty_in_nos:
+        if not d.qty or d.qty <= 0:
+            errors.append(f"Item {d.item_code}: Quantity must be greater than 0")
+            continue
+
+        if d.rate_uom == "Kgs":
+            if d.qty > d.balance_qty_in_kgs:
+                errors.append(
+                    f"Item {d.item_code}: Quantity ({d.qty}) exceeds available Balance Qty in Kgs ({d.balance_qty_in_kgs})"
+                )
+
+        elif d.rate_uom == "Nos":
+            if d.qty > d.balance_qty_in_nos:
+                errors.append(
+                    f"Item {d.item_code}: Quantity ({d.qty}) exceeds available Balance Qty in Nos ({d.balance_qty_in_nos})"
+                )
+
+        elif d.rate_uom == "Minimum":
+            if d.qty != 1:
+                errors.append(
+                    f"Item {d.item_code}: Quantity must be exactly 1 when Rate UOM is 'Minimum'"
+                )
+
+        else:
             errors.append(
-                f"Item {d.item_code}: Quantity ({d.qty}) exceeds available Balance Qty ({d.balance_qty_in_nos})"
-            )
-        elif d.qty < d.balance_qty_in_nos:
-            errors.append(
-                f"Item {d.item_code}: Quantity ({d.qty}) is less than the available Balance Qty ({d.balance_qty_in_nos})"
+                f"Item {d.item_code}: Unknown Rate UOM '{d.rate_uom}' — expected 'Kgs', 'Nos', or 'Minimum'"
             )
 
     if errors:
-        frappe.throw(
-            "The following items have quantity issues:\n\n" + "\n".join(errors)
-        )
-
+        frappe.throw("The following items have quantity issues:\n\n" + "\n".join(errors))
 
 
 def on_cancel(self, method=None):
@@ -34,11 +49,20 @@ def on_cancel(self, method=None):
 def update_qty(self, is_cancel=False):
 	for d in self.items:
 		dc = frappe.get_doc("Customer DC", d.customer_dc_id)
+
 		for c in dc.items:
 			if c.part_no == d.part_no:
+				# use same field for add/subtract to keep logic consistent
+				change_nos = d.d_qty_in_nos or 0
+				change_kgs = d.d_qty_in_kgs or 0
 
-				new_qty = c.delivered_qty - d.qty if is_cancel else c.delivered_qty + d.qty
-				new_qty_kgs = c.delivery_qty_kgs - d.d_qty_in_kgs if is_cancel else c.delivery_qty_kgs + d.d_qty_in_kgs
+				if is_cancel:
+					new_qty = c.delivered_qty - change_nos
+					new_qty_kgs = c.delivery_qty_kgs - change_kgs
+				else:
+					new_qty = c.delivered_qty + change_nos
+					new_qty_kgs = c.delivery_qty_kgs + change_kgs
+
 				c.db_set("delivered_qty", new_qty)
 				c.db_set("delivery_qty_kgs", new_qty_kgs)
 
@@ -71,8 +95,12 @@ def get_part_no_details(part_no, customer_dc):
 			row_dict["balance_qty_nos"] = balance_qty_nos
 			row_dict["balance_qty_kgs"] = balance_qty_kgs
 			row_dict["balance_qty_kgs"] = balance_qty_kgs
-			row_dict["customer_ref_no"] = doc.ref_no
-			row_dict["so_date"] = doc.ref_date
+			row_dict["customer_ref_no"] = d.customer_process_ref_no
+			row_dict["customer_dc_no"] = d.customer_dc_no
+			row_dict["process_name"] = d.process_name
+
+
+			row_dict["so_date"] = doc.order_date
 
 
 
@@ -134,7 +162,7 @@ def get_part_no(doctype, txt, searchfield, start, page_len, filters):
 
 	query = """
 		SELECT 
-			c.part_no
+			c.part_no,c.process_name,c.material,c.customer_process_ref_no,c.customer_dc_no
 		FROM 
 			`tabCustomer DC` p
 		INNER JOIN 
@@ -149,7 +177,7 @@ def get_part_no(doctype, txt, searchfield, start, page_len, filters):
 	"""
 
 	# Debug: log the query and args in Frappe error log
-	frappe.log_error(message=f"Query: {query}\nArgs: {args}", title="get_part_no Debug")
+	# frappe.log_error(message=f"Query: {query}\nArgs: {args}", title="get_part_no Debug")
 
 	return frappe.db.sql(query, args)
 

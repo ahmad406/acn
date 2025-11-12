@@ -11,6 +11,8 @@
   "job_plan_id",
   "column_break_i4ph",
   "lab_inspection_entry_id",
+  "actual_start_date_time",
+  "actual_end_date_time",
   "rocessfurnace_section",
   "internal_process",
   "furnace_process",
@@ -124,7 +126,8 @@
    "fieldname": "inspection_qty_details",
    "fieldtype": "Table",
    "label": "Inspection Qty Details",
-   "options": "Inspection Qty Details"
+   "options": "Inspection Qty Details",
+   "read_only": 1
   },
   {
    "default": "0",
@@ -170,13 +173,23 @@
    "fieldtype": "Table",
    "label": "Test Results",
    "options": "Test Results"
+  },
+  {
+   "fieldname": "actual_start_date_time",
+   "fieldtype": "Datetime",
+   "label": "Actual Start Date Time"
+  },
+  {
+   "fieldname": "actual_end_date_time",
+   "fieldtype": "Datetime",
+   "label": "Actual End Date Time"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-03 22:23:15.004016",
+ "modified": "2025-11-01 21:27:43.049091",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Lab Inspection Entry",
