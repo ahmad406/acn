@@ -11,6 +11,25 @@ class CustomerDC(Document):
 		for d in self.items:
 			d.balance_qty_nos=0
 			d.balance_qty_kgs=0
+		self.calculate_eway_bill_rate()
+
+	def calculate_eway_bill_rate(self):
+		for row in self.items:
+
+			gross = row.gross_value_of_goods or 0
+			rate = 0
+
+			if row.rate_uom == "Nos":
+				rate = gross / row.qty_nos if row.qty_nos else 0
+
+			elif row.rate_uom == "Kgs":
+				rate = gross / row.qty_kgs if row.qty_kgs else 0
+
+			elif row.rate_uom == "Minimum":
+				rate = gross
+
+			row.e_rate = rate
+
 
 	def on_submit(self):
 		self.update_qty_in_sales_order()
@@ -169,6 +188,10 @@ class CustomerDC(Document):
 						d.item_code = data[0].item_code
 						d.item_name = data[0].item_name
 						d.rate_uom = data[0].custom_rate_uom
+						d.eway_bill_hsn = data[0].eway_bill_hsn
+						d.hsn = data[0].gst_hsn_code
+
+
 						d.customer_process_ref_no = data[0].custom_customer_process_ref_no
 						d.process_type=data[0].custom_process_type
 						d.process_name=data[0].custom_process_name

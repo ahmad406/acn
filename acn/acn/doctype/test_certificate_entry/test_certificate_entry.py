@@ -237,7 +237,7 @@ def lab_inspection(doctype, txt, searchfield, start, page_len, filters):
 def job_card_process(doctype, txt, searchfield, start, page_len, filters):
 	lab_inspection = filters.get('lab_inspection')
 	internal_process=frappe.db.get_value('Lab Inspection Entry',lab_inspection, 'internal_process')
-
+	frappe.errprint([internal_process,lab_inspection])
 	args = {
 		'start': start,
 		'page_len': page_len,

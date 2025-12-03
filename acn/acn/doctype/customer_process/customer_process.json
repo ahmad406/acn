@@ -11,6 +11,7 @@
   "customer_process_template",
   "item_code",
   "material",
+  "eway_bill_hsn",
   "column_break_mbgj",
   "process_type",
   "process_name",
@@ -148,13 +149,20 @@
    "fieldtype": "Table",
    "label": "Testing slab method (As per Customer Contact)",
    "options": "Testing slab method"
+  },
+  {
+   "fieldname": "eway_bill_hsn",
+   "fieldtype": "Link",
+   "label": "Eway bill HSN",
+   "options": "GST HSN Code",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-10-15 20:55:55.445856",
+ "modified": "2025-11-30 11:04:21.720872",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer Process",

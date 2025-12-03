@@ -64,7 +64,7 @@ def reopen_order(name,docstatus=0):
 @frappe.whitelist()
 def get_process_rate(part_no, customer):
 	result = frappe.db.sql("""
-		SELECT c.process_rate, c.rate_uom,p.process_type,p.process_name,p.material,p.item_code,p.customer_ref,p.item_name,p.item_name
+		SELECT c.process_rate, c.rate_uom,p.process_type,p.process_name,p.material,p.item_code,p.customer_ref,p.item_name,p.item_name,p.eway_bill_hsn
 		FROM `tabCustomer Process` p
 		INNER JOIN `tabPart No  Process Rate` c ON p.name = c.parent
 		WHERE c.part_no = %s AND p.customer = %s

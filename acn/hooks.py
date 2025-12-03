@@ -154,7 +154,8 @@ doc_events = {
 	"Delivery Note": {
 		"on_submit": "acn.custom_script.delivery_note.delivery_note.on_submit",
 		"on_cancel": "acn.custom_script.delivery_note.delivery_note.on_cancel",
- "validate": "acn.custom_script.delivery_note.delivery_note.validate",
+ 		"validate": "acn.custom_script.delivery_note.delivery_note.validate",
+		"before_validate": "acn.custom_script.delivery_note.delivery_note.before_validate",
 	},
 	"Journal Entry": {
 		"on_cancel": "acn.custom_script.journal_entry.journal_entry.on_cancel",

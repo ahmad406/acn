@@ -41,6 +41,40 @@ def validate(self, method=None):
 
     if errors:
         frappe.throw("The following items have quantity issues:\n\n" + "\n".join(errors))
+def before_validate(self,method):
+      calculate_service_and_gross_values(self)
+
+def calculate_service_and_gross_values(self):
+    for row in self.items:   
+
+        rate = row.rate or 0
+        service_value = 0
+
+        if row.rate_uom == "Nos":
+            service_value = (row.d_qty_in_nos or 0) * rate
+
+        elif row.rate_uom == "Kgs":
+            service_value = (row.d_qty_in_kgs or 0) * rate
+
+        elif row.rate_uom == "Minimum":
+            service_value = rate
+
+        row.service_value = service_value
+
+
+        e_rate = row.e_rate or 0
+        gross_value_of_goods = 0
+
+        if row.rate_uom == "Nos":
+            gross_value_of_goods = (row.d_qty_in_nos or 0) * e_rate
+
+        elif row.rate_uom == "Kgs":
+            gross_value_of_goods = (row.d_qty_in_kgs or 0) * e_rate
+
+        elif row.rate_uom == "Minimum":
+            gross_value_of_goods = e_rate
+
+        row.gross_value_of_goods = gross_value_of_goods
 
 
 def on_cancel(self, method=None):
@@ -73,6 +107,7 @@ def get_part_no_details(part_no, customer_dc):
 		return None  
 	try:
 		doc = frappe.get_doc("Customer DC", customer_dc)
+
 	except frappe.DoesNotExistError:
 		return None
 
@@ -98,9 +133,21 @@ def get_part_no_details(part_no, customer_dc):
 			row_dict["customer_ref_no"] = d.customer_process_ref_no
 			row_dict["customer_dc_no"] = d.customer_dc_no
 			row_dict["process_name"] = d.process_name
+			row_dict["e_rate"] = d.e_rate
+			row_dict["rate"] = d.rate
+			row_dict["gst_hsn_code"]=d.eway_bill_hsn
+			row_dict["sales_oder"]=doc.sales_order_no
+			row_dict["sales_oder_item"]=d.sales_order_item
+
+
+
+
+
 
 
 			row_dict["so_date"] = doc.order_date
+
+			
 
 
 

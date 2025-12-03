@@ -80,6 +80,7 @@ frappe.ui.form.on("Customer DC child", {
         console.log("qty_nos", item.qty_nos);
 
         item.qty = item.qty_nos;
+        calculate_eway_bill_rate(frm, cdt, cdn);
         cur_frm.refresh()
 
     },
@@ -87,6 +88,7 @@ frappe.ui.form.on("Customer DC child", {
         var item = locals[cdt][cdn];
         console.log("qty_kgs", item.qty_kgs);
         item.qty = item.qty_kgs;
+        calculate_eway_bill_rate(frm, cdt, cdn);
         cur_frm.refresh()
     },
     part_no: function (frm, cdt, cdn) {
@@ -97,12 +99,55 @@ frappe.ui.form.on("Customer DC child", {
             doc: cur_frm.doc,
             callback: function (r) {
                 if (r.message) {
+                    calculate_eway_bill_values(frm, cdt, cdn);
                     cur_frm.refresh()
                 }
             }
         });
 
 
-    }
+    },
+    rate_uom: function (frm, cdt, cdn) {
+        calculate_eway_bill_rate(frm, cdt, cdn);
+        cur_frm.refresh()
+
+    },
+    gross_value_of_goods: function (frm, cdt, cdn) {
+        calculate_eway_bill_rate(frm, cdt, cdn);
+        cur_frm.refresh()
+
+    },
 
 });
+
+
+
+
+function calculate_eway_bill_rate(frm, cdt, cdn) {
+    let row = locals[cdt][cdn];
+    console.log("in",row.rate_uom)
+    let gross = row.gross_value_of_goods || 0;
+    let rate = 0;
+
+    if (row.rate_uom === "Nos") {
+        rate = row.qty_nos
+            ? gross / row.qty_nos
+            : 0;
+        console.log("1",rate)
+
+    } else if (row.rate_uom === "Kgs") {
+        rate = row.qty_kgs
+            ? gross / row.qty_kgs
+            : 0;
+            console.log("2",rate)
+
+    } else if (row.rate_uom === "Minimum") {
+        rate = gross;
+            console.log("3",rate)
+
+    }
+            console.log("4",rate)
+
+
+    frappe.model.set_value(cdt, cdn, "e_rate", rate);
+}

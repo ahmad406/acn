@@ -11,10 +11,13 @@
   "process_name",
   "item_code",
   "item_name",
+  "eway_bill_hsn",
   "qty_nos",
   "material",
   "qty_kgs",
   "delivered_qty",
+  "gross_value_of_goods",
+  "e_rate",
   "delivery_qty_kgs",
   "column_break_9ks2",
   "balance_qty_nos",
@@ -26,7 +29,8 @@
   "commitment_date",
   "rate",
   "rate_uom",
-  "sales_order_item"
+  "sales_order_item",
+  "hsn"
  ],
  "fields": [
   {
@@ -155,13 +159,35 @@
    "fieldtype": "Float",
    "label": "Delivery Qty Kgs",
    "read_only": 1
+  },
+  {
+   "fieldname": "eway_bill_hsn",
+   "fieldtype": "Link",
+   "label": "Eway Bill Hsn",
+   "options": "GST HSN Code"
+  },
+  {
+   "fieldname": "gross_value_of_goods",
+   "fieldtype": "Float",
+   "label": "Gross Value of Goods"
+  },
+  {
+   "fieldname": "e_rate",
+   "fieldtype": "Float",
+   "label": "Eway bill Rate"
+  },
+  {
+   "fieldname": "hsn",
+   "fieldtype": "Link",
+   "label": "HSN",
+   "options": "GST HSN Code"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-10-09 18:15:41.969001",
+ "modified": "2025-11-30 15:14:18.117480",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer DC child",

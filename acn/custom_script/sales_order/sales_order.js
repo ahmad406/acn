@@ -105,6 +105,8 @@ frappe.ui.form.on('Sales Order Item', {
 						row.custom_process_name = r.message.process_name
 						row.custom_material = r.message.material
 						row.custom_rate_uom = r.message.rate_uom
+						row.eway_bill_hsn = r.message.eway_bill_hsn
+
 						row.custom_customer_process_ref_no = r.message.customer_ref
 						if (cur_frm.doc.docstatus == 0) {
 							frappe.model.set_value(cdt, cdn, "item_code", r.message.item_code);

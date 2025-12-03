@@ -86,10 +86,21 @@ class CustomerProcess(Document):
 			item.item_name = self.item_name
 			item.item_group = "Customer item"
 			item.is_stock_item=0
+			item.eway_bill_hsn=self.eway_bill_hsn
 			item.gst_hsn_code="998873"
+			
 			item.is_purchase_item=1
 			item.stock_uom = stock.stock_uom
 			item.save()
+	@frappe.whitelist()
+	def fix_existing_item_hsn(self):
+		sql="""select item_code,eway_bill_hsn  from `tabCustomer Process` where  eway_bill_hsn is not null """
+		for d in frappe.db.sql(sql,as_dict=1):
+			if   frappe.db.exists("Item", d.item_code):
+				itm=frappe.get_doc("Item", d.item_code)
+				itm.db_set("gst_hsn_code",d.eway_bill_hsn) 
+			
+		
 
 
 	def create_part_no(self):

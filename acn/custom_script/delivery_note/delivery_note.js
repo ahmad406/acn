@@ -44,6 +44,7 @@ frappe.ui.form.on('Delivery Note', {
 })
 
 frappe.ui.form.on('Delivery Note Item', {
+    
     d_qty_in_nos: function (frm, cdt, cdn) {
         var d = locals[cdt][cdn];
 
@@ -79,6 +80,8 @@ frappe.ui.form.on('Delivery Note Item', {
 
 
             }
+            calculate_service_value(frm, cdt, cdn)
+            calculate_gross_value(frm, cdt, cdn)
 
             frm.refresh_field("items");
         }, 500);
@@ -125,6 +128,14 @@ frappe.ui.form.on('Delivery Note Item', {
 
                     child.so_date = r.message.so_date
                     child.process_name = r.message.process_name
+                    child.e_rate = r.message.e_rate
+                    child.gst_hsn_code = r.message.gst_hsn_code
+                    // child.against_sales_order = r.message.sales_oder_item
+                    // child.sales_order = r.message.sales_oder
+
+
+
+
 
 
                     setTimeout(() => {
@@ -142,6 +153,9 @@ frappe.ui.form.on('Delivery Note Item', {
 
                         }
                          frappe.model.set_value(cdt, cdn, "rate", r.message.rate);
+
+                        calculate_service_value(frm, cdt, cdn)
+                        calculate_gross_value(frm, cdt, cdn)
 
                     }, 600);
 
@@ -166,5 +180,65 @@ frappe.ui.form.on('Delivery Note Item', {
                 }
             }
         });
+    },
+    rate:function(frm,cdt,cdn){
+            calculate_service_value(frm, cdt, cdn)
+            frm.refresh_field('items');
+
     }
 });
+
+
+function calculate_service_value(frm, cdt, cdn) {
+    let row = locals[cdt][cdn];
+
+    let rate = row.rate || 0;
+    let service_value = 0;
+
+    if (row.rate_uom === "Nos") {
+        service_value = row.d_qty_in_nos
+            ? row.d_qty_in_nos * rate
+            : 0;
+
+        
+
+    } else if (row.rate_uom === "Kgs") {
+        service_value = row.d_qty_in_nos
+            ? row.d_qty_in_kgs * rate
+            : 0;
+
+
+    } else if (row.rate_uom === "Minimum") {
+        service_value = rate;
+
+    }
+
+    frappe.model.set_value(cdt, cdn, "service_value", service_value);
+}
+
+function calculate_gross_value(frm, cdt, cdn) {
+    let row = locals[cdt][cdn];
+
+    let rate = row.e_rate || 0;
+    let gross_value_of_goods = 0;
+
+    if (row.rate_uom === "Nos") {
+        gross_value_of_goods = row.d_qty_in_nos
+            ? row.d_qty_in_nos * rate
+            : 0;
+
+        
+
+    } else if (row.rate_uom === "Kgs") {
+        gross_value_of_goods = row.d_qty_in_nos
+            ? row.d_qty_in_kgs * rate
+            : 0;
+
+
+    } else if (row.rate_uom === "Minimum") {
+        gross_value_of_goods = rate;
+
+    }
+
+    frappe.model.set_value(cdt, cdn, "gross_value_of_goods", gross_value_of_goods);
+}
