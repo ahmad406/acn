@@ -221,6 +221,8 @@ def lab_inspection(doctype, txt, searchfield, start, page_len, filters):
             ON p.name = c.parent
         WHERE 
             c.certified = 0
+			and l.internal_process='FINAL INSPECTION'
+			and c.internal_process='FINAL INSPECTION'
             AND i.docstatus = 1
             AND l.docstatus = 1
             AND l.name LIKE %(txt)s
