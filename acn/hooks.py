@@ -151,6 +151,10 @@ doc_events = {
         "before_submit": "acn.custom_script.sales_order.sales_order.before_submit"
 		
 	},
+     "Sales Invoice": {
+		"validate": "acn.custom_script.sales_invoice.sales_invoice.validate",
+		
+	},
 	"Delivery Note": {
 		"on_submit": "acn.custom_script.delivery_note.delivery_note.on_submit",
 		"on_cancel": "acn.custom_script.delivery_note.delivery_note.on_cancel",
