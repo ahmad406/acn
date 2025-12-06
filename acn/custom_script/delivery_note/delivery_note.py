@@ -107,6 +107,8 @@ def get_part_no_details(part_no, customer_dc):
 		return None  
 	try:
 		doc = frappe.get_doc("Customer DC", customer_dc)
+		so = frappe.get_doc("Sales Order", doc.sales_order_no)
+        
 
 	except frappe.DoesNotExistError:
 		return None
@@ -138,6 +140,9 @@ def get_part_no_details(part_no, customer_dc):
 			row_dict["gst_hsn_code"]=d.eway_bill_hsn
 			row_dict["sales_oder"]=doc.sales_order_no
 			row_dict["sales_oder_item"]=d.sales_order_item
+			row_dict["po_no"]=so.po_no 
+			row_dict["po_date"]=so.po_date
+            
 
 
 

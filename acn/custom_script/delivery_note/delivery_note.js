@@ -112,6 +112,10 @@ frappe.ui.form.on('Delivery Note Item', {
                     child.item_code = r.message.item_code
                     child.item_name = r.message.item_name
                     child.process_type = r.message.process_type
+                    cur_frm.set_value("po_no", r.message.po_no)
+                    cur_frm.set_value("po_date", r.message.po_date)
+
+                    
                     child.rate_uom = r.message.rate_uom
                     child.customer_process_ref = r.message.customer_process_ref_no
                     child.customer_dc_date = r.message.customer_dc_date
