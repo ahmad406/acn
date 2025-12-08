@@ -20,6 +20,12 @@ frappe.ui.form.on('Sales Invoice', {
     //     frm.refresh_field('document_enclosed_for_dispatch');
     // },
     refresh: function (frm) {
+   setTimeout(() => {
+            cur_frm.remove_custom_button('Delivery Note', 'Get Items From'); 
+		cur_frm.remove_custom_button('Sales Order', 'Get Items From');
+ 		cur_frm.remove_custom_button('Quotation', 'Get Items From');
+		cur_frm.remove_custom_button('Timesheet', 'Get Items From');
+        }, 500);
         if (frm.is_new()) {
             if (frm.doc.items) {
                 if (cur_frm.doc.items[0].delivery_note) {
@@ -43,5 +49,14 @@ frappe.ui.form.on('Sales Invoice', {
 
         }
 
-    }
+    },
+	onload:function(frm){
+setTimeout(() => {
+ cur_frm.remove_custom_button('Delivery Note', 'Get Items From');
+                cur_frm.remove_custom_button('Sales Order', 'Get Items From');
+                cur_frm.remove_custom_button('Quotation', 'Get Items From');
+                cur_frm.remove_custom_button('Timesheet', 'Get Items From');
+
+        }, 200);
+}
 })
