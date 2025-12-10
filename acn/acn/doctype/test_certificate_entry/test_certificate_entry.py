@@ -20,8 +20,8 @@ class TestCertificateentry(Document):
 		for d in cd.items:
 			if d.part_no==self.part_no:
 				if is_canceled:
-					d.db_set("balance_qty_kgs",d.balance_qty_kgs+self.accepted_qty_in_kgs)
-					d.db_set("balance_qty_nos",d.balance_qty_nos+self.accepted_qty_in_nos)
+					d.db_set("balance_qty_kgs",d.balance_qty_kgs-self.accepted_qty_in_kgs)
+					d.db_set("balance_qty_nos",d.balance_qty_nos-self.accepted_qty_in_nos)
 
 				else:
 					d.db_set("balance_qty_kgs",d.balance_qty_kgs+self.accepted_qty_in_kgs)
