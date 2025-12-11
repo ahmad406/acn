@@ -75,6 +75,15 @@ class CustomerProcess(Document):
 	def on_submit(self):
 		self.create_item()
 		self.create_part_no()
+
+	def on_update_after_submit(self):
+		if frappe.db.exists("Item", self.item_code):
+			itm = frappe.get_doc("Item", self.item_code)
+
+			if itm.eway_bill_hsn != self.eway_bill_hsn:
+				itm.db_set("eway_bill_hsn", self.eway_bill_hsn, update_modified=False)
+
+
 	def create_item(self):
 		if not  frappe.db.exists("Item", self.item_code):
 			stock=frappe.get_single("Stock Settings")
