@@ -11,7 +11,58 @@ class CustomerDC(Document):
 		for d in self.items:
 			d.balance_qty_nos=0
 			d.balance_qty_kgs=0
+		self.validate_qty()
 		self.calculate_eway_bill_rate()
+	def validate_qty(self):
+		if not self.sales_order_no:
+			return
+
+		so = frappe.get_doc("Sales Order", self.sales_order_no)
+
+		if so.open_order:
+			return
+
+		for d in self.items:
+			if not d.sales_order_item:
+				continue
+
+			so_item = next((i for i in so.items if i.name == d.sales_order_item), None)
+			if not so_item:
+				continue
+
+			data = frappe.db.sql(
+				"""
+				SELECT
+					COALESCE(SUM(qty_kgs), 0) AS qty_kgs,
+					COALESCE(SUM(qty_nos), 0) AS qty_nos
+				FROM `tabCustomer DC Item`
+				WHERE
+					docstatus = 1
+					AND sales_order_item = %s
+					AND parent != %s
+				""",
+				(d.sales_order_item, self.name),
+				as_dict=True
+			)[0]
+
+			total_kgs = data.qty_kgs + (d.qty_kgs or 0)
+			total_nos = data.qty_nos + (d.qty_nos or 0)
+
+			if (
+				so_item.custom_qty_in_kgs < total_kgs
+				or so_item.custom_qty_in_nos < total_nos
+			):
+				frappe.throw(
+					f"""
+					Quantity exceeded for Sales Order Item <b>{so_item.item_code}</b><br>
+					Allowed KGs: {so_item.custom_qty_in_kgs}<br>
+					Used KGs: {total_kgs}<br>
+					Allowed Nos: {so_item.custom_qty_in_nos}<br>
+					Used Nos: {total_nos}
+					"""
+				)
+
+
 
 	def calculate_eway_bill_rate(self):
 		for row in self.items:
@@ -67,6 +118,7 @@ class CustomerDC(Document):
 			doc.customer_dc_no=d.customer_dc_no
 			doc.customer_dc_date=d.customer_dc_date
 			doc.commitment_date=d.commitment_date
+			doc.incoming_visual_inspection=d.incoming_visual_inspection
 			doc.card_colour=frappe.get_value("Process Type",doc.process_type,"job_card_color")
 			doc.image=frappe.get_value("Part no",d.part_no,"image")
 			doc.customer_code=self.customer

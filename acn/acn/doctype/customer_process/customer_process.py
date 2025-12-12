@@ -82,6 +82,7 @@ class CustomerProcess(Document):
 
 			if itm.eway_bill_hsn != self.eway_bill_hsn:
 				itm.db_set("eway_bill_hsn", self.eway_bill_hsn, update_modified=False)
+		
 
 
 	def create_item(self):
@@ -122,6 +123,13 @@ class CustomerProcess(Document):
 					part_no.customer= self.customer
 					part_no.image=d.part_image
 					part_no.save()
+				else:
+					pt= frappe.get_doc("Part no", d.part_no)
+					if pt.image!=d.part_image:
+						pt.image=d.part_image
+						pt.save()
+
+
 	def on_cancel(self):
 		if frappe.db.exists("Item", self.item_code):
 			itm = frappe.get_doc("Item", self.item_code)

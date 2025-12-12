@@ -1,0 +1,63 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-12-12 20:38:18.226530",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "invoice_no",
+  "invoice_date",
+  "delivery_challan",
+  "test_certificate"
+ ],
+ "fields": [
+  {
+   "allow_on_submit": 1,
+   "fieldname": "invoice_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Invoice No",
+   "options": "Sales Invoice"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "delivery_challan",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Delivery Challan",
+   "options": "Delivery Note"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "test_certificate",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Test Certificate",
+   "options": "Test Certificate entry"
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "invoice_no.posting_date",
+   "fieldname": "invoice_date",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Invoice  Date"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-12-12 20:45:41.207790",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "DESPATCH DETAILS",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

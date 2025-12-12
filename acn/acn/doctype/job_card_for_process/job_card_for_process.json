@@ -18,6 +18,7 @@
   "location_image",
   "customer_code",
   "customer_name",
+  "incoming_visual_inspection",
   "column_break_xrgf",
   "process_type",
   "process_name",
@@ -35,6 +36,7 @@
   "sequence_lot_wise_internal_process",
   "parameters_with_acceptance_criteria",
   "reference",
+  "despatch",
   "amended_from"
  ],
  "fields": [
@@ -203,6 +205,18 @@
    "fieldname": "location_image",
    "fieldtype": "Attach Image",
    "label": "Location Image"
+  },
+  {
+   "fieldname": "incoming_visual_inspection",
+   "fieldtype": "Data",
+   "label": "Incoming Visual Inspection"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "despatch",
+   "fieldtype": "Table",
+   "label": "DESPATCH DETAILS",
+   "options": "DESPATCH DETAILS"
   }
  ],
  "grid_page_length": 50,
@@ -210,7 +224,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-04 22:30:09.903142",
+ "modified": "2025-12-12 20:43:01.695215",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Card for process",
@@ -231,6 +245,7 @@
   }
  ],
  "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
