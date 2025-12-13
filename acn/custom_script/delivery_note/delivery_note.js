@@ -1,6 +1,15 @@
 frappe.ui.form.on('Delivery Note', {
     setup: function (frm) {
-        console.log("parent")
+        cur_frm.cscript.onload = function () {
+            cur_frm.set_query("customer", function (frm) {
+                return {
+                    query: 'acn.custom_script.delivery_note.delivery_note.get_customer',
+
+
+                }
+            });
+        }
+
 
         cur_frm.set_query("customer_dc_id", "items", function (frm, cdt, cdn) {
             var child = locals[cdt][cdn];
@@ -13,14 +22,27 @@ frappe.ui.form.on('Delivery Note', {
 
             }
         });
-        cur_frm.set_query("part_no", "items", function (frm, cdt, cdn) {
-            var child = locals[cdt][cdn];
-            return {
-                query: 'acn.custom_script.delivery_note.delivery_note.get_part_no',
-                filters: { "customer_dc": child.customer_dc_id }
 
-            }
+        cur_frm.set_query("part_no", "items", function (frm, cdt, cdn) {
+
+            let selected_parts = [];
+
+            (cur_frm.doc.items || []).forEach(row => {
+                if (row.part_no && row.name !== cdn) {
+                    selected_parts.push(row.part_no);
+                }
+            });
+
+            return {
+                query: "acn.custom_script.delivery_note.delivery_note.get_part_no",
+                filters: {
+                    customer: cur_frm.doc.customer,
+                    exclude_parts: selected_parts
+                }
+            };
         });
+
+
     },
     customer: function (frm) {
         frm.clear_table('document_enclosed_for_dispatch');
@@ -44,7 +66,7 @@ frappe.ui.form.on('Delivery Note', {
 })
 
 frappe.ui.form.on('Delivery Note Item', {
-    
+
     d_qty_in_nos: function (frm, cdt, cdn) {
         var d = locals[cdt][cdn];
 
@@ -98,13 +120,13 @@ frappe.ui.form.on('Delivery Note Item', {
         var child = locals[cdt][cdn];
 
         // Ensure customer_dc_id exists
-        if (!child.customer_dc_id) return;
+        // if (!child.customer_dc_id) return;
 
         frappe.call({
             method: 'acn.custom_script.delivery_note.delivery_note.get_part_no_details',
             args: {
                 part_no: child.part_no,
-                customer_dc: child.customer_dc_id
+                customer: cur_frm.doc.customer
             },
             callback: function (r) {
                 if (r.message) {
@@ -115,13 +137,15 @@ frappe.ui.form.on('Delivery Note Item', {
                     cur_frm.set_value("po_no", r.message.po_no)
                     cur_frm.set_value("po_date", r.message.po_date)
 
-                    
+
                     child.rate_uom = r.message.rate_uom
                     child.customer_process_ref = r.message.customer_process_ref_no
                     child.customer_dc_date = r.message.customer_dc_date
                     child.commitment = r.message.commitment_date
-                 
+
                     child.d_qty_in_kgs = r.message.balance_qty_kgs
+                    child.customer_dc_id = r.message.customer_dc_id
+
                     child.d_qty_in_nos = r.message.balance_qty_nos
                     child.balance_qty_in_kgs = r.message.balance_qty_kgs
                     child.balance_qty_in_nos = r.message.balance_qty_nos
@@ -156,7 +180,7 @@ frappe.ui.form.on('Delivery Note Item', {
                             frappe.model.set_value(cdt, cdn, "qty", 1);
 
                         }
-                         frappe.model.set_value(cdt, cdn, "rate", r.message.rate);
+                        frappe.model.set_value(cdt, cdn, "rate", r.message.rate);
 
                         calculate_service_value(frm, cdt, cdn)
                         calculate_gross_value(frm, cdt, cdn)
@@ -185,9 +209,9 @@ frappe.ui.form.on('Delivery Note Item', {
             }
         });
     },
-    rate:function(frm,cdt,cdn){
-            calculate_service_value(frm, cdt, cdn)
-            frm.refresh_field('items');
+    rate: function (frm, cdt, cdn) {
+        calculate_service_value(frm, cdt, cdn)
+        frm.refresh_field('items');
 
     }
 });
@@ -204,7 +228,7 @@ function calculate_service_value(frm, cdt, cdn) {
             ? row.d_qty_in_nos * rate
             : 0;
 
-        
+
 
     } else if (row.rate_uom === "Kgs") {
         service_value = row.d_qty_in_nos
@@ -231,7 +255,7 @@ function calculate_gross_value(frm, cdt, cdn) {
             ? row.d_qty_in_nos * rate
             : 0;
 
-        
+
 
     } else if (row.rate_uom === "Kgs") {
         gross_value_of_goods = row.d_qty_in_nos
