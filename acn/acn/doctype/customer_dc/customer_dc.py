@@ -11,7 +11,7 @@ class CustomerDC(Document):
 		for d in self.items:
 			d.balance_qty_nos=0
 			d.balance_qty_kgs=0
-		self.validate_qty()
+		# self.validate_qty()
 		self.calculate_eway_bill_rate()
 	def validate_qty(self):
 		if not self.sales_order_no:
@@ -35,7 +35,7 @@ class CustomerDC(Document):
 				SELECT
 					COALESCE(SUM(qty_kgs), 0) AS qty_kgs,
 					COALESCE(SUM(qty_nos), 0) AS qty_nos
-				FROM `tabCustomer DC Item`
+				FROM `tabCustomer DC child`
 				WHERE
 					docstatus = 1
 					AND sales_order_item = %s

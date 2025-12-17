@@ -28,6 +28,42 @@ class LabInspectionEntry(Document):
 
 	def before_insert(self):
 		self.lab_inspection_entry_id = self.name
+	def on_update(self):
+		for d in self.parameters:
+			min_val, max_val = self.get_min_max(
+			d.scale,
+			d.control_parameter,
+			d.job_card_id
+			)
+			d.db_set("result_value_from",min_val,update_modified=False)
+
+			d.db_set("result_value_to",max_val,update_modified=False)
+
+
+
+		
+
+
+	def get_min_max(self, scale, control_parameter, job_card_id):
+		result = frappe.db.sql(
+			"""
+			SELECT
+				MIN(result_vaule) AS min_val,
+				MAX(result_vaule) AS max_val
+			FROM `tabTest Results`
+			WHERE parent = %s
+				AND job_card_id = %s
+				AND scale = %s
+				AND control_parameters = %s
+			""",
+			(self.name, job_card_id, scale, control_parameter),
+			as_dict=True
+		)
+
+		if result and result[0]:
+			return result[0].min_val, result[0].max_val
+
+		return None, None
 
 	def on_submit(self):
 		self.validate_test_result()

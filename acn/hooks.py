@@ -86,6 +86,12 @@ doctype_list_js = {
 # 	"methods": "acn.utils.jinja_methods",
 # 	"filters": "acn.utils.jinja_filters"
 # }
+jinja = {
+    "methods": [
+        "acn.acn.doctype.job_card_for_process.job_card_for_process.get_dispatch_details",
+ "acn.acn.doctype.job_card_for_process.job_card_for_process.get_item_tax_rate"
+    ]
+}
 
 # Installation
 # ------------

@@ -68,6 +68,7 @@ class TestCertificateentry(Document):
 		self.material=""
 		self.accepted_qty_in_nos=""
 		self.accepted_qty_in_kgs=""
+		self.check_qty_in_nos=0
 		li=frappe.get_doc("Lab Inspection Entry",self.lab_inspection_id)
 		for d in li.inspection_qty_details:
 			if d.job_card_id==self.job_card_id:
@@ -78,6 +79,7 @@ class TestCertificateentry(Document):
 				self.material=d.material
 				self.accepted_qty_in_nos=d.accepted_qty_in_nos
 				self.accepted_qty_in_kgs=d.accepted_qty_in_kgs
+				self.check_qty_in_nos=d.checked_qty_in_nos
 
 				break
 		for r in li.test_results:
@@ -91,6 +93,8 @@ class TestCertificateentry(Document):
 				re.testing_time=r.testing_time
 				re.result_vaule=r.result_vaule
 				re.testing_qty=r.testing_qty
+				re.remarks=r.remarks
+
 
 
 
@@ -98,7 +102,7 @@ class TestCertificateentry(Document):
 			if self.job_card_id==k.job_card_id:
 				row=self.append("test_parameters_details",{})
 				row.test_parameters=k.control_parameter
-				row.qty_checked=self.accepted_qty_in_nos
+				row.qty_checked=self.check_qty_in_nos
 
 				row.reference_standard=self.get_standard(k.control_parameter)
 				row.print_sequence_no = frappe.db.get_value('Internal Control Parameter', k.control_parameter, 'tc_order_no')
@@ -106,6 +110,10 @@ class TestCertificateentry(Document):
 
 				row.acceptance_criteria_from=k.result_value_from
 				row.acceptance_criteria_to=k.result_value_to
+				row.remarks=k.remarks
+				row.measurement_to=k.maximum_value
+				row.measurement_from = k.minimum_value
+
 				row.scale=k.scale
 				self.other_detail_1=k.other_detail_1
 				self.other_detail_2=k.other_detail_2
@@ -177,11 +185,12 @@ class TestCertificateentry(Document):
 			rw=self.append("parameters",{})
 			rw.internal_process=f.internal_process
 			rw.process_parameter=f.control_parameter
-			rw.minimum_value=f.minimum_value
+			rw.minimum_value=f.minimum_value 
 			rw.maximum_value=f.maximum_value
 			rw.scale=f.scale
 			rw.microstructure_cutoff=f.microstructure_cutoff
 			rw.information=f.information
+
 
 
 		
@@ -239,7 +248,7 @@ def lab_inspection(doctype, txt, searchfield, start, page_len, filters):
 def job_card_process(doctype, txt, searchfield, start, page_len, filters):
 	lab_inspection = filters.get('lab_inspection')
 	internal_process=frappe.db.get_value('Lab Inspection Entry',lab_inspection, 'internal_process')
-	frappe.errprint([internal_process,lab_inspection])
+	# frappe.errprint([internal_process,lab_inspection])
 	args = {
 		'start': start,
 		'page_len': page_len,
