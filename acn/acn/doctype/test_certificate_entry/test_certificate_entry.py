@@ -94,6 +94,8 @@ class TestCertificateentry(Document):
 				re.result_vaule=r.result_vaule
 				re.testing_qty=r.testing_qty
 				re.remarks=r.remarks
+				re.reference_standard=self.get_standard(r.control_parameters)
+
 
 
 

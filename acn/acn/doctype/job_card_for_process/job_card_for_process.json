@@ -36,7 +36,6 @@
   "sequence_lot_wise_internal_process",
   "parameters_with_acceptance_criteria",
   "reference",
-  "despatch",
   "amended_from"
  ],
  "fields": [
@@ -210,13 +209,6 @@
    "fieldname": "incoming_visual_inspection",
    "fieldtype": "Data",
    "label": "Incoming Visual Inspection"
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "despatch",
-   "fieldtype": "Table",
-   "label": "DESPATCH DETAILS",
-   "options": "DESPATCH DETAILS"
   }
  ],
  "grid_page_length": 50,
@@ -224,7 +216,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-12-12 20:43:01.695215",
+ "modified": "2025-12-18 20:07:34.416888",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Card for process",
