@@ -68,6 +68,12 @@ class CustomerDC(Document):
 		for row in self.items:
 
 			gross = row.gross_value_of_goods or 0
+			if gross <= 0:
+				frappe.throw(
+					"Gross value of goods must be greater than 0",
+					title="Invalid Value"
+				)
+
 			rate = 0
 
 			if row.rate_uom == "Nos":
