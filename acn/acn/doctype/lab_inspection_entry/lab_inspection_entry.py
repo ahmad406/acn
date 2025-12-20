@@ -35,9 +35,10 @@ class LabInspectionEntry(Document):
 			d.control_parameter,
 			d.job_card_id
 			)
-			d.db_set("result_value_from",min_val,update_modified=False)
-
-			d.db_set("result_value_to",max_val,update_modified=False)
+			if min_val:
+				d.db_set("result_value_from",min_val,update_modified=False)
+			if max_val:
+				d.db_set("result_value_to",max_val,update_modified=False)
 
 
 
