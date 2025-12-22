@@ -35,7 +35,7 @@ def get_item_tax_rate(doc, account):
     if not rate or rate <= 0:
         return ""
 
-    return "@ {0}".format(rate)
+    return "@ {0}".format(int(rate))
 
 @frappe.whitelist()
 def get_dispatch_details(doc):
