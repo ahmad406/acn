@@ -13,6 +13,15 @@ class CustomerDC(Document):
 			d.balance_qty_kgs=0
 		# self.validate_qty()
 		self.calculate_eway_bill_rate()
+		self.validate_part()
+
+	def validate_part(self):
+		seen = set()
+		for d in self.items:
+			if d.part_no in seen:
+				frappe.throw(f"Part No {d.part_no} selected multiple times")
+			seen.add(d.part_no)
+
 	def validate_qty(self):
 		if not self.sales_order_no:
 			return
@@ -325,30 +334,55 @@ def map_sales_order_to_customer_dc(source_name, target_doc=None):
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def get_part_no(doctype, txt, searchfield, start, page_len, filters):
-    so = filters.get('sales_order') if filters else None
-    if not so:
-        return []
+	so = filters.get('sales_order') if filters else None
+	if not so:
+		return []
+	exclude_parts = filters.get("exclude_parts") or []
 
-    args = {
-        'start': start,
-        'so': so,
-        'page_len': page_len,
-        'txt': '%%%s%%' % txt
-    }
-
-    part = frappe.db.sql("""
-        SELECT custom_part_no,item_code,item_name,custom_process_name,custom_customer_process_ref_no
-        FROM `tabSales Order Item` 
-        WHERE parent = %(so)s 
-            AND custom_part_no LIKE %(txt)s
-                  AND (
-            custom_bal_qty_in_kgs > 0 
-            OR custom_bal_qty_in_nos > 0 
-            OR (custom_qty_in_kgs = 0 AND custom_qty_in_nos = 0)
-        )
-
+	conditions = ""
+	args = {
+		'start': start,
+		'so': so,
+		'page_len': page_len,
+		'txt': '%%%s%%' % txt
+	}
+	if exclude_parts:
+		conditions += " AND custom_part_no NOT IN %(exclude_parts)s"
+		args["exclude_parts"] = tuple(exclude_parts)
+	return frappe.db.sql(f"""
+        SELECT
+            custom_part_no,
+            item_code,
+            item_name,
+            custom_process_name,
+            custom_customer_process_ref_no
+        FROM `tabSales Order Item`
+        WHERE parent = %(so)s
+          AND custom_part_no LIKE %(txt)s
+          AND (
+                custom_bal_qty_in_kgs > 0
+                OR custom_bal_qty_in_nos > 0
+                OR (custom_qty_in_kgs = 0 AND custom_qty_in_nos = 0)
+          )
+          {conditions}
         ORDER BY custom_part_no ASC
         LIMIT %(start)s, %(page_len)s
     """, args)
 
-    return part
+
+	# part = frappe.db.sql("""
+	# 	SELECT custom_part_no,item_code,item_name,custom_process_name,custom_customer_process_ref_no
+	# 	FROM `tabSales Order Item` 
+	# 	WHERE parent = %(so)s 
+	# 		AND custom_part_no LIKE %(txt)s
+	# 			  AND (
+	# 		custom_bal_qty_in_kgs > 0 
+	# 		OR custom_bal_qty_in_nos > 0 
+	# 		OR (custom_qty_in_kgs = 0 AND custom_qty_in_nos = 0)
+	# 	)
+
+	# 	ORDER BY custom_part_no ASC
+	# 	LIMIT %(start)s, %(page_len)s
+	# """, args)
+
+	# return part

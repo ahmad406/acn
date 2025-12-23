@@ -31,15 +31,24 @@ frappe.ui.form.on("Customer DC", {
         cur_frm.cscript.onload = function () {
             cur_frm.set_query("part_no", "items", function (frm, cdt, cdn) {
                 var child = locals[cdt][cdn];
+                let selected_parts = [];
+                (cur_frm.doc.items || []).forEach(row => {
+                    if (row.part_no && row.name !== cdn) {
+                        selected_parts.push(row.part_no);
+                    }
+                });
+                console.log(selected_parts)
+
                 return {
                     query: 'acn.acn.doctype.customer_dc.customer_dc.get_part_no',
                     filters: {
-                        "sales_order": cur_frm.doc.sales_order_no
+                        sales_order: cur_frm.doc.sales_order_no,
+                        exclude_parts: selected_parts
                     }
 
                 }
             });
-          
+
         }
         cur_frm.set_query("sales_order_no", function (frm) {
             return {
@@ -49,27 +58,27 @@ frappe.ui.form.on("Customer DC", {
                 }
             };
         });
-        
+
 
     },
 
-    calculate_total: function(frm) {
+    calculate_total: function (frm) {
         if (cur_frm.doc.docstatus == 0) {
-        var total_nos = 0;
-        var total_kgs = 0;
-        
-        $.each(frm.doc.items || [], function(i, d) {
-            if (d.qty_nos) {
-                total_nos += d.qty_nos;
-            }
-            if (d.qty_kgs) {
-                total_kgs += d.qty_kgs;
-            }
-        });
-        
-        frm.set_value("total_qty__nos", total_nos);
-        frm.set_value("total_qty", total_kgs);
-    }
+            var total_nos = 0;
+            var total_kgs = 0;
+
+            $.each(frm.doc.items || [], function (i, d) {
+                if (d.qty_nos) {
+                    total_nos += d.qty_nos;
+                }
+                if (d.qty_kgs) {
+                    total_kgs += d.qty_kgs;
+                }
+            });
+
+            frm.set_value("total_qty__nos", total_nos);
+            frm.set_value("total_qty", total_kgs);
+        }
     },
 });
 
@@ -99,7 +108,7 @@ frappe.ui.form.on("Customer DC child", {
             doc: cur_frm.doc,
             callback: function (r) {
                 if (r.message) {
-                    calculate_eway_bill_values(frm, cdt, cdn);
+                    calculate_eway_bill_rate(frm, cdt, cdn);
                     cur_frm.refresh()
                 }
             }
@@ -125,7 +134,7 @@ frappe.ui.form.on("Customer DC child", {
 
 function calculate_eway_bill_rate(frm, cdt, cdn) {
     let row = locals[cdt][cdn];
-    console.log("in",row.rate_uom)
+    // console.log("in", row.rate_uom)
     let gross = row.gross_value_of_goods || 0;
     let rate = 0;
 
@@ -133,20 +142,16 @@ function calculate_eway_bill_rate(frm, cdt, cdn) {
         rate = row.qty_nos
             ? gross / row.qty_nos
             : 0;
-        console.log("1",rate)
 
     } else if (row.rate_uom === "Kgs") {
         rate = row.qty_kgs
             ? gross / row.qty_kgs
             : 0;
-            console.log("2",rate)
 
     } else if (row.rate_uom === "Minimum") {
         rate = gross;
-            console.log("3",rate)
 
     }
-            console.log("4",rate)
 
 
     frappe.model.set_value(cdt, cdn, "e_rate", rate);
