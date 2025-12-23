@@ -202,7 +202,7 @@ def get_customer_dc(doctype, txt, searchfield, start, page_len, filters):
 			`tabCustomer DC child` c 
 			ON p.name = c.parent
 		WHERE 
-			 c.balance_qty_nos- c.delivered_qty >0
+			(c.balance_qty_nos- c.delivered_qty) >0
 			AND p.customer = %(customer)s
 			AND p.name LIKE %(txt)s
 		GROUP BY p.name
@@ -231,7 +231,7 @@ def get_customer(doctype, txt, searchfield, start, page_len, filters):
             `tabCustomer DC child` c 
             ON p.name = c.parent
         WHERE 
-            COALESCE(c.balance_qty_nos, 0) - COALESCE(c.delivered_qty, 0) > 0
+        		(c.balance_qty_nos - c.delivered_qty) > 0
             AND p.customer LIKE %(txt)s
         LIMIT %(start)s, %(page_len)s
     """
@@ -266,8 +266,8 @@ def get_part_no(doctype, txt, searchfield, start, page_len, filters):
         WHERE
             p.name = %s
             AND (
-                COALESCE(c.balance_qty_nos, 0)
-                - COALESCE(c.delivered_qty, 0)
+                c.balance_qty_nos
+                - c.delivered_qty
             ) > 0
             AND c.part_no LIKE %s
         ORDER BY c.part_no
