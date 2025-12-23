@@ -15,29 +15,45 @@ class TestCertificateentry(Document):
 		self.update_inspection_qty(is_canceled=1)
 		self.update_customer_dc(is_canceled=1)
 
-	def update_customer_dc(self,is_canceled=0):
-		cd=frappe.get_doc("Customer DC",self.customer_dc_id)
+	def update_customer_dc(self, is_canceled=0):
+		cd = frappe.get_doc("Customer DC", self.customer_dc_id)
+
+		accepted_kgs = self.accepted_qty_in_kgs or 0
+		accepted_nos = self.accepted_qty_in_nos or 0
+
 		for d in cd.items:
-			if d.part_no==self.part_no:
-				if is_canceled:
-					d.db_set("balance_qty_kgs",d.balance_qty_kgs-self.accepted_qty_in_kgs)
-					d.db_set("balance_qty_nos",d.balance_qty_nos-self.accepted_qty_in_nos)
+			if d.part_no != self.part_no:
+				continue
 
-				else:
-					d.db_set("balance_qty_kgs",d.balance_qty_kgs+self.accepted_qty_in_kgs)
-					d.db_set("balance_qty_nos",d.balance_qty_nos+self.accepted_qty_in_nos)
+			current_kgs = d.balance_qty_kgs or 0
+			current_nos = d.balance_qty_nos or 0
+
+			if not is_canceled:
+				d.db_set("balance_qty_kgs", current_kgs + accepted_kgs)
+				d.db_set("balance_qty_nos", current_nos + accepted_nos)
+
+			else:
+				new_kgs = current_kgs - accepted_kgs
+				new_nos = current_nos - accepted_nos
+
+				if new_kgs < 0 or new_nos < 0:
+					frappe.throw(
+						f"Cannot cancel Test Certificate. "
+						f"Delivery already made for Part No {self.part_no}"
+					)
+
+				d.db_set("balance_qty_kgs", new_kgs)
+				d.db_set("balance_qty_nos", new_nos)
+
 		# frappe.throw("yes")
-
-	def update_inspection_qty(self, is_canceled=0):
+	def update_inspection_qty(self,is_canceled=0):
 		li = frappe.get_doc("Lab Inspection Entry", self.lab_inspection_id)
-		job = frappe.get_doc("Job Card for process", self.job_card_id)
 
-		for d in job.sequence_lot_wise_internal_process:
-			if d.internal_process == li.internal_process:
-				# Deduct on submit, add on cancel
-				# qty_change = -self.accepted_qty_in_nos if is_canceled else self.accepted_qty_in_nos
-				# new_qty = (d.inspection_qty or 0) + qty_change
-				d.db_set("certified", 0 if is_canceled  else 1)
+		certified = 0 if is_canceled == 1 else 1
+		for d in li.inspection_qty_details:
+			if d.job_card_id == self.job_card_id:
+				d.db_set("test_certified", certified)
+
 				
 
 
@@ -212,37 +228,67 @@ class TestCertificateentry(Document):
 				return ""
 		else:
 			return ""
+		
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def lab_inspection(doctype, txt, searchfield, start, page_len, filters):
     args = {
-        'start': start,
-        'page_len': page_len,
-        'txt': f'%{txt}%'
+        "start": start,
+        "page_len": page_len,
+        "txt": f"%{txt}%",
     }
 
-    job_plans = frappe.db.sql("""
-        SELECT DISTINCT l.name
+    inspections = frappe.db.sql(
+        """
+        SELECT DISTINCT l.name,i.job_card_id
         FROM `tabLab Inspection Entry` l
-        INNER JOIN `tabInspection Qty Details` i 
+        INNER JOIN `tabInspection Qty Details` i
             ON l.name = i.parent
-        INNER JOIN `tabJob Card for process` p 
+        INNER JOIN `tabJob Card for process` p
             ON i.job_card_id = p.name
-        INNER JOIN `tabSequence Lot wise Internal Process` c 
-            ON p.name = c.parent
-        WHERE 
-            c.certified = 0
-			and l.internal_process='FINAL INSPECTION'
-			and c.internal_process='FINAL INSPECTION'
+        WHERE
+            i.test_certified = 0
+            AND internal_process = 'FINAL INSPECTION'
             AND i.docstatus = 1
             AND l.docstatus = 1
             AND l.name LIKE %(txt)s
         LIMIT %(start)s, %(page_len)s
-    """, args, as_dict=False)
+        """,
+        args,
+        as_dict=False,
+    )
 
-    return job_plans
+    return inspections
 
+# @frappe.whitelist()
+# @frappe.validate_and_sanitize_search_inputs
+# def lab_inspection(doctype, txt, searchfield, start, page_len, filters):
+#     args = {
+#         'start': start,
+#         'page_len': page_len,
+#         'txt': f'%{txt}%'
+#     }
 
+#     job_plans = frappe.db.sql("""
+#         SELECT DISTINCT l.name
+#         FROM `tabLab Inspection Entry` l
+#         INNER JOIN `tabInspection Qty Details` i 
+#             ON l.name = i.parent
+#         INNER JOIN `tabJob Card for process` p 
+#             ON i.job_card_id = p.name
+#         INNER JOIN `tabSequence Lot wise Internal Process` c 
+#             ON p.name = c.parent
+#         WHERE 
+#             c.certified = 0
+# 			and l.internal_process='FINAL INSPECTION'
+# 			and c.internal_process='FINAL INSPECTION'
+#             AND i.docstatus = 1
+#             AND l.docstatus = 1
+#             AND l.name LIKE %(txt)s
+#         LIMIT %(start)s, %(page_len)s
+#     """, args, as_dict=False)
+
+#     return job_plans
 
 		
 @frappe.whitelist()
@@ -260,12 +306,39 @@ def job_card_process(doctype, txt, searchfield, start, page_len, filters):
 	}
 	
 	job_plans = frappe.db.sql("""
-			select p.name,internal_process,i.parent from `tabJob Card for process` p inner join 
-	`tabSequence Lot wise Internal Process` c on p.name=c.parent  inner join
-	`tabInspection Qty Details` i on i.job_card_id=p.name
-	where (IFNULL(c.certified, 0) = 0) and internal_process= %(internal_process)s
+			select p.name,internal_process,i.parent  FROM `tabLab Inspection Entry`  l inner join
+			`tabInspection Qty Details` i on i.parent=l.name inner join 
+			`tabJob Card for process` p on p.name=i.job_card_id
+	where (IFNULL(i.test_certified, 0) = 0) and internal_process= %(internal_process)s
   and  i.docstatus=1 and i.parent= %(lab_inspection)s and p.name LIKE %(txt)s
 		LIMIT %(start)s, %(page_len)s
 	""", args, as_dict=False)
 	
 	return job_plans
+
+
+		
+# @frappe.whitelist()
+# @frappe.validate_and_sanitize_search_inputs
+# def job_card_process(doctype, txt, searchfield, start, page_len, filters):
+# 	lab_inspection = filters.get('lab_inspection')
+# 	internal_process=frappe.db.get_value('Lab Inspection Entry',lab_inspection, 'internal_process')
+# 	# frappe.errprint([internal_process,lab_inspection])
+# 	args = {
+# 		'start': start,
+# 		'page_len': page_len,
+# 		'lab_inspection':lab_inspection,
+# 		'internal_process':internal_process,
+# 		'txt': f'%{txt}%'
+# 	}
+	
+# 	job_plans = frappe.db.sql("""
+# 			select p.name,internal_process,i.parent from `tabJob Card for process` p inner join 
+# 	`tabSequence Lot wise Internal Process` c on p.name=c.parent  inner join
+# 	`tabInspection Qty Details` i on i.job_card_id=p.name
+# 	where (IFNULL(c.certified, 0) = 0) and internal_process= %(internal_process)s
+#   and  i.docstatus=1 and i.parent= %(lab_inspection)s and p.name LIKE %(txt)s
+# 		LIMIT %(start)s, %(page_len)s
+# 	""", args, as_dict=False)
+	
+# 	return job_plans
