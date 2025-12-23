@@ -25,19 +25,11 @@ frappe.ui.form.on('Delivery Note', {
 
         cur_frm.set_query("part_no", "items", function (frm, cdt, cdn) {
 
-            let selected_parts = [];
-
-            (cur_frm.doc.items || []).forEach(row => {
-                if (row.part_no && row.name !== cdn) {
-                    selected_parts.push(row.part_no);
-                }
-            });
-
+            var child = locals[cdt][cdn];
             return {
                 query: "acn.custom_script.delivery_note.delivery_note.get_part_no",
                 filters: {
-                    customer: cur_frm.doc.customer,
-                    exclude_parts: selected_parts
+                    customer_dc_id: child.customer_dc_id,
                 }
             };
         });
@@ -120,13 +112,13 @@ frappe.ui.form.on('Delivery Note Item', {
         var child = locals[cdt][cdn];
 
         // Ensure customer_dc_id exists
-        // if (!child.customer_dc_id) return;
+        if (!child.customer_dc_id) return;
 
         frappe.call({
             method: 'acn.custom_script.delivery_note.delivery_note.get_part_no_details',
             args: {
                 part_no: child.part_no,
-                customer: cur_frm.doc.customer
+                customer_dc_id: child.customer_dc_id
             },
             callback: function (r) {
                 if (r.message) {
@@ -144,7 +136,7 @@ frappe.ui.form.on('Delivery Note Item', {
                     child.commitment = r.message.commitment_date
 
                     child.d_qty_in_kgs = r.message.balance_qty_kgs
-                    child.customer_dc_id = r.message.customer_dc_id
+                    // child.customer_dc_id = r.message.customer_dc_id
 
                     child.d_qty_in_nos = r.message.balance_qty_nos
                     child.balance_qty_in_kgs = r.message.balance_qty_kgs

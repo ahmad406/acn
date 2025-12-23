@@ -10,8 +10,19 @@ def on_submit(self, method=None):
 
 def validate(self, method=None):
 	errors = []
+	seen_combinations = set()
+
 
 	for d in self.items:
+		key = (d.part_no, d.customer_dc_id)
+		if key in seen_combinations:
+			errors.append(
+                f"Duplicate entry found for Part No {d.part_no} "
+                f"with Customer DC {d.customer_dc_id}"
+            )
+			continue
+		seen_combinations.add(key)
+
 		if not d.qty or d.qty <= 0:
 			errors.append(f"Item {d.item_code}: Quantity must be greater than 0")
 			continue
@@ -38,7 +49,6 @@ def validate(self, method=None):
 			errors.append(
 				f"Item {d.item_code}: Unknown Rate UOM '{d.rate_uom}' — expected 'Kgs', 'Nos', or 'Minimum'"
 			)
-
 	if errors:
 		frappe.throw("The following items have quantity issues:\n\n" + "\n".join(errors))
 def before_validate(self,method):
@@ -103,7 +113,7 @@ def update_qty(self, is_cancel=False):
 
 
 
-def get_customer_dc_by_part(part_no, customer):
+def get_customer_dc_by_customer_dc(part_no, customer_dc_id):
 	sql = """
 		SELECT p.name
 		FROM `tabCustomer DC` p
@@ -112,9 +122,9 @@ def get_customer_dc_by_part(part_no, customer):
 		WHERE 
 			p.docstatus = 1 
 			AND c.part_no = %s
-			AND p.customer = %s
+			AND p.name = %s
 	"""
-	data = frappe.db.sql(sql, (part_no, customer), as_dict=True)
+	data = frappe.db.sql(sql, (part_no, customer_dc_id), as_dict=True)
 
 	if data:
 		return data[0].name
@@ -123,13 +133,13 @@ def get_customer_dc_by_part(part_no, customer):
 
 
 @frappe.whitelist()
-def get_part_no_details(part_no, customer):
-	customer_dc = get_customer_dc_by_part(part_no, customer)
+def get_part_no_details(part_no, customer_dc_id):
+	# customer_dc = get_customer_dc_by_customer_dc(part_no, customer_dc_id)
 
-	if not customer_dc or not part_no:
+	if not customer_dc_id or not part_no:
 		return None  
 	try:
-		doc = frappe.get_doc("Customer DC", customer_dc)
+		doc = frappe.get_doc("Customer DC", customer_dc_id)
 		so = frappe.get_doc("Sales Order", doc.sales_order_no)
 		
 
@@ -213,7 +223,8 @@ def get_customer(doctype, txt, searchfield, start, page_len, filters):
 
     query = """
         SELECT DISTINCT 
-            p.customer, p.name
+            p.customer, p.name,c.part_no,
+            c.customer_dc_no
         FROM 
             `tabCustomer DC` p
         INNER JOIN 
@@ -227,47 +238,43 @@ def get_customer(doctype, txt, searchfield, start, page_len, filters):
 
     return frappe.db.sql(query, args)
 
-
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def get_part_no(doctype, txt, searchfield, start, page_len, filters):
 
-    customer = filters.get("customer")
-    exclude_parts = filters.get("exclude_parts") or []   # list of part numbers
+    customer_dc_id = filters.get("customer_dc_id")
+    if not customer_dc_id:
+        return []
 
-    args = {
-        "start": start,
-        "page_len": page_len,
-        "customer": customer,
-        "txt": f"%{txt}%",
-        "exclude_parts": exclude_parts
-    }
+    args = (
+        customer_dc_id,
+        f"%{txt}%",
+        start,
+        page_len,
+    )
 
-    exclusion_sql = ""
-    if exclude_parts:
-        placeholders = ", ".join(["%s"] * len(exclude_parts))
-        exclusion_sql = f"AND c.part_no NOT IN ({placeholders})"
-        args_tuple = (args["customer"], args["txt"], *exclude_parts,
-                      args["start"], args["page_len"])
-    else:
-        args_tuple = (args["customer"], args["txt"], args["start"], args["page_len"])
-
-    query = f"""
-        SELECT 
-            c.part_no, c.process_name, c.material, 
-            c.customer_process_ref_no, c.customer_dc_no
+    query = """
+        SELECT
+            c.part_no,
+            c.process_name,
+            c.material,
+            c.customer_process_ref_no,
+            c.customer_dc_no
         FROM `tabCustomer DC` p
-        INNER JOIN `tabCustomer DC child` c ON p.name = c.parent
-        WHERE 
-            COALESCE(c.balance_qty_nos,0) - COALESCE(c.delivered_qty,0) > 0
-            AND p.customer = %s
+        INNER JOIN `tabCustomer DC child` c
+            ON p.name = c.parent
+        WHERE
+            p.name = %s
+            AND (
+                COALESCE(c.balance_qty_nos, 0)
+                - COALESCE(c.delivered_qty, 0)
+            ) > 0
             AND c.part_no LIKE %s
-            {exclusion_sql}
-        GROUP BY c.part_no
+        ORDER BY c.part_no
         LIMIT %s, %s
     """
 
-    return frappe.db.sql(query, args_tuple)
+    return frappe.db.sql(query, args)
 
 
 
