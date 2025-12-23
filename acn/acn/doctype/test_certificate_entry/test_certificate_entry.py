@@ -310,7 +310,7 @@ def job_card_process(doctype, txt, searchfield, start, page_len, filters):
 			`tabInspection Qty Details` i on i.parent=l.name inner join 
 			`tabJob Card for process` p on p.name=i.job_card_id
 	where (IFNULL(i.test_certified, 0) = 0) and internal_process= %(internal_process)s
-  and  i.docstatus=1 and i.parent= %(lab_inspection)s and p.name LIKE %(txt)s
+  and  i.docstatus=1 and p.docstatus=1 and i.parent= %(lab_inspection)s and p.name LIKE %(txt)s
 		LIMIT %(start)s, %(page_len)s
 	""", args, as_dict=False)
 	

@@ -204,6 +204,7 @@ def get_customer_dc(doctype, txt, searchfield, start, page_len, filters):
 		WHERE 
 			(c.balance_qty_nos- c.delivered_qty) >0
 			AND p.customer = %(customer)s
+			and p.docstatus=1
 			AND p.name LIKE %(txt)s
 		GROUP BY p.name
 		LIMIT %(start)s, %(page_len)s
@@ -233,6 +234,8 @@ def get_customer(doctype, txt, searchfield, start, page_len, filters):
         WHERE 
         		(c.balance_qty_nos - c.delivered_qty) > 0
             AND p.customer LIKE %(txt)s
+			and p.docstatus=1
+
         LIMIT %(start)s, %(page_len)s
     """
 
@@ -265,6 +268,8 @@ def get_part_no(doctype, txt, searchfield, start, page_len, filters):
             ON p.name = c.parent
         WHERE
             p.name = %s
+			and p.docstatus=1
+
             AND (
                 c.balance_qty_nos
                 - c.delivered_qty
