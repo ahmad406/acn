@@ -26,9 +26,16 @@ frappe.ui.form.on("Job Plan Scheduler", {
 			}
 		});
 		cur_frm.set_query("job_card_id", "job_card_details", function (frm) {
+			    let selected_job_cards = (cur_frm.doc.job_card_details || [])
+        .map(d => d.job_card_id)
+        .filter(Boolean);
+
 			return {
 				query: 'acn.acn.doctype.job_plan_scheduler.job_plan_scheduler.get_job_card',
-				filters: { "internal_process": cur_frm.doc.internal_process }
+				filters: { 
+					"internal_process": cur_frm.doc.internal_process,
+					  "exclude_job_cards": selected_job_cards
+				 }
 
 			}
 		});

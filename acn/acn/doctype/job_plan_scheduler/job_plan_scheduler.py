@@ -414,34 +414,46 @@ def get_internal_process(doctype, txt, searchfield, start, page_len, filters):
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def get_job_card(doctype, txt, searchfield, start, page_len, filters):
-	internal_process = filters.get('internal_process')
-	args = {
-		'start': start,
-		'page_len': page_len,
-		'internal_process': internal_process,
-		'txt': f"%{txt}%",
-	}
 
-	query = """
-		SELECT 
-			p.name,p.customer_name,p.part_no,p.material,p.item_name,p.customer_dc
-		FROM 
-			`tabJob Card for process` p
-		INNER JOIN 
-			`tabSequence Lot wise Internal Process` c 
-			ON p.name = c.parent
-		WHERE 
-			
-			p.docstatus=1 and
-			c.internal_process = %(internal_process)s and
-				c.balance_qty_in_nos > 0
-			
-			AND p.name LIKE %(txt)s
-	
-		LIMIT %(start)s, %(page_len)s
-	"""
+    internal_process = filters.get("internal_process")
+    exclude_job_cards = filters.get("exclude_job_cards") or []
 
-	return frappe.db.sql(query, args)
+    exclude_sql = ""
+    values = []
+
+    if exclude_job_cards:
+        placeholders = ", ".join(["%s"] * len(exclude_job_cards))
+        exclude_sql = f"AND p.name NOT IN ({placeholders})"
+        values.extend(exclude_job_cards)
+
+    query = f"""
+        SELECT
+            p.name,
+            p.customer_name,
+            p.part_no,
+            p.material,
+            p.item_name,
+            p.customer_dc
+        FROM `tabJob Card for process` p
+        INNER JOIN `tabSequence Lot wise Internal Process` c
+            ON p.name = c.parent
+        WHERE
+            p.docstatus = 1
+            AND c.internal_process = %s
+            AND COALESCE(c.balance_qty_in_nos, 0) > 0
+            AND p.name LIKE %s
+            {exclude_sql}
+        LIMIT %s, %s
+    """
+
+    values = (
+        [internal_process, f"%{txt}%"]
+        + values
+        + [start, page_len]
+    )
+
+    return frappe.db.sql(query, values)
+
 
 
 @frappe.whitelist()
