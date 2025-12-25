@@ -34,10 +34,14 @@ frappe.ui.form.on('Sales Order', {
 	setup: function (frm) {
 		frm.fields_dict['items'].grid.get_field('custom_part_no').get_query = function (doc, cdt, cdn) {
 			var child = locals[cdt][cdn];
+			let selected_part_no = (cur_frm.doc.items || [])
+				.map(d => d.custom_part_no)
+				.filter(Boolean);
 			return {
 				query: 'acn.custom_script.sales_order.sales_order.get_part_no',
 				filters: {
-					"customer": cur_frm.doc.customer
+					"customer": cur_frm.doc.customer,
+					"exclude_part_no": selected_part_no
 				}
 
 			}

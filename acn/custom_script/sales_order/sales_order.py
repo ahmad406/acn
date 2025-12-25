@@ -76,47 +76,47 @@ def get_process_rate(part_no, customer):
 		frappe.throw("Customer Process not found for <b>Part:no {0}  and Customer: {1} </b>".format(part_no, customer))
 
 
-
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def get_part_no(doctype, txt, searchfield, start, page_len, filters):
-    customer = filters.get('customer') if filters else None
-    if not customer:
-        return []
+	customer = filters.get("customer") if filters else None
+	exclude_part_no = filters.get("exclude_part_no") or []
 
-    args = {
-        'start': start,
-        'customer': customer,
-        'page_len': page_len,
-        'txt': '%%%s%%' % txt
-    }
+	if not customer:
+		return []
 
-    part = frappe.db.sql("""
-				
-SELECT 
-    p.name, 
-    c.item_code, 
-    c.item_name, 
-    c.process_name, 
-    c.customer_ref 
-FROM 
-    `tabPart no` p 
-INNER JOIN 
-    `tabPart No  Process Rate` pp ON p.name = pp.part_no 
-INNER JOIN 
-    `tabCustomer Process` c ON pp.parent = c.name
-WHERE 
-    pp.parenttype = 'Customer Process' and  p.customer= %(customer)s 
-						 and p.name LIKE %(txt)s
-ORDER BY p.name ASC
+	conditions = ""
+	args = {
+		"start": start,
+		"customer": customer,
+		"page_len": page_len,
+		"txt": f"%{txt}%",
+	}
 
+	if exclude_part_no:
+		conditions += " AND p.name NOT IN %(exclude_part_no)s"
+		args["exclude_part_no"] = tuple(exclude_part_no)
 
-LIMIT %(start)s, %(page_len)s
-
-
-
-
-        
-    """, args)
-
-    return part
+	return frappe.db.sql(
+		f"""
+		SELECT 
+			p.name,
+			c.item_code,
+			c.item_name,
+			c.process_name,
+			c.customer_ref
+		FROM `tabPart no` p
+		INNER JOIN `tabPart No  Process Rate` pp
+			ON p.name = pp.part_no
+		INNER JOIN `tabCustomer Process` c
+			ON pp.parent = c.name
+		WHERE
+			pp.parenttype = 'Customer Process'
+			AND p.customer = %(customer)s
+			AND p.name LIKE %(txt)s
+			{conditions}
+		ORDER BY p.name ASC
+		LIMIT %(start)s, %(page_len)s
+		""",
+		args,
+	)
