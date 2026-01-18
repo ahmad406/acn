@@ -9,10 +9,10 @@ frappe.ui.form.on("Lab Inspection Entry", {
             });
         }
         cur_frm.get_field("test_results").grid.cannot_add_rows = true
-        cur_frm.fields_dict['test_results'].grid.wrapper.find('.grid-remove-all-rows').hide();
-        cur_frm.fields_dict['test_results'].grid.wrapper.find('.grid-remove-rows').hide();
-        frm.fields_dict['test_results'].grid.wrapper.find('.grid-delete-row').hide();
-        frm.fields_dict['test_results'].grid.wrapper.find('.edit-grid-row').hide();
+        // cur_frm.fields_dict['test_results'].grid.wrapper.find('.grid-remove-all-rows').hide();
+        // cur_frm.fields_dict['test_results'].grid.wrapper.find('.grid-remove-rows').hide();
+        // frm.fields_dict['test_results'].grid.wrapper.find('.grid-delete-row').hide();
+        // frm.fields_dict['test_results'].grid.wrapper.find('.edit-grid-row').hide();
 
     },
     setup(frm) {
