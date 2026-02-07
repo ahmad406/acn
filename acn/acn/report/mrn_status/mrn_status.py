@@ -112,18 +112,19 @@ def get_data(filters):
                 THEN (dci.qty_kgs - IFNULL(dn.dispatch_qty_kgs,0))
             END AS `Pending Qty-Kgs`
 
-        FROM `tabJob Plan Scheduler` jp
-
-        LEFT JOIN `tabJob Card details` jpi
-            ON jpi.parent = jp.name
-
-        LEFT JOIN `tabCustomer DC` dc
-            ON dc.name = jpi.customer_dc_id
+        FROM `tabCustomer DC` dc
 
         LEFT JOIN `tabCustomer DC child` dci
             ON dci.parent = dc.name
-            AND dci.part_no = jpi.part_no
-            AND dci.item_name = jpi.item_name
+
+        LEFT JOIN `tabJob Card details` jpi
+            ON jpi.customer_dc_id = dc.name
+            AND jpi.part_no = dci.part_no
+            AND jpi.item_name = dci.item_name
+
+        LEFT JOIN `tabJob Plan Scheduler` jp
+            ON jp.name = jpi.parent
+
 
         LEFT JOIN `tabJob Execution Logsheet` jel
             ON jel.job_plan_id = jp.name
@@ -169,8 +170,8 @@ def get_data(filters):
         {cond_furnace}
         {cond_customer}
 
-        GROUP BY jp.name, jpi.item_name, jpi.part_no, jp.internal_process
-        ORDER BY dci.part_no, jp.name
+        ORDER BY dc.tran_date ASC, dci.part_no, jp.name
+
     """.format(
         cond_date=cond_date,
         cond_customer_dc=cond_customer_dc,
