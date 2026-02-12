@@ -1,0 +1,138 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:naming_series",
+ "creation": "2026-02-09 11:10:35.695285",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "section_break_zgxg",
+  "internal_process",
+  "fetch_data",
+  "amended_from",
+  "column_break_zmhh",
+  "customer",
+  "column_break_olhz",
+  "job_card_id",
+  "column_break_eadn",
+  "mrn_no",
+  "section_break_nqhm",
+  "bulk_planning",
+  "download"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_zgxg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Bulk Job Plan",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "internal_process",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Internal Process",
+   "options": "Internal Process"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "job_card_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Job Card ID",
+   "options": "Job Card for process"
+  },
+  {
+   "fieldname": "column_break_zmhh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_olhz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fetch_data",
+   "fieldtype": "Button",
+   "label": "Fetch Data"
+  },
+  {
+   "fieldname": "section_break_nqhm",
+   "fieldtype": "Section Break",
+   "label": "Bulk Planning"
+  },
+  {
+   "fieldname": "bulk_planning",
+   "fieldtype": "Table",
+   "label": "Bulk Planning",
+   "options": "Bulk Planning"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Bulk Job Plan ID",
+   "options": "BJP-.FY.-.#####."
+  },
+  {
+   "fieldname": "column_break_eadn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mrn_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "MRN No",
+   "options": "Customer DC"
+  },
+  {
+   "fieldname": "download",
+   "fieldtype": "Button",
+   "label": "Download"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-02-09 23:14:57.292100",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Bulk Job Plan",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,0 +1,222 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-02-09 11:15:52.455178",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "customer_dc_no",
+  "job_card_id",
+  "internal_process",
+  "customer_code",
+  "customer_name",
+  "item_code",
+  "item_name",
+  "part_number",
+  "material",
+  "process_type",
+  "process_name",
+  "lot_no",
+  "customer_requirement",
+  "column_break_sfil",
+  "mrn_qty_in_nos",
+  "mrn_qty_in_kgs",
+  "balance_plan_qty_in_nos",
+  "balance_plan_qty_in_kgs",
+  "furnace_process",
+  "furnace_code",
+  "plan_qty_in_nos",
+  "plan_qty_in_kgs",
+  "job_loading_plan_date",
+  "planned"
+ ],
+ "fields": [
+  {
+   "fieldname": "job_card_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Job Card ID",
+   "options": "Job Card for process",
+   "read_only": 1
+  },
+  {
+   "fieldname": "internal_process",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Internal process",
+   "options": "Internal Process",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "mrn_no.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "part_number",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Part Number",
+   "options": "Part no",
+   "read_only": 1
+  },
+  {
+   "fieldname": "material",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Material",
+   "read_only": 1
+  },
+  {
+   "fieldname": "process_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": " Process Type",
+   "options": "Process Type",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "process_type.process_name",
+   "fieldname": "process_name",
+   "fieldtype": "Data",
+   "label": " Process Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_sfil",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "balance_plan_qty_in_nos",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Balance plan Qty in Nos",
+   "read_only": 1
+  },
+  {
+   "fieldname": "balance_plan_qty_in_kgs",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Balance plan Qty in Kgs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "furnace_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Furnace Code",
+   "options": "Furnace"
+  },
+  {
+   "fieldname": "plan_qty_in_nos",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Plan Qty in Nos"
+  },
+  {
+   "fieldname": "plan_qty_in_kgs",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Plan Qty in Kgs"
+  },
+  {
+   "fieldname": "job_loading_plan_date",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Job Loading Plan Date"
+  },
+  {
+   "fieldname": "customer_dc_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "MRN No",
+   "options": "Customer DC",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer_requirement",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Customer Requirement",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mrn_qty_in_nos",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "MRN Qty in Nos",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mrn_qty_in_kgs",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "MRN Qty in Kgs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "lot_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Lot No",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "planned",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Planned"
+  },
+  {
+   "fieldname": "customer_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer Code",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "furnace_process",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Furnace Process",
+   "options": "Furnace Process"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-02-09 23:03:05.379403",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Bulk Planning",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
