@@ -40,7 +40,7 @@ class BulkJobPlan(Document):
 
             #  append job cards
             for r in rows:
-
+                job_card = frappe.get_doc("Job Card for process", r.job_card_id)
                 scheduler.append("job_card_details", {
                 "job_card_id": r.job_card_id,
                 "job_card_for_process":r.process_name,
@@ -49,8 +49,13 @@ class BulkJobPlan(Document):
                 "balance_plan_qty_in_nos": r.balance_plan_qty_in_nos,
                 "balance_plan_qty_in_kgs": r.balance_plan_qty_in_kgs,
                 "customer_dc_id": r.customer_dc_no,
+                "customer_process_ref_no": job_card.customer_process_ref_no,
+                "customer_dc_no": job_card.customer_dc_no,
+                "fixturing_image": job_card.fixturing_image,
+                "location_image": job_card.location_image,
                 "customer_code":r.customer_code,
                 "customer_name": r.customer_name,
+                "commitment_date":job_card.commitment_date,
                 "item_code": r.item_code,
                 "item_name": r.item_name,
                 "part_no": r.part_number,
