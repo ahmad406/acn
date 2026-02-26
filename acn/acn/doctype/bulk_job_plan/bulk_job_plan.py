@@ -8,6 +8,8 @@ class BulkJobPlan(Document):
 
     def on_submit(self):
         self.create_job_plan_schedulers()
+
+    def before_submit(self):
         self.keep_only_planned_rows()
 
 
@@ -33,6 +35,8 @@ class BulkJobPlan(Document):
 
             scheduler.internal_process = process
             scheduler.planned_date = today()
+
+            scheduler.get_internal_process_details()
 
             # copy plan date if needed
             if rows and rows[0].job_loading_plan_date:
@@ -62,7 +66,6 @@ class BulkJobPlan(Document):
                 "material": r.material,
                 "process_type": r.process_type,
                 "process_name": r.process_name,
-                "furnace_code": r.furnace_code,
                 "lot_no": r.lot_no,
                 "customer_requirements":r.customer_requirement
             })
@@ -82,7 +85,8 @@ class BulkJobPlan(Document):
         )
 
     def keep_only_planned_rows(self):
-        self.bulk_planning = [d for d in self.bulk_planning if d.planned]
+        rows = [d.as_dict() for d in self.bulk_planning if d.planned]
+        self.set("bulk_planning", rows)
 
 
 
@@ -122,7 +126,6 @@ def get_bulk_data(internal_process=None, customer=None, job_card=None,mrn_no=Non
             p.qty_in_nos AS mrn_qty_in_nos,
             p.qty_in_kgs AS mrn_qty_in_kgs,
 			c.internal_process,
-			c.furnace_process,
             c.lot_no,
             c.balance_qty_in_nos AS balance_plan_qty_in_nos,
             c.balance_qty_in_kgs AS balance_plan_qty_in_kgs

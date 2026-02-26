@@ -20,11 +20,11 @@ frappe.ui.form.on('Sales Invoice', {
     //     frm.refresh_field('document_enclosed_for_dispatch');
     // },
     refresh: function (frm) {
-   setTimeout(() => {
-            cur_frm.remove_custom_button('Delivery Note', 'Get Items From'); 
-		cur_frm.remove_custom_button('Sales Order', 'Get Items From');
- 		cur_frm.remove_custom_button('Quotation', 'Get Items From');
-		cur_frm.remove_custom_button('Timesheet', 'Get Items From');
+        setTimeout(() => {
+            cur_frm.remove_custom_button('Delivery Note', 'Get Items From');
+            cur_frm.remove_custom_button('Sales Order', 'Get Items From');
+            cur_frm.remove_custom_button('Quotation', 'Get Items From');
+            cur_frm.remove_custom_button('Timesheet', 'Get Items From');
         }, 500);
         if (frm.is_new()) {
             if (frm.doc.items) {
@@ -48,15 +48,38 @@ frappe.ui.form.on('Sales Invoice', {
             frm.refresh_field
 
         }
+        set_po_from_customer_dc(frm);
 
     },
-	onload:function(frm){
-setTimeout(() => {
- cur_frm.remove_custom_button('Delivery Note', 'Get Items From');
-                cur_frm.remove_custom_button('Sales Order', 'Get Items From');
-                cur_frm.remove_custom_button('Quotation', 'Get Items From');
-                cur_frm.remove_custom_button('Timesheet', 'Get Items From');
+    onload: function (frm) {
+        setTimeout(() => {
+            cur_frm.remove_custom_button('Delivery Note', 'Get Items From');
+            cur_frm.remove_custom_button('Sales Order', 'Get Items From');
+            cur_frm.remove_custom_button('Quotation', 'Get Items From');
+            cur_frm.remove_custom_button('Timesheet', 'Get Items From');
 
         }, 200);
-}
+    }
 })
+
+
+function set_po_from_customer_dc(frm) {
+
+    if (!frm.doc.items || !frm.doc.items.length) return;
+
+    let row = frm.doc.items[0];
+
+    if (!row.customer_dc_id) return;
+
+    frappe.db.get_value(
+        "Customer DC",
+        row.customer_dc_id,
+        ["customer_order_no", "customer_order_date"]
+    ).then(r => {
+
+        if (!r.message) return;
+
+        frm.set_value("po_no", r.message.customer_order_no);
+        frm.set_value("po_date", r.message.customer_order_date);
+    });
+}

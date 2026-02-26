@@ -91,6 +91,9 @@ frappe.ui.form.on("Bulk Planning", {
         row.plan_qty_in_nos = row.balance_plan_qty_in_nos;
         row.plan_qty_in_kgs = row.balance_plan_qty_in_kgs;
 
+        toggle_planned_checkbox(row);
+
+
         frm.refresh_field("bulk_planning");
     },
 
@@ -111,6 +114,17 @@ frappe.ui.form.on("Bulk Planning", {
                 (d.plan_qty_in_nos / d.balance_plan_qty_in_nos)
                 * d.balance_plan_qty_in_kgs;
         }
+
+        toggle_planned_checkbox(d);
+
+        frm.refresh_field("bulk_planning");
+    },
+
+    plan_qty_in_kgs(frm, cdt, cdn) {
+
+        let d = locals[cdt][cdn];
+
+        toggle_planned_checkbox(d);
 
         frm.refresh_field("bulk_planning");
     }
@@ -170,4 +184,13 @@ function download_bulk_grid(frm) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+}
+
+
+function toggle_planned_checkbox(row) {
+
+    let hasNos = flt(row.plan_qty_in_nos) > 0;
+    let hasKgs = flt(row.plan_qty_in_kgs) > 0;
+
+    row.planned = (hasNos || hasKgs) ? 1 : 0;
 }
