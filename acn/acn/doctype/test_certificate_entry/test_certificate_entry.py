@@ -3,6 +3,8 @@
 
 import frappe
 from frappe.model.document import Document
+from collections import defaultdict
+
 
 
 class TestCertificateentry(Document):
@@ -113,14 +115,16 @@ class TestCertificateentry(Document):
 				re.reference_standard=self.get_standard(r.control_parameters)
 
 
-
-
+		tested_qty_map = defaultdict(float)
+		for r in self.test_results:
+			if r.control_parameters:
+				tested_qty_map[r.control_parameters] += (r.testing_qty or 0)
 
 		for k in li.parameters:
 			if self.job_card_id==k.job_card_id:
 				row=self.append("test_parameters_details",{})
 				row.test_parameters=k.control_parameter
-				row.qty_checked=self.check_qty_in_nos
+				row.qty_checked = tested_qty_map.get(k.control_parameter, 0)
 
 				row.reference_standard=self.get_standard(k.control_parameter)
 				row.print_sequence_no = frappe.db.get_value('Internal Control Parameter', k.control_parameter, 'tc_order_no')

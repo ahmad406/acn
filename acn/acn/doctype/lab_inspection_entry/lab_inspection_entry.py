@@ -39,6 +39,8 @@ class LabInspectionEntry(Document):
 				d.db_set("result_value_from",min_val,update_modified=False)
 			if max_val:
 				d.db_set("result_value_to",max_val,update_modified=False)
+		
+		self.update_parameter_test_qty()
 
 
 
@@ -68,6 +70,7 @@ class LabInspectionEntry(Document):
 
 	def on_submit(self):
 		self.validate_test_result()
+		self.update_parameter_test_qty() 
 		self.update_jb_plan()
 		self.update_job_card()
 		self.update_is_ready_for_next_lot(cancel=False)
@@ -181,11 +184,11 @@ class LabInspectionEntry(Document):
 				WHERE 
 					c.parenttype='Job Plan Scheduler'
 					AND c.job_card_id=%s
-					AND c.lot_no > %s
+					AND c.lot_no =%s
 					AND p.docstatus=1
 					AND IFNULL(p.job_execution,0)=0
 				ORDER BY c.lot_no ASC, p.creation ASC
-			""", (d.job_card_id, current_lot), as_dict=True)
+			""", (d.job_card_id, current_lot+1), as_dict=True)
 
 			remaining_nos = executed_qty_nos
 			remaining_kgs = executed_qty_kgs
@@ -430,6 +433,25 @@ class LabInspectionEntry(Document):
 				)
 				row.checked_qty_in_nos = qty or 0 
 
+	def update_parameter_test_qty(self):
+		result = frappe.db.sql("""
+		    SELECT
+		        control_parameters,
+		        SUM(IFNULL(testing_qty,0)) AS total_qty
+		    FROM `tabTest Results`
+		    WHERE parent = %s
+		    GROUP BY control_parameters
+		""", (self.name,), as_dict=True)		
+		qty_map = {r.control_parameters: r.total_qty for r in result}		
+		for row in self.parameters:
+		    total = qty_map.get(row.control_parameter, 0)		
+		    row.db_set(
+		        "test_quantity",
+		        total,
+		        update_modified=False
+		    )
+	
+
 def get_sample_plan_frm_process(row, process):
 	doc = frappe.get_doc("Customer Process", row.customer_process)
 	for child in doc.testing_slab_method:
@@ -528,7 +550,3 @@ ORDER BY
 	""", (internal_process,), as_dict=True)
 
 
-
-
-
-	

@@ -217,8 +217,8 @@ class CustomerDC(Document):
 				if so_item.name == item.sales_order_item:
 					sign = -1 if is_cancel else 1
 
-					new_bal_nos = so_item.custom_bal_qty_in_nos + sign * item.qty_nos
-					new_bal_kgs = so_item.custom_bal_qty_in_kgs + sign * item.qty_kgs
+					new_bal_nos = so_item.custom_bal_qty_in_nos - sign * item.qty_nos
+					new_bal_kgs = so_item.custom_bal_qty_in_kgs - sign * item.qty_kgs
 
 					if new_bal_nos < 0 or new_bal_kgs < 0:
 						pass
@@ -230,44 +230,128 @@ class CustomerDC(Document):
 					so_item.db_set("custom_bal_qty_in_kgs", new_bal_kgs)
 					break
 
-
 	@frappe.whitelist()
-	def set_part_no_details(self,row):
-		if row.get("part_no"):
-			sql="""select * from `tabSales Order Item` where parent="{}" and custom_part_no ="{}" """.format(self.sales_order_no,row.get("part_no"))
-			data=frappe.db.sql(sql,as_dict=True)
-			if data:
-				for d in self.items:
-					if str(d.idx)==str(row.get("idx")):
-						# d.qty_nos = data[0].custom_bal_qty_in_nos
-						# d.qty_kgs = data[0].custom_bal_qty_in_kgs
+	def set_part_no_details(self, row):
+
+		if not row.get("part_no") or not self.sales_order_no:
+			return True
+
+		open_order = frappe.db.get_value(
+			"Sales Order",
+			self.sales_order_no,
+			"open_order"
+		)
+
+		so_item = frappe.db.get_all(
+			"Sales Order Item",
+			filters={
+				"parent": self.sales_order_no,
+				"custom_part_no": row.get("part_no")
+			},
+			fields=["*"],
+			limit=1
+		)
+
+		if not so_item:
+			return True
+
+		so_item = so_item[0]
+
+		for d in self.items:
+			if str(d.idx) == str(row.get("idx")):
+				if open_order:
+
+					balance_nos = so_item.custom_bal_qty_in_nos or 0
+					balance_kgs = so_item.custom_bal_qty_in_kgs or 0
+
+
+				else:
+
+					so_qty_nos = so_item.custom_qty_in_nos or 0
+					so_qty_kgs = so_item.custom_qty_in_kgs or 0
+
+					delivered = frappe.db.sql("""
+						SELECT 
+							SUM(qty_nos) as nos,
+							SUM(qty_kgs) as kgs
+						FROM `tabCustomer DC child`
+						WHERE 
+						 sales_order_item = %s
+						AND docstatus = 1
+					""", (so_item.name), as_dict=True)
+
+					delivered_nos = delivered[0].nos or 0
+					delivered_kgs = delivered[0].kgs or 0
+
+					balance_nos = so_qty_nos - delivered_nos
+					balance_kgs = so_qty_kgs - delivered_kgs
+
+				d.balance_qty_nos = balance_nos
+				d.balance_qty_kgs = balance_kgs
+				d.qty_kgs = balance_kgs
+				d.qty_nos = balance_nos
+
+
+
+				if d.qty_kgs:
+					d.qty = d.qty_kgs
+				elif d.qty_nos:
+					d.qty = d.qty_nos
+
+				d.rate = so_item.rate
+				d.item_code = so_item.item_code
+				d.item_name = so_item.item_name
+				d.rate_uom = so_item.custom_rate_uom
+				d.eway_bill_hsn = so_item.eway_bill_hsn
+				d.hsn = so_item.gst_hsn_code
+
+				d.customer_process_ref_no = so_item.custom_customer_process_ref_no
+				d.process_type = so_item.custom_process_type
+				d.process_name = so_item.custom_process_name
+				d.commitment_date = so_item.delivery_date
+				d.sales_order_item = so_item.name
+				d.material = so_item.custom_material
+ 
+				break
+
+		return True
+	# @frappe.whitelist()
+	# def set_part_no_details(self,row):
+	# 	if row.get("part_no"):
+	# 		sql="""select * from `tabSales Order Item` where parent="{}" and custom_part_no ="{}" """.format(self.sales_order_no,row.get("part_no"))
+	# 		data=frappe.db.sql(sql,as_dict=True)
+	# 		if data:
+	# 			for d in self.items:
+	# 				if str(d.idx)==str(row.get("idx")):
+	# 					# d.qty_nos = data[0].custom_bal_qty_in_nos
+	# 					# d.qty_kgs = data[0].custom_bal_qty_in_kgs
 						
 					
-						d.balance_qty_nos=data[0].custom_bal_qty_in_nos
-						d.balance_qty_kgs=data[0].custom_bal_qty_in_kgs
-						if d.qty_kgs:
-							d.qty = d.qty_kgs
-						if d.qty_nos:
-							d.qty = d.qty_nos
+	# 					d.balance_qty_nos=data[0].custom_bal_qty_in_nos
+	# 					d.balance_qty_kgs=data[0].custom_bal_qty_in_kgs
+	# 					if d.qty_kgs:
+	# 						d.qty = d.qty_kgs
+	# 					if d.qty_nos:
+	# 						d.qty = d.qty_nos
 
-						d.rate= data[0].rate
+	# 					d.rate= data[0].rate
 
-						d.item_code = data[0].item_code
-						d.item_name = data[0].item_name
-						d.rate_uom = data[0].custom_rate_uom
-						d.eway_bill_hsn = data[0].eway_bill_hsn
-						d.hsn = data[0].gst_hsn_code
+	# 					d.item_code = data[0].item_code
+	# 					d.item_name = data[0].item_name
+	# 					d.rate_uom = data[0].custom_rate_uom
+	# 					d.eway_bill_hsn = data[0].eway_bill_hsn
+	# 					d.hsn = data[0].gst_hsn_code
 
 
-						d.customer_process_ref_no = data[0].custom_customer_process_ref_no
-						d.process_type=data[0].custom_process_type
-						d.process_name=data[0].custom_process_name
-						d.commitment_date=data[0].delivery_date
-						d.sales_order_item=data[0].name
-						d.material=data[0].custom_material
+	# 					d.customer_process_ref_no = data[0].custom_customer_process_ref_no
+	# 					d.process_type=data[0].custom_process_type
+	# 					d.process_name=data[0].custom_process_name
+	# 					d.commitment_date=data[0].delivery_date
+	# 					d.sales_order_item=data[0].name
+	# 					d.material=data[0].custom_material
 
-						break
-		return True
+	# 					break
+	# 	return True
 	
 
 @frappe.whitelist()

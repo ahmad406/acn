@@ -139,11 +139,11 @@ class JobExecutionLogsheet(Document):
 				WHERE 
 					c.parenttype='Job Plan Scheduler'
 					AND c.job_card_id=%s
-					AND c.lot_no > %s
+					AND c.lot_no = %s
 					AND p.docstatus=1
 					AND IFNULL(p.job_execution,0)=0
 				ORDER BY c.lot_no ASC, p.creation ASC
-			""", (d.job_card_id, current_lot), as_dict=True)
+			""", (d.job_card_id, current_lot+1), as_dict=True)
 
 			remaining_nos = executed_qty_nos
 			remaining_kgs = executed_qty_kgs
