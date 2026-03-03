@@ -1,7 +1,5 @@
-# Copyright (c) 2025, Ahmad Sayyed and contributors
-# For license information, please see license.txt
-
 import frappe
+
 
 def execute(filters=None):
     if not filters:
@@ -15,16 +13,14 @@ def execute(filters=None):
 
 def get_data(filters):
 
-    # ----------------------------
-    #  Dynamic conditions
-    # ----------------------------
     cond_customer_dc = ""
     cond_date = ""
     cond_furnace = ""
-    cond_customer=""
+    cond_customer = ""
 
     if filters.get("customer_dc"):
         cond_customer_dc = " AND dc.name = '{0}' ".format(filters.get("customer_dc"))
+
     if filters.get("customer"):
         cond_customer = " AND dc.customer = '{0}' ".format(filters.get("customer"))
 
@@ -36,9 +32,6 @@ def get_data(filters):
     if filters.get("furnace_code"):
         cond_furnace = " AND jp.furnace_code = '{0}' ".format(filters.get("furnace_code"))
 
-    # ----------------------------
-    #  MAIN QUERY
-    # ----------------------------
     query = """
         SELECT  
             dc.name AS `Customer DC ID`,
@@ -55,18 +48,19 @@ def get_data(filters):
 
             jp.name AS `Plan ID`,
             jp.planned_date,
-             jp.furnace_code,
+            jp.furnace_code,
             jp.internal_process AS `Internal Process`,
             jp.internal_process_for,
             jpi.planned_qty_in_nos AS `Planned Qty-Nos`,
             jpi.planned_qty_in_kgs AS `Planned Qty-Kgs`,
             jpi.job_card_id AS `Job Card ID`,
 
+            -- Execution
             CASE WHEN lie.name IS NULL THEN jel.name END AS `Execution No`,
             CASE WHEN lie.name IS NULL THEN jel.execution_date END AS `Execution Date`,
-             CASE WHEN lie.name IS NULL THEN jel.actual_start_date_time END AS `actual_start_date_time`,
-                CASE WHEN lie.name IS NULL THEN jel.actual_end_date_time END AS `actual_end_date_time`,
-                CASE 
+            CASE WHEN lie.name IS NULL THEN jel.actual_start_date_time END AS `actual_start_date_time`,
+            CASE WHEN lie.name IS NULL THEN jel.actual_end_date_time END AS `actual_end_date_time`,
+            CASE 
                 WHEN lie.name IS NULL 
                     AND jel.actual_start_date_time IS NOT NULL
                     AND jel.actual_end_date_time IS NOT NULL
@@ -75,42 +69,24 @@ def get_data(filters):
             CASE WHEN lie.name IS NULL THEN jpi.planned_qty_in_nos END AS `Executed Qty-Nos`,
             CASE WHEN lie.name IS NULL THEN jpi.planned_qty_in_kgs END AS `Executed Qty-Kgs`,
 
-            CASE WHEN lie.name IS NOT NULL THEN lie.name END AS `Inspection No`,
-                CASE WHEN lie.name IS NOT NULL THEN lie.inspection_date END AS `inspection_date`,
+            -- Inspection
+            lie.name AS `Inspection No`,
+            lie.inspection_date AS `inspection_date`,
             CASE WHEN lie.name IS NOT NULL THEN jpi.planned_qty_in_nos END AS `Inspected Qty-Nos`,
             CASE WHEN lie.name IS NOT NULL THEN jpi.planned_qty_in_kgs END AS `Inspected Qty-Kgs`,
 
-            CASE WHEN lie.name IS NOT NULL AND jp.internal_process LIKE '%FINAL%' THEN tc.name END AS `TC No`,
-             CASE  WHEN lie.name IS NOT NULL AND jp.internal_process LIKE '%FINAL%' THEN tc.date END AS `TC Date`,
-
-            CASE WHEN lie.name IS NOT NULL AND jp.internal_process LIKE '%FINAL%' THEN dn.dispatch_no END AS `Dispatch No`,
-                    CASE 
-        WHEN lie.name IS NOT NULL AND jp.internal_process LIKE '%FINAL%' THEN dn_parent.posting_date
-    END AS `dn_date`,
-    CASE 
-        WHEN lie.name IS NOT NULL AND jp.internal_process LIKE '%FINAL%' THEN dn_parent.ewaybill
-    END AS `ewaybill`,
-
-            CASE WHEN lie.name IS NOT NULL AND jp.internal_process LIKE '%FINAL%' THEN dn.dispatch_qty_nos END AS `Dispatch Qty-Nos`,
-            CASE WHEN lie.name IS NOT NULL AND jp.internal_process LIKE '%FINAL%' THEN dn.dispatch_qty_kgs END AS `Dispatch Qty-Kgs`,
-            CASE WHEN lie.name IS NOT NULL AND jp.internal_process LIKE '%FINAL%' THEN si.invoice_no END AS `Invoice No`,
-                CASE 
-        WHEN lie.name IS NOT NULL AND jp.internal_process LIKE '%FINAL%' THEN si_parent.posting_date
-    END AS `si_date`,
+            -- Test Certificate (STRICT 1:1 LINK WITH INSPECTION)
+            CASE 
+                WHEN lie.name IS NOT NULL 
+                AND jp.internal_process LIKE '%FINAL%' 
+                THEN tc.name 
+            END AS `TC No`,
 
             CASE 
                 WHEN lie.name IS NOT NULL 
-                    AND jp.internal_process LIKE '%FINAL%'
-                    AND tc.name IS NOT NULL
-                THEN (dci.qty_nos - IFNULL(dn.dispatch_qty_nos,0))
-            END AS `Pending Qty-Nos`,
-
-            CASE 
-                WHEN lie.name IS NOT NULL 
-                    AND jp.internal_process LIKE '%FINAL%'
-                    AND tc.name IS NOT NULL
-                THEN (dci.qty_kgs - IFNULL(dn.dispatch_qty_kgs,0))
-            END AS `Pending Qty-Kgs`
+                AND jp.internal_process LIKE '%FINAL%' 
+                THEN tc.date 
+            END AS `TC Date`
 
         FROM `tabCustomer DC` dc
 
@@ -125,44 +101,16 @@ def get_data(filters):
         LEFT JOIN `tabJob Plan Scheduler` jp
             ON jp.name = jpi.parent
 
-
         LEFT JOIN `tabJob Execution Logsheet` jel
             ON jel.job_plan_id = jp.name
 
         LEFT JOIN `tabLab Inspection Entry` lie
             ON lie.job_plan_id = jp.name
 
-        LEFT JOIN `tabInspection Qty Details` liei
-            ON liei.parent = lie.name
-            AND liei.item_name = jpi.item_name
-
+        -- ✅ FIXED JOIN (One-to-One with Inspection)
         LEFT JOIN `tabTest Certificate entry` tc
-            ON tc.customer_dc_id = dc.name
-            AND tc.job_card_id = jpi.job_card_id
+            ON tc.lab_inspection_id = lie.name
             AND tc.docstatus = 1
-
-        LEFT JOIN (
-            SELECT parent, customer_dc_id, part_no,
-                MAX(parent) AS dispatch_no,
-                SUM(d_qty_in_nos) AS dispatch_qty_nos,
-                SUM(d_qty_in_kgs) AS dispatch_qty_kgs
-            FROM `tabDelivery Note Item`
-            GROUP BY customer_dc_id, part_no
-        ) dn ON dn.customer_dc_id = dc.name
-            AND dn.part_no = dci.part_no
-        LEFT JOIN `tabDelivery Note` dn_parent
-    ON dn_parent.name = dn.dispatch_no
-
-        LEFT JOIN (
-            SELECT customer_dc_id, part_no,
-                MAX(parent) AS invoice_no
-            FROM `tabSales Invoice Item`
-            GROUP BY customer_dc_id, part_no
-        ) si ON si.customer_dc_id = dc.name
-            AND si.part_no = dci.part_no
-
-            LEFT JOIN `tabSales Invoice` si_parent
-    ON si_parent.name = si.invoice_no
 
         WHERE 1=1
         {cond_date}
@@ -171,7 +119,6 @@ def get_data(filters):
         {cond_customer}
 
         ORDER BY dc.tran_date ASC, dci.part_no, jp.name
-
     """.format(
         cond_date=cond_date,
         cond_customer_dc=cond_customer_dc,
@@ -183,6 +130,7 @@ def get_data(filters):
 
 
 def get_columns():
+
     columns = [
 
         {"label": "Party Name", "fieldname": "Customer Name", "fieldtype": "Data", "width": 300},
@@ -192,7 +140,7 @@ def get_columns():
         {"label": "Party DC No.", "fieldname": "Customer DC No", "fieldtype": "Data", "width": 120},
 
         {"label": "Process", "fieldname": "Process Name", "fieldtype": "Data", "width": 140},
-        {"label": "Item", "fieldname": "Item Name", "fieldtype": "Data", "width": 180}, 
+        {"label": "Item", "fieldname": "Item Name", "fieldtype": "Data", "width": 180},
         {"label": "Part Number", "fieldname": "Part No", "fieldtype": "Data", "width": 140},
         {"label": "Material", "fieldname": "material", "fieldtype": "Data", "width": 120},
 
@@ -219,26 +167,13 @@ def get_columns():
         {"label": "Executed Qty-Nos", "fieldname": "Executed Qty-Nos", "fieldtype": "Float", "width": 140},
         {"label": "Executed Qty-Kgs", "fieldname": "Executed Qty-Kgs", "fieldtype": "Float", "width": 140},
 
-        {"label": "Inpected Date", "fieldname": "inspection_date", "fieldtype": "Date", "width": 140},
-        {"label": "Inpected No.", "fieldname": "Inspection No", "fieldtype": "Data", "width": 160},
-        {"label": "Inpected Qty-Nos", "fieldname": "Inspected Qty-Nos", "fieldtype": "Float", "width": 160},
-        {"label": "Inpected Qty-Kgs", "fieldname": "Inspected Qty-Kgs", "fieldtype": "Float", "width": 160},
+        {"label": "Inspected Date", "fieldname": "inspection_date", "fieldtype": "Date", "width": 140},
+        {"label": "Inspected No.", "fieldname": "Inspection No", "fieldtype": "Data", "width": 160},
+        {"label": "Inspected Qty-Nos", "fieldname": "Inspected Qty-Nos", "fieldtype": "Float", "width": 160},
+        {"label": "Inspected Qty-Kgs", "fieldname": "Inspected Qty-Kgs", "fieldtype": "Float", "width": 160},
 
-        {"label": "TC Date", "fieldname": "TC Date", "fieldtype": "Date", "width": 180}, 
+        {"label": "TC Date", "fieldname": "TC Date", "fieldtype": "Date", "width": 180},
         {"label": "TC No.", "fieldname": "TC No", "fieldtype": "Data", "width": 160},
-
-
-        {"label": "Despatch Date", "fieldname": "dn_date", "fieldtype": "Date", "width": 160}, 
-        {"label": "Despatch No.", "fieldname": "Dispatch No", "fieldtype": "Data", "width": 180},
-        {"label": "e-Way Bill No.", "fieldname": "ewaybill", "fieldtype": "Data", "width": 150},
-        {"label": "Despatch Qty-Nos", "fieldname": "Dispatch Qty-Nos", "fieldtype": "Float", "width": 150},
-        {"label": "Despatch Qty-Kgs", "fieldname": "Dispatch Qty-Kgs", "fieldtype": "Float", "width": 150},
-
-        {"label": "Invoice Date", "fieldname": "si_date", "fieldtype": "Date", "width": 180},  
-        {"label": "Invoice No.", "fieldname": "Invoice No", "fieldtype": "Data", "width": 180},
-
-        {"label": "Pending Qty-Nos", "fieldname": "Pending Qty-Nos", "fieldtype": "Float", "width": 140},
-        {"label": "Pending Qty-Kgs", "fieldname": "Pending Qty-Kgs", "fieldtype": "Float", "width": 140},
     ]
 
     return columns
