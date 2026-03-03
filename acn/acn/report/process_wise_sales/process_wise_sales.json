@@ -1,5 +1,5 @@
 {
- "add_total_row": 0,
+ "add_total_row": 1,
  "add_translate_data": 0,
  "columns": [],
  "creation": "2026-02-27 14:35:10.049648",
@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": null,
- "modified": "2026-02-27 14:35:10.049648",
+ "modified": "2026-03-03 20:04:11.324197",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Process Wise Sales",

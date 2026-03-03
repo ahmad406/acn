@@ -93,7 +93,7 @@ def get_opening_stock(filters):
             ON child.parent = dc.name
         WHERE dc.docstatus = 1
         AND dc.customer = %(customer)s
-        AND dc.tran_date < %(from_date)s
+        AND dc.tran_date > %(from_date)s
         AND (child.qty_nos > 0 OR child.qty_kgs > 0)
     """, filters, as_dict=True)
 
