@@ -16,6 +16,22 @@ class TestCertificateentry(Document):
 	def on_cancel(self):
 		self.update_inspection_qty(is_canceled=1)
 		self.update_customer_dc(is_canceled=1)
+	
+	def validate(self):
+		if not self.lab_inspection_id or not self.job_card_id:
+			return
+		existing = frappe.db.exists("Test Certificate entry",
+		{
+			"lab_inspection_id": self.lab_inspection_id,
+			"job_card_id": self.job_card_id,
+			"name": ["!=", self.name]
+		})
+		if existing:
+			frappe.throw(
+				f"Test Certificate Entry already exists for "
+				f"Lab Inspection <b>{self.lab_inspection_id}</b> "
+				f"and Job Card <b>{self.job_card_id}</b>"
+			)
 
 	def update_customer_dc(self, is_canceled=0):
 		cd = frappe.get_doc("Customer DC", self.customer_dc_id)

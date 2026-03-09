@@ -48,7 +48,9 @@ frappe.ui.form.on('Sales Invoice', {
             frm.refresh_field
 
         }
-        set_po_from_customer_dc(frm);
+        if (frm.doc.docstatus === 0){
+            set_po_from_customer_dc(frm);
+        }
 
     },
     onload: function (frm) {
