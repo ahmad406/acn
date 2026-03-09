@@ -433,23 +433,31 @@ class LabInspectionEntry(Document):
 				)
 				row.checked_qty_in_nos = qty or 0 
 
+
 	def update_parameter_test_qty(self):
 		result = frappe.db.sql("""
-		    SELECT
-		        control_parameters,
-		        SUM(IFNULL(testing_qty,0)) AS total_qty
-		    FROM `tabTest Results`
-		    WHERE parent = %s
-		    GROUP BY control_parameters
-		""", (self.name,), as_dict=True)		
-		qty_map = {r.control_parameters: r.total_qty for r in result}		
+			SELECT
+				control_parameters,
+				job_card_id,
+				SUM(IFNULL(testing_qty,0)) AS total_qty
+			FROM `tabTest Results`
+			WHERE parent = %s
+			GROUP BY control_parameters, job_card_id
+		""", (self.name,), as_dict=True)
+	
+		qty_map = {
+			(r.control_parameters, r.job_card_id): r.total_qty
+			for r in result
+		}
+	
 		for row in self.parameters:
-		    total = qty_map.get(row.control_parameter, 0)		
-		    row.db_set(
-		        "test_quantity",
-		        total,
-		        update_modified=False
-		    )
+			total = qty_map.get((row.control_parameter, row.job_card_id), 0)
+	
+			row.db_set(
+				"test_quantity",
+				total,
+				update_modified=False
+			)
 	
 
 def get_sample_plan_frm_process(row, process):
