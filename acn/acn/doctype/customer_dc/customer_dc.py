@@ -288,8 +288,8 @@ class CustomerDC(Document):
 
 				d.balance_qty_nos = balance_nos
 				d.balance_qty_kgs = balance_kgs
-				d.qty_kgs = balance_kgs
-				d.qty_nos = balance_nos
+				# d.qty_kgs = balance_kgs
+				# d.qty_nos = balance_nos
 
 
 

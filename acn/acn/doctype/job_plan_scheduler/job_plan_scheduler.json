@@ -206,7 +206,7 @@
  "is_calendar_and_gantt": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-24 22:02:00.725891",
+ "modified": "2026-03-12 16:54:47.609208",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Plan Scheduler",
@@ -227,6 +227,7 @@
   }
  ],
  "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

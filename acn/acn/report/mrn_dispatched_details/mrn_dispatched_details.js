@@ -2,7 +2,7 @@
 // For license information, please see license.txt
 
 frappe.query_reports["MRN Dispatched Details"] = {
-	 "filters": [
+    "filters": [
 
         {
             "fieldname": "company",
@@ -34,6 +34,14 @@ frappe.query_reports["MRN Dispatched Details"] = {
             "label": "Customer DC",
             "fieldtype": "Link",
             "options": "Customer DC"
+        },
+
+
+        {
+            "fieldname": "summary",
+            "label": "Summary",
+            "fieldtype": "Check",
+            "default": 0
         }
 
     ]

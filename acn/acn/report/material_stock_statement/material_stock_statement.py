@@ -93,16 +93,21 @@ def get_opening_stock(filters):
             ON child.parent = dc.name
         WHERE dc.docstatus = 1
         AND dc.customer = %(customer)s
-        AND dc.tran_date > %(from_date)s
+        AND dc.tran_date < %(from_date)s
         AND (child.qty_nos > 0 OR child.qty_kgs > 0)
     """, filters, as_dict=True)
 
     for d in opening_data:
 
-        dispatch = get_dispatch_details(d.mrn_no, d.part_no)
+        dispatch = get_dispatch_details(d.mrn_no, d.part_no, filters.get("from_date"))
 
         opening_nos = flt(d.qty_nos)
         opening_kgs = flt(d.qty_kgs)
+        pending_nos = opening_nos - dispatch["nos"]
+        pending_kgs = opening_kgs - dispatch["kgs"]
+
+        if pending_nos == 0 or pending_kgs == 0:
+            continue
 
         rows.append({
             "particulars": "OPENING STOCK",
@@ -164,6 +169,11 @@ def get_material_received(filters):
 
         received_nos = flt(d.qty_nos)
         received_kgs = flt(d.qty_kgs)
+        pending_nos = received_nos - dispatch["nos"]
+        pending_kgs = received_kgs - dispatch["kgs"]
+
+        if pending_nos == 0 or pending_kgs == 0:
+            continue
 
         rows.append({
             "particulars": "MATERIAL RECEIVED",
@@ -194,7 +204,7 @@ def get_material_received(filters):
     return rows
 
 
-def get_dispatch_details(customer_dc, part_no):
+def get_dispatch_details(customer_dc, part_no, to_date=None):
 
     if not customer_dc or not part_no:
         return {"nos": 0, "kgs": 0, "invoice": "", "detail": ""}
@@ -225,7 +235,8 @@ def get_dispatch_details(customer_dc, part_no):
         WHERE si.docstatus = 1
         AND sii.customer_dc_id = %s
         AND sii.part_no = %s
-        """, (customer_dc, part_no), as_dict=True)
+        AND (%s IS NULL OR si.posting_date < %s)
+        """, (customer_dc, part_no,to_date, to_date), as_dict=True)
 
     if result and result[0]:
         r = result[0]

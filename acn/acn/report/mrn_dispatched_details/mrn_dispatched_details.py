@@ -8,14 +8,15 @@ def execute(filters=None):
     if not filters:
         filters = {}
 
-    columns = get_columns()
-    data = get_data(filters)
+    is_summary = filters.get("summary")
+
+    columns = get_summary_columns() if is_summary else get_columns()
+    data = get_summary_data(filters) if is_summary else get_data(filters)
 
     return columns, data
 
 
-def get_data(filters):
-
+def build_conditions(filters):
     conditions = ""
 
     if filters.get("company"):
@@ -32,12 +33,18 @@ def get_data(filters):
             AND dc.tran_date BETWEEN '{0}' AND '{1}'
         """.format(filters.get("from_date"), filters.get("to_date"))
 
+    return conditions
+
+
+def get_data(filters):
+    conditions = build_conditions(filters)
+
     query = f"""
         SELECT
             dc.customer AS `Party Name`,
             dc.tran_date AS `MRN Date`,
             dc.name AS `MRN No`,
-            jc.job_card_id AS `Job Card ID`,
+            jc.name AS `Job Card ID`,
             dci.customer_dc_no AS `Party DC No`,
             dci.process_name AS `Process`,
             dci.item_name AS `Item`,
@@ -50,8 +57,9 @@ def get_data(filters):
             dn.name AS `Despatch No.`,
             dn.ewaybill AS `e-Way Bill No.`,
 
-            dni.d_qty_in_nos AS `Despatch Qty-Nos`,
-            dni.d_qty_in_kgs AS `Despatch Qty-Kgs`,
+            -- FIX Bug 1: use per-DN aggregated qty instead of raw dni join
+            dn_item.d_qty_in_nos AS `Despatch Qty-Nos`,
+            dn_item.d_qty_in_kgs AS `Despatch Qty-Kgs`,
 
             inv.invoice_date AS `Invoice Date`,
             inv.invoice_no AS `Invoice No.`,
@@ -73,24 +81,29 @@ def get_data(filters):
             ON dci.parent = dc.name
 
         -- ✅ Aggregate Job Card (prevents duplication)
-        LEFT JOIN (
-            SELECT
-                customer_dc_id,
-                part_no,
-                MAX(job_card_id) AS job_card_id
-            FROM `tabJob Card details`
-            GROUP BY customer_dc_id, part_no
-        ) jc
-            ON jc.customer_dc_id = dc.name
+        LEFT JOIN `tabJob Card for process` jc
+            ON jc.customer_dc = dc.name
             AND jc.part_no = dci.part_no
 
-        LEFT JOIN `tabDelivery Note Item` dni
-            ON dni.customer_dc_id = dc.name
-            AND dni.part_no = dci.part_no
+        -- aggregate DN items per DC+part_no+DN (only submitted DNs, docstatus=1)
+        LEFT JOIN (
+            SELECT
+                dni.customer_dc_id,
+                dni.part_no,
+                dni.parent AS delivery_note,
+                SUM(dni.d_qty_in_nos) AS d_qty_in_nos,
+                SUM(dni.d_qty_in_kgs) AS d_qty_in_kgs
+            FROM `tabDelivery Note Item` dni
+            INNER JOIN `tabDelivery Note` dn_filter
+                ON dn_filter.name = dni.parent
+                AND dn_filter.docstatus = 1
+            GROUP BY dni.customer_dc_id, dni.part_no, dni.parent
+        ) dn_item
+            ON dn_item.customer_dc_id = dc.name
+            AND dn_item.part_no = dci.part_no
 
         LEFT JOIN `tabDelivery Note` dn
-            ON dn.name = dni.parent
-            AND dn.docstatus = 1
+            ON dn.name = dn_item.delivery_note
 
         -- ✅ Aggregate Invoice (prevents duplication)
         LEFT JOIN (
@@ -107,7 +120,10 @@ def get_data(filters):
         ) inv
             ON inv.delivery_note = dn.name
 
-        -- ✅ Aggregate Dispatch Totals (fast pending calc)
+        -- FIX Bug 2: aggregate dispatch totals per dc+part_no
+        -- this is correct only when part_no is unique per DC child row.
+        -- If same part_no can appear in multiple child rows of same DC,
+        -- this will over-sum. Current schema assumed: part_no unique per DC.
         LEFT JOIN (
             SELECT
                 dni2.customer_dc_id,
@@ -126,41 +142,116 @@ def get_data(filters):
         WHERE 1=1
         {conditions}
 
-        ORDER BY dc.tran_date ASC, dn.posting_date ASC
+        ORDER BY dc.name ASC, jc.name ASC
+    """
+
+    return frappe.db.sql(query, as_dict=True)
+
+
+def get_summary_data(filters):
+    conditions = build_conditions(filters)
+
+    query = f"""
+        SELECT
+            dc.customer AS `Party Name`,
+            dc.tran_date AS `MRN Date`,
+            dc.name AS `MRN No`,
+            jc.name AS `Job Card ID`,
+            dci.customer_dc_no AS `Party DC No`,
+            dci.process_name AS `Process`,
+            dci.item_name AS `Item`,
+            dci.part_no AS `Part Number`,
+            dci.material AS `Material`,
+            dci.qty_nos AS `Rec.Qty-Nos`,
+            dci.qty_kgs AS `Rec.Qty-Kgs`,
+
+            IFNULL(dispatch_total.total_nos, 0) AS `Despatch Qty-Nos`,
+            IFNULL(dispatch_total.total_kgs, 0) AS `Despatch Qty-Kgs`,
+
+            (
+                dci.qty_nos -
+                IFNULL(dispatch_total.total_nos, 0)
+            ) AS `Pending Qty-Nos`,
+
+            (
+                dci.qty_kgs -
+                IFNULL(dispatch_total.total_kgs, 0)
+            ) AS `Pending Qty-Kgs`
+
+        FROM `tabCustomer DC` dc
+
+        LEFT JOIN `tabCustomer DC child` dci
+            ON dci.parent = dc.name
+
+        LEFT JOIN `tabJob Card for process` jc
+            ON jc.customer_dc = dc.name
+            AND jc.part_no = dci.part_no
+
+        LEFT JOIN (
+            SELECT
+                dni2.customer_dc_id,
+                dni2.part_no,
+                SUM(dni2.d_qty_in_nos) AS total_nos,
+                SUM(dni2.d_qty_in_kgs) AS total_kgs
+            FROM `tabDelivery Note Item` dni2
+            INNER JOIN `tabDelivery Note` dn2
+                ON dn2.name = dni2.parent
+                AND dn2.docstatus = 1
+            GROUP BY dni2.customer_dc_id, dni2.part_no
+        ) dispatch_total
+            ON dispatch_total.customer_dc_id = dc.name
+            AND dispatch_total.part_no = dci.part_no
+
+        WHERE 1=1
+        {conditions}
+
+        ORDER BY dc.name ASC, jc.name ASC
     """
 
     return frappe.db.sql(query, as_dict=True)
 
 
 def get_columns():
-
     return [
-
         {"label": "Party Name", "fieldname": "Party Name", "fieldtype": "Data", "width": 220},
         {"label": "MRN Date", "fieldname": "MRN Date", "fieldtype": "Date", "width": 120},
         {"label": "MRN No", "fieldname": "MRN No", "fieldtype": "Data", "width": 170},
         {"label": "Job Card ID", "fieldname": "Job Card ID", "fieldtype": "Data", "width": 150},
         {"label": "Party DC No.", "fieldname": "Party DC No", "fieldtype": "Data", "width": 130},
-
         {"label": "Process", "fieldname": "Process", "fieldtype": "Data", "width": 220},
         {"label": "Item", "fieldname": "Item", "fieldtype": "Data", "width": 200},
         {"label": "Part Number", "fieldname": "Part Number", "fieldtype": "Data", "width": 150},
         {"label": "Material", "fieldname": "Material", "fieldtype": "Data", "width": 130},
-
         {"label": "Rec.Qty-Nos", "fieldname": "Rec.Qty-Nos", "fieldtype": "Float", "width": 140},
         {"label": "Rec.Qty-Kgs", "fieldname": "Rec.Qty-Kgs", "fieldtype": "Float", "width": 140},
-
         {"label": "Despatch Date", "fieldname": "Despatch Date", "fieldtype": "Date", "width": 130},
         {"label": "Despatch No.", "fieldname": "Despatch No.", "fieldtype": "Data", "width": 170},
         {"label": "e-Way Bill No.", "fieldname": "e-Way Bill No.", "fieldtype": "Data", "width": 160},
-
         {"label": "Despatch Qty-Nos", "fieldname": "Despatch Qty-Nos", "fieldtype": "Float", "width": 160},
         {"label": "Despatch Qty-Kgs", "fieldname": "Despatch Qty-Kgs", "fieldtype": "Float", "width": 160},
-
         {"label": "Invoice Date", "fieldname": "Invoice Date", "fieldtype": "Date", "width": 130},
         {"label": "Invoice No.", "fieldname": "Invoice No.", "fieldtype": "Data", "width": 170},
         {"label": "IRN", "fieldname": "IRN", "fieldtype": "Data", "width": 250},
+        {"label": "Pending Qty-Nos", "fieldname": "Pending Qty-Nos", "fieldtype": "Float", "width": 170},
+        {"label": "Pending Qty-Kgs", "fieldname": "Pending Qty-Kgs", "fieldtype": "Float", "width": 170},
+    ]
 
+
+def get_summary_columns():
+    return [
+        {"label": "Party Name", "fieldname": "Party Name", "fieldtype": "Data", "width": 220},
+        {"label": "MRN Date", "fieldname": "MRN Date", "fieldtype": "Date", "width": 120},
+        {"label": "MRN No", "fieldname": "MRN No", "fieldtype": "Data", "width": 170},
+        {"label": "Job Card ID", "fieldname": "Job Card ID", "fieldtype": "Data", "width": 150},
+        {"label": "Party DC No.", "fieldname": "Party DC No", "fieldtype": "Data", "width": 130},
+        {"label": "Process", "fieldname": "Process", "fieldtype": "Data", "width": 220},
+        {"label": "Item", "fieldname": "Item", "fieldtype": "Data", "width": 200},
+        {"label": "Part Number", "fieldname": "Part Number", "fieldtype": "Data", "width": 150},
+        {"label": "Material", "fieldname": "Material", "fieldtype": "Data", "width": 130},
+        {"label": "Rec.Qty-Nos", "fieldname": "Rec.Qty-Nos", "fieldtype": "Float", "width": 140},
+        {"label": "Rec.Qty-Kgs", "fieldname": "Rec.Qty-Kgs", "fieldtype": "Float", "width": 140},
+        {"label": "Despatch Qty-Nos", "fieldname": "Despatch Qty-Nos", "fieldtype": "Float", "width": 160},
+        {"label": "Despatch Qty-Kgs", "fieldname": "Despatch Qty-Kgs", "fieldtype": "Float", "width": 160},
         {"label": "Pending Qty-Nos", "fieldname": "Pending Qty-Nos", "fieldtype": "Float", "width": 170},
         {"label": "Pending Qty-Kgs", "fieldname": "Pending Qty-Kgs", "fieldtype": "Float", "width": 170},
     ]
