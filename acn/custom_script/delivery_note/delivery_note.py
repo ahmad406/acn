@@ -232,7 +232,11 @@ def get_customer(doctype, txt, searchfield, start, page_len, filters):
             `tabCustomer DC child` c 
             ON p.name = c.parent
         WHERE 
-        		(c.balance_qty_nos - c.delivered_qty) > 0
+        	(
+            (c.balance_qty_nos - c.delivered_qty) > 0
+            OR
+            (c.balance_qty_kgs - c.delivery_qty_kgs) > 0
+        )
             AND p.customer LIKE %(txt)s
 			and p.docstatus=1
 
