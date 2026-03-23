@@ -453,6 +453,7 @@ class LabInspectionEntry(Document):
 		for row in self.parameters:
 			total = qty_map.get((row.control_parameter, row.job_card_id), 0)
 	
+		if not row.test_quantity:
 			row.db_set(
 				"test_quantity",
 				total,
