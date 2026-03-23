@@ -202,7 +202,11 @@ def get_customer_dc(doctype, txt, searchfield, start, page_len, filters):
 			`tabCustomer DC child` c 
 			ON p.name = c.parent
 		WHERE 
-			(c.balance_qty_nos- c.delivered_qty) >0
+			(
+            (c.balance_qty_nos - c.delivered_qty) > 0
+            OR
+            (c.balance_qty_kgs - c.delivery_qty_kgs) > 0
+        )
 			AND p.customer = %(customer)s
 			and p.docstatus=1
 			AND p.name LIKE %(txt)s
@@ -275,9 +279,10 @@ def get_part_no(doctype, txt, searchfield, start, page_len, filters):
 			and p.docstatus=1
 
             AND (
-                c.balance_qty_nos
-                - c.delivered_qty
-            ) > 0
+            (c.balance_qty_nos - c.delivered_qty) > 0
+            OR
+            (c.balance_qty_kgs - c.delivery_qty_kgs) > 0
+        )
             AND c.part_no LIKE %s
         ORDER BY c.part_no
         LIMIT %s, %s
