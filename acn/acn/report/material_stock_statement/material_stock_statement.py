@@ -74,7 +74,6 @@ def get_columns():
 # OPENING STOCK
 
 def get_opening_stock(filters):
-
     rows = []
 
     opening_data = frappe.db.sql("""
@@ -99,40 +98,64 @@ def get_opening_stock(filters):
 
     for d in opening_data:
 
-        dispatch = get_dispatch_details(d.mrn_no, d.part_no, filters.get("from_date"))
+        # Dispatch before the period (for pending calculation)
+        dispatch_before = get_dispatch_details(
+            d.mrn_no, d.part_no, filters.get("from_date")
+        )
+
+        # Dispatch during the period (to detect if invoiced in range)
+        dispatch_during = get_dispatch_during_period(
+            d.mrn_no, d.part_no,
+            filters.get("from_date"),
+            filters.get("to_date")
+        )
 
         opening_nos = flt(d.qty_nos)
         opening_kgs = flt(d.qty_kgs)
-        pending_nos = opening_nos - dispatch["nos"]
-        pending_kgs = opening_kgs - dispatch["kgs"]
 
-        if pending_nos == 0 or pending_kgs == 0:
+        pending_nos = opening_nos - dispatch_before["nos"]
+        pending_kgs = opening_kgs - dispatch_before["kgs"]
+
+        has_pending = pending_nos > 0 or pending_kgs > 0
+        invoiced_during_period = dispatch_during["nos"] > 0 or dispatch_during["kgs"] > 0
+
+        # Skip only if: no pending AND not invoiced during selected period
+        if not has_pending and not invoiced_during_period:
             continue
+
+        # Total dispatch = before + during (for display)
+        total_dispatch_nos = dispatch_before["nos"] + dispatch_during["nos"]
+        total_dispatch_kgs = dispatch_before["kgs"] + dispatch_during["kgs"]
+
+        # Merge invoice details
+        invoice_nos = ", ".join(filter(None, [
+            dispatch_before["invoice"], dispatch_during["invoice"]
+        ]))
+        invoice_detail = ", ".join(filter(None, [
+            dispatch_before["detail"], dispatch_during["detail"]
+        ]))
+
+        final_pending_nos = opening_nos - total_dispatch_nos
+        final_pending_kgs = opening_kgs - total_dispatch_kgs
 
         rows.append({
             "particulars": "OPENING STOCK",
-
             "mrn_date": d.mrn_date,
             "mrn_no": d.mrn_no,
             "party_dc_no": d.customer_dc_no,
             "process": d.process_name,
             "item": d.item_name,
             "part_number": d.part_no,
-
             "opening_qty_nos": opening_nos,
             "opening_qty_kgs": opening_kgs,
-
-            "dispatch_qty_nos": dispatch["nos"],
-            "dispatch_qty_kgs": dispatch["kgs"],
-
-            "invoice_no": dispatch["invoice"],
-            "invoice_detail": dispatch["detail"],
-
-            "pending_qty_nos": opening_nos - dispatch["nos"],
-            "pending_qty_kgs": opening_kgs - dispatch["kgs"],
-
-            "physical_stock_nos": opening_nos - dispatch["nos"],
-            "physical_stock_kgs": opening_kgs - dispatch["kgs"],
+            "dispatch_qty_nos": total_dispatch_nos,
+            "dispatch_qty_kgs": total_dispatch_kgs,
+            "invoice_no": invoice_nos,
+            "invoice_detail": invoice_detail,
+            "pending_qty_nos": final_pending_nos,
+            "pending_qty_kgs": final_pending_kgs,
+            "physical_stock_nos": final_pending_nos,
+            "physical_stock_kgs": final_pending_kgs,
         })
 
     return rows
@@ -396,3 +419,51 @@ def export_with_summary(filters=None):
     frappe.response["filename"] = "Material_Stock_Statement.xlsx"
     frappe.response["filecontent"] = output.getvalue()
     frappe.response["display_content_as"] = "attachment"
+
+
+
+def get_dispatch_during_period(customer_dc, part_no, from_date, to_date):
+    """Get dispatch that happened DURING the selected period (from_date to to_date)"""
+
+    if not customer_dc or not part_no:
+        return {"nos": 0, "kgs": 0, "invoice": "", "detail": ""}
+
+    result = frappe.db.sql("""
+        SELECT
+            SUM(sii.d_qty_in_nos) AS nos,
+            SUM(sii.d_qty_in_kgs) AS kgs,
+
+            GROUP_CONCAT(
+                DISTINCT CONCAT(
+                    '(',
+                    si.name,
+                    ' - ',
+                    FORMAT(IFNULL(sii.d_qty_in_nos, 0), 2),
+                    ' Nos - ',
+                    DATE_FORMAT(si.posting_date, '%%d-%%m-%%Y'),
+                    ')'
+                )
+                SEPARATOR ', '
+            ) AS invoice_detail,
+
+            GROUP_CONCAT(DISTINCT si.name) AS invoices
+
+        FROM `tabSales Invoice` si
+        JOIN `tabSales Invoice Item` sii
+            ON sii.parent = si.name
+        WHERE si.docstatus = 1
+        AND sii.customer_dc_id = %s
+        AND sii.part_no = %s
+        AND si.posting_date BETWEEN %s AND %s
+    """, (customer_dc, part_no, from_date, to_date), as_dict=True)
+
+    if result and result[0]:
+        r = result[0]
+        return {
+            "nos": flt(r.nos),
+            "kgs": flt(r.kgs),
+            "invoice": r.invoices or "",
+            "detail": r.invoice_detail or ""
+        }
+
+    return {"nos": 0, "kgs": 0, "invoice": "", "detail": ""}
