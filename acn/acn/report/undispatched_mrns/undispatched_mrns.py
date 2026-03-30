@@ -69,15 +69,17 @@ def get_data(filters):
 
         -- Aggregate dispatched qty
         LEFT JOIN (
-            SELECT
-                customer_dc_id,
-                part_no,
-                SUM(IFNULL(d_qty_in_nos,0)) AS dispatched_nos,
-                SUM(IFNULL(d_qty_in_kgs,0)) AS dispatched_kgs
-            FROM `tabSales Invoice Item`
-            WHERE docstatus = 1
-            GROUP BY customer_dc_id, part_no
-        ) sii
+    SELECT
+        sii.customer_dc_id,
+        sii.part_no,
+        SUM(IFNULL(sii.d_qty_in_nos,0)) AS dispatched_nos,
+        SUM(IFNULL(sii.d_qty_in_kgs,0)) AS dispatched_kgs
+    FROM `tabSales Invoice Item` sii
+    INNER JOIN `tabSales Invoice` si
+        ON si.name = sii.parent
+        AND si.docstatus = 1
+    GROUP BY sii.customer_dc_id, sii.part_no
+) sii
             ON sii.customer_dc_id = dc.name
             AND sii.part_no = dcc.part_no
 

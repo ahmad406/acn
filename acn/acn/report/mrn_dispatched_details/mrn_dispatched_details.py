@@ -139,7 +139,7 @@ def get_data(filters):
             ON dispatch_total.customer_dc_id = dc.name
             AND dispatch_total.part_no = dci.part_no
 
-        WHERE 1=1
+        WHERE dc.docstatus = 1
         {conditions}
 
         ORDER BY dc.name ASC, jc.name ASC
@@ -202,7 +202,7 @@ def get_summary_data(filters):
             ON dispatch_total.customer_dc_id = dc.name
             AND dispatch_total.part_no = dci.part_no
 
-        WHERE 1=1
+        WHERE dc.docstatus = 1
         {conditions}
 
         ORDER BY dc.name ASC, jc.name ASC

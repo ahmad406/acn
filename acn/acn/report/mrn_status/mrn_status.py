@@ -112,7 +112,7 @@ def get_data(filters):
             ON tc.lab_inspection_id = lie.name
             AND tc.docstatus = 1
 
-        WHERE 1=1
+        WHERE dc.docstatus = 1
         {cond_date}
         {cond_customer_dc}
         {cond_furnace}
