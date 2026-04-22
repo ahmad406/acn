@@ -12,6 +12,8 @@
   "column_break_gzxc",
   "actual_start_date_time",
   "actual_end_date_time",
+  "energy_start_reading",
+  "energy_end_reading",
   "rocessfurnace_section",
   "internal_process",
   "furnace_process",
@@ -99,8 +101,7 @@
   {
    "fieldname": "load_no",
    "fieldtype": "Data",
-   "label": "Load No",
-   "read_only": 1
+   "label": "Load No"
   },
   {
    "fieldname": "column_break_5vig",
@@ -168,13 +169,25 @@
    "fieldname": "actual_end_date_time",
    "fieldtype": "Datetime",
    "label": "Actual End Date Time"
+  },
+  {
+   "fieldname": "energy_start_reading",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Energy Start Reading"
+  },
+  {
+   "fieldname": "energy_end_reading",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Energy End Reading"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-26 19:28:59.665561",
+ "modified": "2026-04-01 11:46:17.475621",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Execution Logsheet",

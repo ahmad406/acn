@@ -21,7 +21,9 @@
   "planned_qty_in_nos",
   "planned_qty_in_kgs",
   "fixturing_image",
-  "lot_no"
+  "lot_no",
+  "batch_no",
+  "prev_batch_no"
  ],
  "fields": [
   {
@@ -111,13 +113,24 @@
    "fieldtype": "Int",
    "label": "Lot No",
    "read_only": 1
+  },
+  {
+   "fieldname": "batch_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Batch No"
+  },
+  {
+   "fieldname": "prev_batch_no",
+   "fieldtype": "Data",
+   "label": "Prev Batch No"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-03-18 14:16:31.519308",
+ "modified": "2026-04-09 14:00:09.279200",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Execution Logsheet child",

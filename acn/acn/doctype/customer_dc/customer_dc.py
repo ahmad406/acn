@@ -190,6 +190,7 @@ class CustomerDC(Document):
 				if f.part_no.strip()==doc.part_no:
 					doc.fixturing_image=f.fixturing_image
 					doc.location_image=f.location_image
+					doc.pasting_area_drawing=f.pasting_area_drawing
 					break
 
  

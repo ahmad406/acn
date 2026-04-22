@@ -21,7 +21,7 @@ class BulkJobPlan(Document):
         if not planned_rows:
             frappe.throw("Please mark at least one row as Planned")
 
-        process_map = defaultdict(list)
+        process_map = defaultdict(list) 
 
         for row in planned_rows:
             process_map[row.internal_process].append(row)
@@ -113,6 +113,8 @@ def get_bulk_data(internal_process=None, customer=None, job_card=None,mrn_no=Non
         SELECT
             p.customer_dc AS customer_dc_no,
             p.name AS job_card_id,
+            p.fixturing_image,
+            p.location_image,
             p.item_code,
 			p.item_name,
             p.customer_code,

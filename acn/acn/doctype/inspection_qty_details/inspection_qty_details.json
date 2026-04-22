@@ -19,6 +19,8 @@
   "customer_process_ref",
   "customer_dc_no",
   "control_parameter",
+  "fixturing_image",
+  "location_image",
   "column_break_mp65",
   "planned_qty_in_nos",
   "planned_qty_in_kgs",
@@ -34,7 +36,10 @@
   "rework_cause",
   "test_certified",
   "samplingcheckqty",
-  "lot_no"
+  "lot_no",
+  "batch_no",
+  "prev_batch_no",
+  "reason_for_delay_in_checking"
  ],
  "fields": [
   {
@@ -194,13 +199,42 @@
    "fieldtype": "Int",
    "label": "Lot No",
    "read_only": 1
+  },
+  {
+   "fieldname": "fixturing_image",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "Fixturing Image"
+  },
+  {
+   "fieldname": "location_image",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "Location Image"
+  },
+  {
+   "fieldname": "batch_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Batch No"
+  },
+  {
+   "fieldname": "reason_for_delay_in_checking",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Reason For Delay In Checking"
+  },
+  {
+   "fieldname": "prev_batch_no",
+   "fieldtype": "Data",
+   "label": "Prev Batch No"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-03-02 16:39:20.785003",
+ "modified": "2026-04-09 14:03:28.426930",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Inspection Qty Details",

@@ -126,29 +126,39 @@ frappe.ui.form.on("Job Card details", {
 			},
 			doc: cur_frm.doc,
 			callback: function (r) {
-				// if (r.message) {
 				cur_frm.refresh();
-				// }
+
+				frappe.call({
+                method: "assign_batch_numbers",
+                doc: cur_frm.doc,
+                callback: function () {
+                    cur_frm.refresh_field("job_card_details");
+                }
+            });
 			}
 		});
 	},
 	planned_qty_in_nos: function (frm, cdt, cdn) {
-		var d = locals[cdt][cdn];
+    var d = locals[cdt][cdn];
 
-		if (d.planned_qty_in_nos > d.balance_plan_qty_in_nos) {
-			frappe.msgprint(__('Planned quantity cannot be more than balance quantity. It has been reset to the allowed limit.'));
-			d.planned_qty_in_nos = d.balance_plan_qty_in_nos;
-			d.planned_qty_in_kgs = d.balance_plan_qty_in_kgs;
-			frm.refresh_field("job_card_details");
-		} else {
-			if (d.balance_plan_qty_in_nos && d.balance_plan_qty_in_kgs) {
-				d.planned_qty_in_kgs = (d.planned_qty_in_nos / d.balance_plan_qty_in_nos) * d.balance_plan_qty_in_kgs;
-				frm.refresh_field("job_card_details");
-			}
-		}
-	}
+    if (d.planned_qty_in_nos > d.balance_plan_qty_in_nos) {
+        frappe.msgprint(__('Planned quantity cannot be more than balance quantity. It has been reset to the allowed limit.'));
+        d.planned_qty_in_nos = d.balance_plan_qty_in_nos;
+        d.planned_qty_in_kgs = d.balance_plan_qty_in_kgs;
+        frm.refresh_field("job_card_details");
+    } else {
+        if (d.balance_plan_qty_in_nos && d.balance_plan_qty_in_kgs) {
+            d.planned_qty_in_kgs = (d.planned_qty_in_nos / d.balance_plan_qty_in_nos) * d.balance_plan_qty_in_kgs;
+            frm.refresh_field("job_card_details");
+        }
+    }
 
-
-});
-
-
+    frappe.call({
+        method: "assign_batch_numbers",
+        doc: cur_frm.doc,
+        callback: function () {
+            cur_frm.refresh_field("job_card_details");
+        }
+    });
+} 
+})

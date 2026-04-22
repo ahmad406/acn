@@ -23,6 +23,8 @@ class JobExecutionLogsheet(Document):
 				row.item_code=d.item_code
 				row.item_name=d.item_name
 				row.part_no=d.part_no
+				row.fixturing_image=d.fixturing_image
+				row.pasting_area_drawing=d.pasting_area_drawing
 				row.customer_code=d.customer_code
 				row.customer_name=d.customer_name
 				row.process_type=d.process_type
@@ -31,6 +33,8 @@ class JobExecutionLogsheet(Document):
 				row.customer_process_ref=d.customer_process_ref_no
 				row.customer_dc_no=d.customer_dc_no
 				row.lot_no=d.lot_no
+				row.batch_no = d.batch_no
+				row.prev_batch_no = d.prev_batch_no
 				
 				row.planned_qty_in_nos=d.planned_qty_in_nos
 				row.planned_qty_in_kgs=d.planned_qty_in_kgs
@@ -75,36 +79,38 @@ class JobExecutionLogsheet(Document):
 			# 🛑 --- CANCEL PROTECTION ---
 			if cancel:
 				later_lots = frappe.db.sql("""
-					SELECT name,parent 
-					FROM `tabJob Card details`
-					WHERE parenttype='Job Plan Scheduler'
-						AND job_card_id=%s
-						AND lot_no > %s
-						AND docstatus=1
-						AND (
-							is_ready=1
-							OR EXISTS(
-								SELECT 1 
-								FROM `tabJob Plan Scheduler`
-								WHERE name=`tabJob Card details`.parent
-									AND job_execution=1
-									AND docstatus=1
-							)
-						)
-				""", (d.job_card_id, current_lot), as_dict=True)
+    SELECT name,parent 
+    FROM `tabJob Card details`
+    WHERE parenttype='Job Plan Scheduler'
+        AND job_card_id=%s
+        AND lot_no > %s
+        AND prev_batch_no=%s
+        AND docstatus=1
+        AND (
+            is_ready=1
+            OR EXISTS(
+                SELECT 1 
+                FROM `tabJob Plan Scheduler`
+                WHERE name=`tabJob Card details`.parent
+                    AND job_execution=1
+                    AND docstatus=1
+            )
+        )
+""", (d.job_card_id, current_lot, d.batch_no), as_dict=True)
 
 				if later_lots:
 					frappe.throw(f"❌ Cannot cancel Lot {current_lot} — later lots are already ready or executed. {later_lots[0].parent}")
 
 				# 🔄 Revert readiness added to *all* next lot(s)
 				next_lot_rows = frappe.db.sql("""
-					SELECT name, ready_qty_nos, ready_qty_kgs
-					FROM `tabJob Card details`
-					WHERE parenttype='Job Plan Scheduler'
-						AND job_card_id=%s
-						AND lot_no > %s
-						AND docstatus=1
-				""", (d.job_card_id, current_lot), as_dict=True)
+    SELECT name, ready_qty_nos, ready_qty_kgs
+    FROM `tabJob Card details`
+    WHERE parenttype='Job Plan Scheduler'
+        AND job_card_id=%s
+        AND lot_no > %s
+        AND prev_batch_no=%s
+        AND docstatus=1
+""", (d.job_card_id, current_lot, d.batch_no), as_dict=True)
 
 				for row in next_lot_rows:
 					to_sub_nos = min(flt(d.planned_qty_in_nos or 0), flt(row.ready_qty_nos or 0))
@@ -126,24 +132,25 @@ class JobExecutionLogsheet(Document):
 
 			# Fetch *all* next-lot(s) across all future plans (not just +1)
 			next_lot_rows = frappe.db.sql("""
-				SELECT 
-					c.name,
-					c.planned_qty_in_nos,
-					c.planned_qty_in_kgs,
-					COALESCE(c.ready_qty_nos,0) AS current_ready_nos,
-					COALESCE(c.ready_qty_kgs,0) AS current_ready_kgs,
-					c.lot_no,
-					c.parent AS plan_id
-				FROM `tabJob Card details` c
-				INNER JOIN `tabJob Plan Scheduler` p ON p.name = c.parent
-				WHERE 
-					c.parenttype='Job Plan Scheduler'
-					AND c.job_card_id=%s
-					AND c.lot_no = %s
-					AND p.docstatus=1
-					AND IFNULL(p.job_execution,0)=0
-				ORDER BY c.lot_no ASC, p.creation ASC
-			""", (d.job_card_id, current_lot+1), as_dict=True)
+    SELECT 
+        c.name,
+        c.planned_qty_in_nos,
+        c.planned_qty_in_kgs,
+        COALESCE(c.ready_qty_nos,0) AS current_ready_nos,
+        COALESCE(c.ready_qty_kgs,0) AS current_ready_kgs,
+        c.lot_no,
+        c.parent AS plan_id
+    FROM `tabJob Card details` c
+    INNER JOIN `tabJob Plan Scheduler` p ON p.name = c.parent
+    WHERE 
+        c.parenttype='Job Plan Scheduler'
+        AND c.job_card_id=%s
+        AND c.lot_no = %s
+        AND c.prev_batch_no = %s
+        AND p.docstatus=1
+        AND IFNULL(p.job_execution,0)=0
+    ORDER BY c.lot_no ASC, p.creation ASC
+""", (d.job_card_id, current_lot+1, d.batch_no), as_dict=True)
 
 			remaining_nos = executed_qty_nos
 			remaining_kgs = executed_qty_kgs
@@ -212,7 +219,8 @@ class JobExecutionLogsheet(Document):
 					AND parent=%s
 					AND job_card_id=%s
 					AND lot_no=%s
-			""", (balance_nos, balance_kgs, plan.name, d.job_card_id, current_lot))
+					AND batch_no=%s
+			""", (balance_nos, balance_kgs, plan.name, d.job_card_id, current_lot,d.batch_no))
 
 			# 🪣 --- LOG ANY REMAINDER ---
 			if (balance_nos > 0 or balance_kgs > 0) and not next_lot_rows:

@@ -14,6 +14,8 @@
   "item_code",
   "item_name",
   "part_number",
+  "fixturing_image",
+  "location_image",
   "material",
   "process_type",
   "process_name",
@@ -177,8 +179,7 @@
    "fieldname": "planned",
    "fieldtype": "Check",
    "in_list_view": 1,
-   "label": "Planned",
-   "read_only": 1
+   "label": "Planned"
   },
   {
    "fieldname": "customer_code",
@@ -187,13 +188,25 @@
    "label": "Customer Code",
    "options": "Customer",
    "read_only": 1
+  },
+  {
+   "fieldname": "fixturing_image",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "Fixturing Image"
+  },
+  {
+   "fieldname": "location_image",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "Location Image"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-02-24 15:48:52.398281",
+ "modified": "2026-04-01 11:14:45.038998",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Bulk Planning",

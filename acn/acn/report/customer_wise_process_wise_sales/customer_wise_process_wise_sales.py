@@ -9,9 +9,12 @@ def execute(filters=None):
 
 def get_columns():
     return [
-        {"label": "Process", "fieldname": "process", "width": 400},
-        {"label": "Qty (Nos)", "fieldname": "qty_nos", "fieldtype": "Float", "width": 200},
-        {"label": "Qty (Kgs)", "fieldname": "qty_kgs", "fieldtype": "Float", "width": 200},
+        {"label": "Customer", "fieldname": "customer", "fieldtype": "Data", "width": 250},
+        {"label": "Territory", "fieldname": "territory", "fieldtype": "Data", "width": 100},
+        {"label": "Market Segment", "fieldname": "market_segment", "fieldtype": "Data", "width": 100},
+        {"label": "Process", "fieldname": "process", "fieldtype": "Data", "width": 300},
+        {"label": "Qty (Nos)", "fieldname": "qty_nos", "fieldtype": "Float", "width": 150},
+        {"label": "Qty (Kgs)", "fieldname": "qty_kgs", "fieldtype": "Float", "width": 150},
         {"label": "Amount Excl GST", "fieldname": "amount", "fieldtype": "Currency", "width": 200},
     ]
 
@@ -29,14 +32,12 @@ def get_data(filters):
         conditions += " AND si.posting_date <= %(to_date)s"
         values["to_date"] = filters.get("to_date")
 
-    if filters.get("customer"):
-        conditions += " AND si.customer = %(customer)s"
-        values["customer"] = filters.get("customer")
-
     rows = frappe.db.sql(
         f"""
         SELECT
             si.customer,
+            c.territory,
+            c.market_segment,
             sii.process_name AS process,
             SUM(sii.d_qty_in_nos) AS qty_nos,
             SUM(sii.d_qty_in_kgs) AS qty_kgs,
@@ -44,12 +45,16 @@ def get_data(filters):
         FROM `tabSales Invoice Item` sii
         INNER JOIN `tabSales Invoice` si
             ON si.name = sii.parent
+        LEFT JOIN `tabCustomer` c
+            ON c.name = si.customer
         WHERE
             si.docstatus = 1
             AND si.is_return = 0
             {conditions}
         GROUP BY
             si.customer,
+            c.territory,
+            c.market_segment,
             sii.process_name
         ORDER BY
             si.customer,
@@ -61,62 +66,64 @@ def get_data(filters):
 
     data = []
     current_customer = None
-    customer_row_index = None
-
-    # running totals
     total_nos = 0
     total_kgs = 0
     total_amount = 0
+    territory = ""
+    market_segment = ""
 
     for r in rows:
 
-        # when customer changes → finalize previous totals
         if current_customer != r.customer:
 
-            # update previous customer totals
-            if customer_row_index is not None:
-                data[customer_row_index]["qty_nos"] = flt(total_nos)
-                data[customer_row_index]["qty_kgs"] = flt(total_kgs)
-                data[customer_row_index]["amount"] = flt(total_amount)
+            # finalize previous customer total row
+            if current_customer is not None:
+                data.append({
+                    "customer": f"{current_customer} Total",
+                    "territory": "",
+                    "market_segment": "",
+                    "process": "<b>TOTAL</b>",
+                    "qty_nos": flt(total_nos),
+                    "qty_kgs": flt(total_kgs),
+                    "amount": flt(total_amount),
+                    "bold": 1,
+                })
 
-            # reset totals
+            # reset
             total_nos = 0
             total_kgs = 0
             total_amount = 0
-
             current_customer = r.customer
+            territory = r.territory or ""
+            market_segment = r.market_segment or ""
 
-            # add customer header row
-            data.append({
-                "process": current_customer,
-                "indent": 0,
-                "is_group": 1,
-                 "is_customer_total": 1, 
-                "qty_nos": 0,
-                "qty_kgs": 0,
-                "amount": 0,
-            })
-
-            customer_row_index = len(data) - 1
-
-        # accumulate totals
+        # accumulate
         total_nos += flt(r.qty_nos)
         total_kgs += flt(r.qty_kgs)
         total_amount += flt(r.amount)
 
-        # child row
+        # detail row
         data.append({
+            "customer": r.customer,
+            "territory": r.territory or "",
+            "market_segment": r.market_segment or "",
             "process": r.process,
             "qty_nos": flt(r.qty_nos),
             "qty_kgs": flt(r.qty_kgs),
             "amount": flt(r.amount),
-            "indent": 1,
         })
 
-    # finalize last customer
-    if customer_row_index is not None:
-        data[customer_row_index]["qty_nos"] = flt(total_nos)
-        data[customer_row_index]["qty_kgs"] = flt(total_kgs)
-        data[customer_row_index]["amount"] = flt(total_amount)
+    # finalize last customer total
+    if current_customer is not None:
+        data.append({
+            "customer": f"{current_customer} Total",
+            "territory": "",
+            "market_segment": "",
+            "process": "<b>TOTAL</b>",
+            "qty_nos": flt(total_nos),
+            "qty_kgs": flt(total_kgs),
+            "amount": flt(total_amount),
+            "bold": 1,
+        })
 
     return data

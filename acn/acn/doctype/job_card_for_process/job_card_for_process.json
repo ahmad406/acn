@@ -16,6 +16,7 @@
   "image",
   "fixturing_image",
   "location_image",
+  "pasting_area_drawing",
   "customer_code",
   "customer_name",
   "incoming_visual_inspection",
@@ -209,6 +210,11 @@
    "fieldname": "incoming_visual_inspection",
    "fieldtype": "Data",
    "label": "Incoming Visual Inspection"
+  },
+  {
+   "fieldname": "pasting_area_drawing",
+   "fieldtype": "Attach Image",
+   "label": "Pasting Area Drawing"
   }
  ],
  "grid_page_length": 50,
@@ -216,7 +222,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-12-18 20:07:34.416888",
+ "modified": "2026-04-08 16:56:44.842991",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Card for process",

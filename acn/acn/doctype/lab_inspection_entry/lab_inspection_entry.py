@@ -120,36 +120,38 @@ class LabInspectionEntry(Document):
 			# 🛑 --- CANCEL PROTECTION ---
 			if cancel:
 				later_lots = frappe.db.sql("""
-					SELECT name,parent 
-					FROM `tabJob Card details`
-					WHERE parenttype='Job Plan Scheduler'
-						AND job_card_id=%s
-						AND lot_no > %s
-						AND docstatus=1
-						AND (
-							is_ready=1
-							OR EXISTS(
-								SELECT 1 
-								FROM `tabJob Plan Scheduler`
-								WHERE name=`tabJob Card details`.parent
-									AND job_execution=1
-									AND docstatus=1
-							)
-						)
-				""", (d.job_card_id, current_lot), as_dict=True)
+    SELECT name,parent 
+    FROM `tabJob Card details`
+    WHERE parenttype='Job Plan Scheduler'
+        AND job_card_id=%s
+        AND lot_no > %s
+        AND prev_batch_no=%s
+        AND docstatus=1
+        AND (
+            is_ready=1
+            OR EXISTS(
+                SELECT 1 
+                FROM `tabJob Plan Scheduler`
+                WHERE name=`tabJob Card details`.parent
+                    AND job_execution=1
+                    AND docstatus=1
+            )
+        )
+""", (d.job_card_id, current_lot, d.batch_no), as_dict=True)
 
 				if later_lots:
 					frappe.throw(f"❌ Cannot cancel Lot {current_lot} — later lots are already ready or executed. {later_lots[0].parent}")
 
 				# 🔄 Revert readiness added to *all* next lot(s)
 				next_lot_rows = frappe.db.sql("""
-					SELECT name, ready_qty_nos, ready_qty_kgs
-					FROM `tabJob Card details`
-					WHERE parenttype='Job Plan Scheduler'
-						AND job_card_id=%s
-						AND lot_no > %s
-						AND docstatus=1
-				""", (d.job_card_id, current_lot), as_dict=True)
+    SELECT name, ready_qty_nos, ready_qty_kgs
+    FROM `tabJob Card details`
+    WHERE parenttype='Job Plan Scheduler'
+        AND job_card_id=%s
+        AND lot_no > %s
+        AND prev_batch_no=%s
+        AND docstatus=1
+""", (d.job_card_id, current_lot, d.batch_no), as_dict=True)
 
 				for row in next_lot_rows:
 					to_sub_nos = min(flt(d.planned_qty_in_nos or 0), flt(row.ready_qty_nos or 0))
@@ -171,24 +173,25 @@ class LabInspectionEntry(Document):
 
 			# Fetch *all* next-lot(s) across all future plans (not just +1)
 			next_lot_rows = frappe.db.sql("""
-				SELECT 
-					c.name,
-					c.planned_qty_in_nos,
-					c.planned_qty_in_kgs,
-					COALESCE(c.ready_qty_nos,0) AS current_ready_nos,
-					COALESCE(c.ready_qty_kgs,0) AS current_ready_kgs,
-					c.lot_no,
-					c.parent AS plan_id
-				FROM `tabJob Card details` c
-				INNER JOIN `tabJob Plan Scheduler` p ON p.name = c.parent
-				WHERE 
-					c.parenttype='Job Plan Scheduler'
-					AND c.job_card_id=%s
-					AND c.lot_no =%s
-					AND p.docstatus=1
-					AND IFNULL(p.job_execution,0)=0
-				ORDER BY c.lot_no ASC, p.creation ASC
-			""", (d.job_card_id, current_lot+1), as_dict=True)
+    SELECT 
+        c.name,
+        c.planned_qty_in_nos,
+        c.planned_qty_in_kgs,
+        COALESCE(c.ready_qty_nos,0) AS current_ready_nos,
+        COALESCE(c.ready_qty_kgs,0) AS current_ready_kgs,
+        c.lot_no,
+        c.parent AS plan_id
+    FROM `tabJob Card details` c
+    INNER JOIN `tabJob Plan Scheduler` p ON p.name = c.parent
+    WHERE 
+        c.parenttype='Job Plan Scheduler'
+        AND c.job_card_id=%s
+        AND c.lot_no =%s
+        AND c.prev_batch_no=%s
+        AND p.docstatus=1
+        AND IFNULL(p.job_execution,0)=0
+    ORDER BY c.lot_no ASC, p.creation ASC
+""", (d.job_card_id, current_lot+1, d.batch_no), as_dict=True)
 
 			remaining_nos = executed_qty_nos
 			remaining_kgs = executed_qty_kgs
@@ -257,7 +260,8 @@ class LabInspectionEntry(Document):
 					AND parent=%s
 					AND job_card_id=%s
 					AND lot_no=%s
-			""", (balance_nos, balance_kgs, plan.name, d.job_card_id, current_lot))
+					AND batch_no=%s
+			""", (balance_nos, balance_kgs, plan.name, d.job_card_id, current_lot, d.batch_no))
 
 			# 🪣 --- LOG ANY REMAINDER ---
 			if (balance_nos > 0 or balance_kgs > 0) and not next_lot_rows:
@@ -327,10 +331,12 @@ class LabInspectionEntry(Document):
 				row.planned_qty_in_kgs=d.planned_qty_in_kgs
 				row.accepted_qty_in_nos=d.planned_qty_in_nos
 				row.accepted_qty_in_kgs=d.planned_qty_in_kgs
+				row.lot_no=d.lot_no
+				row.batch_no = d.batch_no
+				row.prev_batch_no = d.prev_batch_no
 				row.location_image=d.location_image
 				row.fixturing_image=d.fixturing_image
-				row.lot_no=d.lot_no
-
+			
 			# for k in self.inspection_qty_details:
 			# 	row_2=self.append("parameters",{})
 			# 	row_2.job_card_id=k.job_card_id
@@ -378,6 +384,8 @@ class LabInspectionEntry(Document):
 					row.testing_method=k.testing_method
 					row.customer_process=k.customer_process
 					row.checked_qty_in_nos=0
+					row.location_image=d.location_image
+					row.fixturing_image=d.fixturing_image
 
 					self.set_checked_qty(row)
 
@@ -520,6 +528,8 @@ def job_plan(doctype, txt, searchfield, start, page_len, filters):
 							AND prev_p.job_execution = 1
 							AND prev_c.job_card_id = c.job_card_id
 							AND prev_c.lot_no = c.lot_no - 1
+							AND prev_c.batch_no = c.prev_batch_no
+
 						)
 					)
 				)

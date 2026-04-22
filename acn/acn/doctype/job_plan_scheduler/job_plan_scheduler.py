@@ -27,34 +27,21 @@ class JobPlanScheduler(Document):
 	
 	@frappe.whitelist()
 	def update_if_ready(self, cancel=False):
-		"""
-		PLANNING PHASE (Job Plan Scheduler)
-		-----------------------------------
-		- Determines 'ready_qty' for each lot based on balance from the previous executed lot.
-		- Deducts reserved (ready) qty from previous lot balance immediately.
-		- Does NOT allow negative balances.
-		"""
-
-		rows = sorted(self.job_card_details, key=lambda r: (cint(r.lot_no), r.idx or 0))
+		rows = sorted(self.job_card_details,key=lambda r: (r.job_card_id, r.batch_no or "", cint(r.lot_no), r.idx or 0))
 
 		for d in rows:
 			lot_no = cint(d.lot_no)
 
-			# 🔒 Cancel mode: clear readiness and re-add balance
 			if cancel:
-				if cint(d.lot_no) > 1:
-					prev_lot_no = lot_no - 1
-					# Add back previously deducted balance
+				if lot_no > 1:
 					frappe.db.sql("""
-						UPDATE `tabJob Card details`
-						SET 
-							balance_ready_qty_nos = balance_ready_qty_nos + %s,
-							balance_ready_qty_kgs = balance_ready_qty_kgs + %s
-						WHERE parenttype='Job Plan Scheduler'
-							AND job_card_id=%s
-							AND lot_no=%s
-							AND docstatus=1
-					""", (d.ready_qty_nos, d.ready_qty_kgs, d.job_card_id, prev_lot_no))
+            UPDATE `tabJob Card details`
+            SET
+                balance_ready_qty_nos = balance_ready_qty_nos + %s,
+                balance_ready_qty_kgs = balance_ready_qty_kgs + %s
+            WHERE parenttype = 'Job Plan Scheduler'
+              AND job_card_id = %s AND lot_no = %s AND batch_no = %s AND docstatus = 1
+        """, (d.ready_qty_nos, d.ready_qty_kgs, d.job_card_id, lot_no - 1, d.prev_batch_no))
 				d.is_ready = 0
 				d.ready_qty_nos = 0
 				d.ready_qty_kgs = 0
@@ -62,7 +49,6 @@ class JobPlanScheduler(Document):
 				d.balance_ready_qty_kgs = 0
 				continue
 
-			# 🟢 Lot 1 always ready
 			if lot_no == 1:
 				d.is_ready = 1
 				d.ready_qty_nos = flt(d.planned_qty_in_nos or 0)
@@ -71,34 +57,25 @@ class JobPlanScheduler(Document):
 				d.balance_ready_qty_kgs = 0
 				continue
 
-			prev_lot_no = lot_no - 1
-
-			# 1️⃣ Get executed balance
 			executed = frappe.db.sql("""
-				SELECT
-					COALESCE(SUM(c.balance_ready_qty_nos), 0) AS nos,
-					COALESCE(SUM(c.balance_ready_qty_kgs), 0) AS kgs
-				FROM `tabJob Card details` c
-				INNER JOIN `tabJob Plan Scheduler` p ON p.name = c.parent
-				WHERE
-					p.docstatus=1
-					AND IFNULL(p.job_execution,0)=1
-					AND c.job_card_id=%s
-					AND c.lot_no=%s
-			""", (d.job_card_id, prev_lot_no), as_dict=True)
+    SELECT
+        COALESCE(SUM(c.balance_ready_qty_nos), 0) AS nos,
+        COALESCE(SUM(c.balance_ready_qty_kgs), 0) AS kgs
+    FROM `tabJob Card details` c
+    INNER JOIN `tabJob Plan Scheduler` p ON p.name = c.parent
+    WHERE p.docstatus = 1
+        AND IFNULL(p.job_execution, 0) = 1
+        AND c.job_card_id = %s
+        AND c.lot_no = %s
+        AND c.batch_no = %s
+""", (d.job_card_id, lot_no - 1, d.prev_batch_no), as_dict=True)
 
 			executed_nos = flt(executed[0].nos) if executed else 0
 			executed_kgs = flt(executed[0].kgs) if executed else 0
-
-			# 2️⃣ Compute how much is still free (no need for reserved query if we deduct live)
-			available_nos = max(0, executed_nos)
-			available_kgs = max(0, executed_kgs)
-
-			# 3️⃣ Allocate to this plan
 			planned_nos = flt(d.planned_qty_in_nos or 0)
 			planned_kgs = flt(d.planned_qty_in_kgs or 0)
-			ready_nos = max(0, min(available_nos, planned_nos))
-			ready_kgs = max(0, min(available_kgs, planned_kgs))
+			ready_nos = max(0, min(executed_nos, planned_nos))
+			ready_kgs = max(0, min(executed_kgs, planned_kgs))
 
 			d.is_ready = 1 if (ready_nos > 0 or ready_kgs > 0) else 0
 			d.ready_qty_nos = ready_nos
@@ -106,32 +83,15 @@ class JobPlanScheduler(Document):
 			d.balance_ready_qty_nos = 0
 			d.balance_ready_qty_kgs = 0
 
-			# 4️⃣ Deduct immediately from previous lot balance
-			if not cancel:
-
-				if ready_nos > 0 or ready_kgs > 0:
-					frappe.db.sql("""
-						UPDATE `tabJob Card details`
-						SET 
-							balance_ready_qty_nos = GREATEST(balance_ready_qty_nos - %s, 0),
-							balance_ready_qty_kgs = GREATEST(balance_ready_qty_kgs - %s, 0)
-						WHERE parenttype='Job Plan Scheduler'
-							AND job_card_id=%s
-							AND lot_no=%s
-							AND docstatus=1
-					""", (ready_nos, ready_kgs, d.job_card_id, prev_lot_no))
-			else:
-				if d.ready_qty_nos > 0 or d.ready_qty_kgs > 0:
-					frappe.db.sql("""
-						UPDATE `tabJob Card details`
-						SET 
-							balance_ready_qty_nos = balance_ready_qty_nos + %s,
-							balance_ready_qty_kgs = balance_ready_qty_kgs + %s
-						WHERE parenttype='Job Plan Scheduler'
-							AND job_card_id=%s
-							AND lot_no=%s
-							AND docstatus=1
-					""", (d.ready_qty_nos, d.ready_qty_kgs, d.job_card_id, prev_lot_no))
+			if ready_nos > 0 or ready_kgs > 0:
+				frappe.db.sql("""
+    UPDATE `tabJob Card details`
+    SET
+        balance_ready_qty_nos = GREATEST(balance_ready_qty_nos - %s, 0),
+        balance_ready_qty_kgs = GREATEST(balance_ready_qty_kgs - %s, 0)
+    WHERE parenttype = 'Job Plan Scheduler'
+      AND job_card_id = %s AND lot_no = %s AND batch_no = %s AND docstatus = 1
+""", (ready_nos, ready_kgs, d.job_card_id, lot_no - 1, d.prev_batch_no))
 
 
 
@@ -155,6 +115,7 @@ class JobPlanScheduler(Document):
 
 
 	def before_submit(self):
+		self.assign_batch_numbers() 
 		self.update_jb_card()
 			# Step 3: Update readiness flags for lots
 		self.update_if_ready()
@@ -177,14 +138,15 @@ class JobPlanScheduler(Document):
 				WHERE 
 					c.parenttype = 'Job Plan Scheduler'
 					AND c.job_card_id = %s
+					AND c.batch_no = %s
 					AND c.lot_no > %s
 					AND c.is_ready = 1
-			""", (d.job_card_id, current_lot), as_dict=True)
+			""", (d.job_card_id,d.batch_no, current_lot), as_dict=True)
 
 			if later_lots:
 				frappe.throw(
-					f"Cannot cancel Job Plan {self.name} because a later lot for Job Card {d.job_card_id} "
-					f"is already marked as ready."
+				 	f"Cannot cancel {self.name} — later lot in Batch {d.batch_no} "
+                	f"for Job Card {d.job_card_id} is already ready."
 				)
 
 	def update_jb_card(self, cancel=0):
@@ -323,7 +285,8 @@ class JobPlanScheduler(Document):
 					d.customer_dc_no=j.customer_dc_no
 					d.commitment_date=j.commitment_date
 					d.location_image=j.location_image
-					# d.fixturing_image=j.fixturing_image
+					d.fixturing_image=j.fixturing_image
+					d.pasting_area_drawing=j.pasting_area_drawing
 					for k in j.sequence_lot_wise_internal_process:
 						if k.internal_process == self.internal_process:
 
@@ -378,6 +341,83 @@ class JobPlanScheduler(Document):
 	# 					AND
 	# @frappe.whitelist()
 	# def get_furnace_code_details(self):
+
+
+	@frappe.whitelist()
+	def assign_batch_numbers(self):
+		rows = sorted(self.job_card_details, key=lambda r: (r.job_card_id, cint(r.lot_no), r.idx or 0))
+	
+		for d in rows:
+			lot_no = cint(d.lot_no)
+	
+			if lot_no == 1:
+				if not d.batch_no:
+					d.batch_no = self._next_batch_no(d.job_card_id, d)
+			else:
+				prev = next((o for o in self.job_card_details if o.job_card_id == d.job_card_id and cint(o.lot_no) == lot_no - 1), None)
+				if prev and prev.batch_no:
+					d.batch_no = prev.batch_no
+					d.prev_batch_no = prev.batch_no
+				else:
+					existing = frappe.db.sql("""
+						SELECT c.batch_no FROM `tabJob Card details` c
+						INNER JOIN `tabJob Plan Scheduler` p ON p.name = c.parent
+						WHERE c.job_card_id = %s
+						  AND c.lot_no = %s
+						  AND c.planned_qty_in_nos = %s
+						  AND c.batch_no IS NOT NULL
+						  AND p.docstatus = 1
+						ORDER BY p.creation DESC
+						LIMIT 1
+					""", (d.job_card_id, lot_no - 1, flt(d.planned_qty_in_nos)), as_dict=True)
+	
+					if existing:
+						d.batch_no = existing[0].batch_no
+						d.prev_batch_no = existing[0].batch_no
+					else:
+						prev_existing = frappe.db.sql("""
+							SELECT c.batch_no FROM `tabJob Card details` c
+							INNER JOIN `tabJob Plan Scheduler` p ON p.name = c.parent
+							WHERE c.job_card_id = %s
+							  AND c.lot_no = %s
+							  AND c.batch_no IS NOT NULL
+							  AND p.docstatus = 1
+							ORDER BY p.creation DESC
+							LIMIT 1
+						""", (d.job_card_id, lot_no - 1), as_dict=True)
+	
+						d.batch_no = self._next_batch_no(d.job_card_id, d)
+						d.prev_batch_no = prev_existing[0].batch_no if prev_existing else None
+	
+		return True
+	
+	def _next_batch_no(self, job_card_id, current_row=None):
+		existing = frappe.db.sql("""
+			SELECT c.batch_no FROM `tabJob Card details` c
+			INNER JOIN `tabJob Plan Scheduler` p ON p.name = c.parent
+			WHERE c.job_card_id = %s AND p.docstatus = 1 AND c.batch_no IS NOT NULL
+		""", (job_card_id,), as_dict=True)
+
+		used = set()
+		for b in existing:
+			bn = b.batch_no or ""
+			prefix = f"{job_card_id}-B"
+			if bn.startswith(prefix) and bn[len(prefix):].isdigit():
+				used.add(int(bn[len(prefix):]))
+
+		for row in self.job_card_details:
+			if current_row and row.name == current_row.name:
+				continue  # skip current row being assigned
+			if row.job_card_id == job_card_id and row.batch_no:
+				bn = row.batch_no
+				prefix = f"{job_card_id}-B"
+				if bn.startswith(prefix) and bn[len(prefix):].isdigit():
+					used.add(int(bn[len(prefix):]))
+
+		n = 1
+		while n in used:
+			n += 1
+		return f"{job_card_id}-B{n}"
 
 
 
@@ -488,4 +528,3 @@ INNER JOIN
 	"""
 
 	return frappe.db.sql(query, args)
-
