@@ -335,7 +335,7 @@ class LabInspectionEntry(Document):
 				row.batch_no = d.batch_no
 				row.prev_batch_no = d.prev_batch_no
 				row.location_image=d.location_image
-				row.fixturing_image=d.fixturing_image
+				row.pasting_area_drawing = d.pasting_area_drawing
 			
 			# for k in self.inspection_qty_details:
 			# 	row_2=self.append("parameters",{})
@@ -385,7 +385,7 @@ class LabInspectionEntry(Document):
 					row.customer_process=k.customer_process
 					row.checked_qty_in_nos=0
 					row.location_image=d.location_image
-					row.fixturing_image=d.fixturing_image
+					row.pasting_area_drawing = d.pasting_area_drawing
 
 					self.set_checked_qty(row)
 

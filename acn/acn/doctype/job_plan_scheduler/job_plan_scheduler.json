@@ -22,6 +22,8 @@
   "job_card_details",
   "section_break_ehjz",
   "job_loading_plan_date",
+  "shift",
+  "lab_inspection_by",
   "loading_plan_time",
   "energy_starting_reading",
   "column_break_a6kq",
@@ -199,6 +201,22 @@
   {
    "fieldname": "section_break_aupf",
    "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.internal_process_for == \"Lab Inspection\"",
+   "fieldname": "shift",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Shift",
+   "options": "Shift Type"
+  },
+  {
+   "depends_on": "eval:doc.internal_process_for == \"Lab Inspection\"",
+   "fieldname": "lab_inspection_by",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Lab Inspection By",
+   "options": "Employee"
   }
  ],
  "grid_page_length": 50,
@@ -206,7 +224,7 @@
  "is_calendar_and_gantt": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-03-12 16:54:47.609208",
+ "modified": "2026-04-22 18:06:37.032193",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Plan Scheduler",

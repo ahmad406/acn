@@ -1,10 +1,29 @@
 import frappe
+import openpyxl
+from openpyxl.styles import Font, Alignment, PatternFill
+from io import BytesIO
+
+
 
 def execute(filters=None):
-	columns = get_columns()
-	data = get_data()
-	return columns, data
 
+	columns = get_columns()
+	data = get_data(filters)	
+	total = len(data)
+	
+	closed = len([r for r in data if (r.get("status") or "").lower() in ("converted", "closed")])
+	converted = len([r for r in data if (r.get("status") or "").lower() in ("converted", "won")])
+	conversion_pct = round((converted / total * 100), 2) if total else 0
+
+	message = f"""
+        <div style="padding: 10px 0; font-size: 14px; line-height: 2;">
+            <b>Total No of Enquiries:</b> {total}<br>
+            <b>Total No of Enquiries Closed:</b> {closed}<br>
+            <b>Conversion of Enquiries:</b> {converted} ({conversion_pct}%)
+        </div>
+    """
+
+	return columns, data, message
 
 def get_columns():
 	return [
@@ -26,23 +45,36 @@ def get_columns():
 	]
 
 
-def get_data():
+def get_data(filters=None):
+	filters = filters or {}
+
+	conditions = ""
+	values = []
+
+	if filters.get("from_date"):
+		conditions += " AND DATE(l.creation) >= %s"
+		values.append(filters["from_date"])
+	if filters.get("to_date"):
+		conditions += " AND DATE(l.creation) <= %s"
+		values.append(filters["to_date"])
+
 	leads = frappe.db.sql("""
-		SELECT
-			l.name       AS lead_id,
-			l.first_name AS customer_name,
-			l.creation   AS transaction_date,
-			l.enquiry_type,
-			l.source,
-			l.industry,
-			l.territory,
-			l.first_name AS contact_person,
-			l.mobile_no,
-			l.email_id,
-			l.status
-		FROM `tabLead` l
-		ORDER BY l.creation DESC
-	""", as_dict=True)
+        SELECT
+            l.name       AS lead_id,
+            l.company_name AS customer_name,
+            l.creation   AS transaction_date,
+            l.enquiry_type,
+            l.source,
+            l.industry,
+            l.territory,
+            l.first_name AS contact_person,
+            l.mobile_no,
+            l.email_id,
+            l.status
+        FROM `tabLead` l
+        WHERE 1=1 {conditions}
+        ORDER BY l.creation
+    """.format(conditions=conditions), values, as_dict=True)
 
 	if not leads:
 		return []
@@ -109,7 +141,7 @@ def get_data():
 			SELECT
 				reference_name AS opp_id,
 				GROUP_CONCAT(description ORDER BY creation SEPARATOR ' | ') AS val
-			FROM `tabTask`
+			FROM `tabToDo`
 			WHERE reference_type = 'Opportunity'
 			  AND reference_name IN ({ph})
 			GROUP BY reference_name
@@ -117,13 +149,11 @@ def get_data():
 
 		comment_rows = frappe.db.sql("""
 			SELECT
-				reference_name AS opp_id,
-				GROUP_CONCAT(content ORDER BY creation SEPARATOR ' | ') AS val
-			FROM `tabComment`
-			WHERE reference_doctype = 'Opportunity'
-			  AND comment_type      = 'Comment'
-			  AND reference_name   IN ({ph})
-			GROUP BY reference_name
+				parent AS opp_id,
+				GROUP_CONCAT(note ORDER BY creation SEPARATOR ' | ') AS val
+			FROM `tabCRM Note`
+			  where parent IN ({ph})
+			GROUP BY parent
 		""".format(ph=ph_opps), opp_ids, as_dict=True)
 
 		for row in task_rows + comment_rows:
@@ -170,3 +200,73 @@ def make_row(lead, opp_meta, item, qtn, remarks):
 		"status":           lead.status,
 		"remarks":          remarks,
 	}
+
+@frappe.whitelist()
+def export_with_summary(filters=None):
+	filters = frappe.parse_json(filters)
+	columns = get_columns()
+	data = get_data(filters)
+
+	# Summary calculations
+	total = len(data)
+	closed = len([r for r in data if (r.get("status") or "").lower() in ("converted", "closed")])
+	converted = len([r for r in data if (r.get("status") or "").lower() in ("converted", "won")])
+	conversion_pct = round((converted / total * 100), 2) if total else 0
+
+	# Workbook
+	wb = openpyxl.Workbook()
+	ws = wb.active
+	ws.title = "Enquiry Register"
+
+	# Header row
+	for col_idx, col in enumerate(columns, start=1):
+		cell = ws.cell(row=1, column=col_idx, value=col["label"])
+		cell.font = Font(bold=True)
+		cell.fill = PatternFill("solid", fgColor="D9E1F2")
+		cell.alignment = Alignment(horizontal="center", wrap_text=True)
+
+	# Data rows
+	for row_idx, row in enumerate(data, start=2):
+		for col_idx, col in enumerate(columns, start=1):
+			ws.cell(row=row_idx, column=col_idx, value=row.get(col["fieldname"]))
+
+	# Summary block
+	summary_row = len(data) + 4
+
+	summary_data = [
+		("Total No of Enquiries", total),
+		("Total No of Enquiries Closed", closed),
+		("Conversion of Enquiries", f"{converted} ({conversion_pct}%)"),
+	]
+
+	ws.cell(row=summary_row, column=1, value="SUMMARY").font = Font(bold=True, size=12)
+	summary_row += 1
+
+	for label, value in summary_data:
+		label_cell = ws.cell(row=summary_row, column=1, value=label)
+		label_cell.font = Font(bold=True)
+		label_cell.fill = PatternFill("solid", fgColor="F2F2F2")
+
+		value_cell = ws.cell(row=summary_row, column=2, value=value)
+		value_cell.alignment = Alignment(horizontal="right")
+
+		summary_row += 1
+
+	# Auto column width
+	for col_cells in ws.columns:
+		col_letter = col_cells[0].column_letter
+		max_len = max(
+			(len(str(c.value)) for c in col_cells if c.value),
+			default=10
+		)
+		ws.column_dimensions[col_letter].width = min(max_len + 4, 60)
+
+	# Stream response
+	output = BytesIO()
+	wb.save(output)
+	output.seek(0)
+
+	frappe.response["type"] = "binary"
+	frappe.response["filename"] = "Enquiry_Register.xlsx"
+	frappe.response["filecontent"] = output.getvalue()
+	frappe.response["display_content_as"] = "attachment"

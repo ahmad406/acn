@@ -19,8 +19,8 @@
   "customer_process_ref",
   "customer_dc_no",
   "control_parameter",
-  "fixturing_image",
   "location_image",
+  "pasting_area_drawing",
   "column_break_mp65",
   "planned_qty_in_nos",
   "planned_qty_in_kgs",
@@ -201,12 +201,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "fixturing_image",
-   "fieldtype": "Attach",
-   "in_list_view": 1,
-   "label": "Fixturing Image"
-  },
-  {
    "fieldname": "location_image",
    "fieldtype": "Attach",
    "in_list_view": 1,
@@ -228,13 +222,18 @@
    "fieldname": "prev_batch_no",
    "fieldtype": "Data",
    "label": "Prev Batch No"
+  },
+  {
+   "fieldname": "pasting_area_drawing",
+   "fieldtype": "Attach Image",
+   "label": "Pasting Area Drawing"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-09 14:03:28.426930",
+ "modified": "2026-04-22 18:19:06.150276",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Inspection Qty Details",

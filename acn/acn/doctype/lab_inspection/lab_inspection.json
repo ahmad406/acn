@@ -38,7 +38,7 @@
   "ref_standard",
   "micro",
   "location_image",
-  "fixturing_image",
+  "pasting_area_drawing",
   "remarks",
   "section_break_h8wr",
   "traverse_readings",
@@ -725,11 +725,6 @@
    "label": "Location Image"
   },
   {
-   "fieldname": "fixturing_image",
-   "fieldtype": "Attach",
-   "label": "Fixturing Image"
-  },
-  {
    "fieldname": "remarks",
    "fieldtype": "Long Text",
    "label": "Remarks"
@@ -738,13 +733,18 @@
    "fieldname": "test_quantity",
    "fieldtype": "Float",
    "label": "Test Quantity"
+  },
+  {
+   "fieldname": "pasting_area_drawing",
+   "fieldtype": "Attach Image",
+   "label": "Pasting Area Drawing"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-01 11:25:08.277501",
+ "modified": "2026-04-22 18:16:32.424467",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Lab inspection",

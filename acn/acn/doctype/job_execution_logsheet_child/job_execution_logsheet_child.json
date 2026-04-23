@@ -21,6 +21,7 @@
   "planned_qty_in_nos",
   "planned_qty_in_kgs",
   "fixturing_image",
+  "pasting_area_drawing",
   "lot_no",
   "batch_no",
   "prev_batch_no"
@@ -124,13 +125,18 @@
    "fieldname": "prev_batch_no",
    "fieldtype": "Data",
    "label": "Prev Batch No"
+  },
+  {
+   "fieldname": "pasting_area_drawing",
+   "fieldtype": "Attach Image",
+   "label": "Pasting Area Drawing"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-09 14:00:09.279200",
+ "modified": "2026-04-22 18:14:50.078351",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Execution Logsheet child",
