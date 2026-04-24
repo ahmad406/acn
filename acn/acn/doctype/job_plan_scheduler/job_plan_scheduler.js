@@ -15,7 +15,7 @@ frappe.ui.form.on("Job Plan Scheduler", {
 			return {
 				query: 'acn.acn.doctype.job_plan_scheduler.job_plan_scheduler.furnace_code',
 				filters: { "furnace_process": cur_frm.doc.furnace_process }
-
+				
 			}
 		});
 		cur_frm.set_query("furnace_code", "parameters_with_acceptance_criteria", function (frm) {
@@ -102,6 +102,62 @@ frappe.ui.form.on("Job Plan Scheduler", {
 			}
 		});
 
+	}
+	,
+	job_loading_plan_date: function(frm) {
+		if (!frm.doc.job_loading_plan_date) return;
+
+		// Extract time from the datetime field
+		const dt = frappe.datetime.str_to_obj(frm.doc.job_loading_plan_date);
+		const hours   = dt.getHours();
+		const minutes = dt.getMinutes();
+		const seconds = dt.getSeconds();
+
+		// Convert to seconds from midnight for easy comparison
+		const timeInSeconds = (hours * 3600) + (minutes * 60) + seconds;
+
+		frappe.db.get_list("Shift Type", {
+			fields: ["name", "start_time", "end_time"],
+			limit: 50
+		}).then(shifts => {
+			if (!shifts || !shifts.length) return;
+
+			let matched = null;
+
+			for (const shift of shifts) {
+				// start_time and end_time come as "HH:MM:SS" strings
+				const [sh, sm, ss] = shift.start_time.split(":").map(Number);
+				const [eh, em, es] = shift.end_time.split(":").map(Number);
+
+				const startSec = (sh * 3600) + (sm * 60) + ss;
+				const endSec   = (eh * 3600) + (em * 60) + es;
+
+				if (startSec <= endSec) {
+					// Normal shift — e.g. 06:00 to 14:00
+					if (timeInSeconds >= startSec && timeInSeconds < endSec) {
+						matched = shift.name;
+						break;
+					}
+				} else {
+					// Overnight shift — e.g. 22:00 to 06:00
+					if (timeInSeconds >= startSec || timeInSeconds < endSec) {
+						matched = shift.name;
+						break;
+					}
+				}
+			}
+
+			if (matched) {
+				frappe.model.set_value(frm.doctype, frm.docname, "shift", matched);
+			} else {
+				frappe.model.set_value(frm.doctype, frm.docname, "shift", "");
+				frappe.msgprint({
+					title: __("No Shift Found"),
+					message: __("No shift matches the selected date/time."),
+					indicator: "orange"
+				});
+			}
+		});
 	}
 	// furnace_code(frm) {
 	// 	frappe.call({

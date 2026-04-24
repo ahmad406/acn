@@ -15,7 +15,36 @@
   "date",
   "section_break_aurg",
   "items",
-  "amended_from"
+  "amended_from",
+  "supplier_info_tab",
+  "supplier_details_section",
+  "supplier",
+  "supplier_name",
+  "supplier_address",
+  "address",
+  "ewaybill_info_tab",
+  "ewaybill_address_section",
+  "bill_from",
+  "bill_from_address",
+  "bill_from_gstin",
+  "bill_from_gst_category",
+  "column_break_clje",
+  "bill_to",
+  "bill_to_address",
+  "bill_to_gstin",
+  "bill_to_gst_category",
+  "destination_of_supply",
+  "transporter_info_section",
+  "transporter",
+  "gst_transporter_id",
+  "transport_receipt_no",
+  "vehicle_no",
+  "distance_in_km",
+  "column_break_bywc",
+  "transporter_name",
+  "mode_of_transport",
+  "transport_receipt_date",
+  "gst_vehicle_type"
  ],
  "fields": [
   {
@@ -78,13 +107,168 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "supplier_info_tab",
+   "fieldtype": "Tab Break",
+   "label": "Supplier Info"
+  },
+  {
+   "fieldname": "supplier_details_section",
+   "fieldtype": "Section Break",
+   "label": "Supplier Details"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "supplier_name",
+   "fieldtype": "Data",
+   "label": "Supplier Name"
+  },
+  {
+   "fieldname": "supplier_address",
+   "fieldtype": "Link",
+   "label": "Supplier Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "ewaybill_info_tab",
+   "fieldtype": "Tab Break",
+   "label": "E-Waybill Info"
+  },
+  {
+   "fieldname": "bill_from",
+   "fieldtype": "Link",
+   "label": "Bill From",
+   "options": "Address"
+  },
+  {
+   "fieldname": "bill_from_address",
+   "fieldtype": "Text Editor",
+   "is_virtual": 1,
+   "label": "Bill From Address"
+  },
+  {
+   "fieldname": "column_break_clje",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bill_to",
+   "fieldtype": "Link",
+   "label": "Bill To",
+   "options": "Address"
+  },
+  {
+   "fieldname": "bill_to_address",
+   "fieldtype": "Text Editor",
+   "is_virtual": 1,
+   "label": "Bill To Address"
+  },
+  {
+   "fieldname": "bill_from_gstin",
+   "fieldtype": "Data",
+   "label": "Bill From GSTIN"
+  },
+  {
+   "fieldname": "bill_from_gst_category",
+   "fieldtype": "Data",
+   "label": "Bill From GST Category"
+  },
+  {
+   "fieldname": "bill_to_gstin",
+   "fieldtype": "Data",
+   "label": "Bill To GSTIN"
+  },
+  {
+   "fieldname": "bill_to_gst_category",
+   "fieldtype": "Data",
+   "label": "Bill To GST Category"
+  },
+  {
+   "fieldname": "destination_of_supply",
+   "fieldtype": "Autocomplete",
+   "label": "Destination of Supply",
+   "options": "01-Jammu and Kashmir\n02-Himachal Pradesh\n03-Punjab\n04-Chandigarh\n05-Uttarakhand\n06-Haryana\n07-Delhi\n08-Rajasthan\n09-Uttar Pradesh\n10-Bihar\n11-Sikkim\n12-Arunachal Pradesh\n13-Nagaland\n14-Manipur\n15-Mizoram\n16-Tripura\n17-Meghalaya\n18-Assam\n19-West Bengal\n20-Jharkhand\n21-Odisha\n22-Chhattisgarh\n23-Madhya Pradesh\n24-Gujarat\n26-Dadra and Nagar Haveli and Daman and Diu\n27-Maharashtra\n29-Karnataka\n30-Goa\n31-Lakshadweep Islands\n32-Kerala\n33-Tamil Nadu\n34-Puducherry\n35-Andaman and Nicobar Islands\n36-Telangana\n37-Andhra Pradesh\n38-Ladakh\n96-Other Countries\n97-Other Territory"
+  },
+  {
+   "fieldname": "ewaybill_address_section",
+   "fieldtype": "Section Break",
+   "label": "e-Waybill Address"
+  },
+  {
+   "fieldname": "transporter_info_section",
+   "fieldtype": "Section Break",
+   "label": "Transporter Info"
+  },
+  {
+   "fieldname": "transporter",
+   "fieldtype": "Link",
+   "label": "Transporter",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "gst_transporter_id",
+   "fieldtype": "Data",
+   "label": "GST Transporter ID"
+  },
+  {
+   "fieldname": "transport_receipt_no",
+   "fieldtype": "Data",
+   "label": "Transport Receipt No"
+  },
+  {
+   "fieldname": "vehicle_no",
+   "fieldtype": "Data",
+   "label": "Vehicle No"
+  },
+  {
+   "description": "Set as zero to update distance as per the e-Waybill portal (if available)",
+   "fieldname": "distance_in_km",
+   "fieldtype": "Int",
+   "label": "Distance (in km)"
+  },
+  {
+   "fieldname": "column_break_bywc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "transporter_name",
+   "fieldtype": "Small Text",
+   "label": "Transporter Name"
+  },
+  {
+   "fieldname": "mode_of_transport",
+   "fieldtype": "Select",
+   "label": "Mode of Transport",
+   "options": "\nRoad\nAir\nRail\nShip"
+  },
+  {
+   "default": "Today",
+   "fieldname": "transport_receipt_date",
+   "fieldtype": "Date",
+   "label": "Transport Receipt Date"
+  },
+  {
+   "fieldname": "gst_vehicle_type",
+   "fieldtype": "Select",
+   "label": "GST Vehicle Type",
+   "options": "Regular\nOver Dimensional Cargo (ODC)"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-03 21:08:21.627460",
+ "modified": "2026-04-24 14:35:57.870128",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Subcontract Delivery Note",
@@ -106,6 +290,7 @@
   }
  ],
  "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
