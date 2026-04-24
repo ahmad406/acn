@@ -187,7 +187,7 @@ def make_row(lead, opp_meta, item, qtn, remarks):
 		"transaction_date": lead.transaction_date,
 		"enquiry_type":     lead.enquiry_type,
 		"source":           lead.source,
-		"customer_name":    lead.lead_id,
+		"customer_name":    lead.company_name,
 		"industry":         lead.industry,
 		"territory":        lead.territory,
 		"contact_person":   lead.contact_person,
