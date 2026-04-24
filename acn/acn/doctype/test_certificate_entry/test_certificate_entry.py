@@ -4,6 +4,9 @@
 import frappe
 from frappe.model.document import Document
 from collections import defaultdict
+import io
+import base64
+import os
 
 
 
@@ -16,6 +19,9 @@ class TestCertificateentry(Document):
 	def on_cancel(self):
 		self.update_inspection_qty(is_canceled=1)
 		self.update_customer_dc(is_canceled=1)
+	
+	def before_save(self):
+		generate_hardness_graph(self)
 	
 	def validate(self):
 		if not self.lab_inspection_id or not self.job_card_id:
@@ -362,3 +368,153 @@ def job_card_process(doctype, txt, searchfield, start, page_len, filters):
 # 	""", args, as_dict=False)
 	
 # 	return job_plans
+
+
+def generate_hardness_graph(doc):
+	"""
+	Fetch Lab inspection child rows matching job_card_id
+	and parent lab_inspection_id, generate a Micro Hardness
+	vs Case Depth graph, and attach to hardness_graph field.
+	"""
+	if not doc.job_card_id:
+		frappe.msgprint(
+			"Job Card ID is missing. Hardness graph not generated.",
+			alert=True
+		)
+		return
+
+	if not doc.lab_inspection_id:
+		frappe.msgprint(
+			"Lab Inspection ID is missing. Hardness graph not generated.",
+			alert=True
+		)
+		return
+
+	rows = frappe.db.get_all(
+		"Lab inspection",
+		filters={
+			"parent": doc.lab_inspection_id,
+			"job_card_id": doc.job_card_id,
+		},
+		fields=[
+			"case_depth_1_1", "case_depth_1_2", "case_depth_1_3",
+			"case_depth_1_4", "case_depth_1_5", "case_depth_1_6",
+			"case_depth_1_7", "case_depth_1_8", "case_depth_1_9",
+			"case_depth_1_10",
+			"hardness_1_1", "hardness_1_2", "hardness_1_3",
+			"hardness_1_4", "hardness_1_5", "hardness_1_6",
+			"hardness_1_7", "hardness_1_8", "hardness_1_9",
+			"hardness_1_10",
+		],
+		order_by="creation desc",
+		limit=1
+	)
+
+	if not rows:
+		frappe.msgprint(
+			f"No Lab Inspection data found for Job Card ID: {doc.job_card_id} "
+			f"in Lab Inspection Entry: {doc.lab_inspection_id}. "
+			"Hardness graph not generated.",
+			alert=True
+		)
+		return
+
+	row = rows[0]
+
+	case_depth_fields = [f"case_depth_1_{i}" for i in range(1, 11)]
+	hardness_fields   = [f"hardness_1_{i}"   for i in range(1, 11)]
+
+	points = []
+	for cd_field, hv_field in zip(case_depth_fields, hardness_fields):
+		cd_val = row.get(cd_field)
+		hv_val = row.get(hv_field)
+		if cd_val not in (None, "") and hv_val not in (None, ""):
+			try:
+				points.append((float(cd_val), float(hv_val)))
+			except (ValueError, TypeError):
+				continue
+
+	if not points:
+		frappe.msgprint(
+			"Lab Inspection row found but no valid Case Depth / Hardness data. "
+			"Graph not generated.",
+			alert=True
+		)
+		return
+
+	case_depths   = [p[0] for p in points]
+	hardness_vals = [p[1] for p in points]
+
+	try:
+		import matplotlib
+		matplotlib.use("Agg")
+		import matplotlib.pyplot as plt
+		import matplotlib.ticker as ticker
+	except ImportError:
+		frappe.throw(
+			"matplotlib is not installed. Run: bench pip install matplotlib"
+		)
+
+	fig, ax = plt.subplots(figsize=(7, 4))
+
+	ax.plot(
+		case_depths, hardness_vals,
+		marker="o", markersize=4,
+		linestyle="--", linewidth=1.2,
+		color="black"
+	)
+
+	ax.set_xlabel("Case Depth in mm", fontsize=9,fontweight='bold')
+	ax.set_ylabel("Hardness\n(HV)", fontsize=9, rotation=0, labelpad=40,fontweight='bold')
+	ax.set_title(
+		"Case Depth(CD) by Micro Hardness(SH) Survey Method",
+		fontsize=9, pad=8,fontweight='bold'	
+	)
+
+	y_min = max(0, min(hardness_vals) - 50)
+	y_max = max(hardness_vals) + 100
+	ax.set_ylim(y_min, y_max)
+	ax.yaxis.set_major_locator(ticker.MultipleLocator(100))
+
+	ax.set_xticks(case_depths)
+	ax.tick_params(axis='both', labelsize=7)
+
+	fig.canvas.draw()
+
+	for label in ax.get_xticklabels() + ax.get_yticklabels():
+		label.set_fontweight('bold')
+
+	ax.grid(False)
+	fig.tight_layout()
+
+	buf = io.BytesIO()
+	fig.savefig(buf, format="png", dpi=120)
+	plt.close(fig)
+	buf.seek(0)
+	image_bytes = buf.read()
+
+	file_name = f"hardness_graph_{doc.name}.png"
+
+	if doc.hardness_graph:
+		try:
+			old_file = frappe.get_value(
+				"File", {"file_url": doc.hardness_graph}, "name"
+			)
+			if old_file:
+				frappe.delete_doc("File", old_file, force=True)
+		except Exception:
+			pass
+
+	file_doc = frappe.get_doc({
+		"doctype": "File",
+		"file_name": file_name,
+		"attached_to_doctype": doc.doctype,
+		"attached_to_name": doc.name,
+		"attached_to_field": "hardness_graph",
+		"is_private": 0,
+		"content": image_bytes,
+	})
+	file_doc.save(ignore_permissions=True)
+
+	doc.hardness_graph = file_doc.file_url
+	frappe.msgprint("Hardness graph generated successfully.", alert=True)

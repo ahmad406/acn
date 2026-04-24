@@ -11,7 +11,13 @@
   "minimum_value",
   "maximum_value",
   "scale",
-  "microstructure_cutoff"
+  "microstructure_cutoff",
+  "internal_process",
+  "operation",
+  "furnace_code",
+  "temp",
+  "time",
+  "remarks"
  ],
  "fields": [
   {
@@ -51,13 +57,50 @@
    "in_list_view": 1,
    "label": "Microstructure/Cut-off",
    "read_only": 1
+  },
+  {
+   "fieldname": "internal_process",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Internal Process"
+  },
+  {
+   "fieldname": "operation",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Operation"
+  },
+  {
+   "fieldname": "furnace_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Furnace Code",
+   "options": "Furnace"
+  },
+  {
+   "fieldname": "temp",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Temp"
+  },
+  {
+   "fieldname": "time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Time"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Remarks"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-10-26 14:14:07.001545",
+ "modified": "2026-04-09 11:50:17.380258",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Test Parameters",
