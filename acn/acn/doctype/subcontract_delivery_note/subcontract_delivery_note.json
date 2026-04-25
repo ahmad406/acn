@@ -18,7 +18,6 @@
   "amended_from",
   "supplier_info_tab",
   "supplier_details_section",
-  "supplier",
   "supplier_name",
   "supplier_address",
   "address",
@@ -119,23 +118,20 @@
    "label": "Supplier Details"
   },
   {
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "label": "Supplier",
-   "options": "Supplier"
-  },
-  {
+   "fetch_from": "subcontractor.supplier_name",
    "fieldname": "supplier_name",
    "fieldtype": "Data",
    "label": "Supplier Name"
   },
   {
+   "fetch_from": "subcontractor.supplier_primary_address",
    "fieldname": "supplier_address",
    "fieldtype": "Link",
    "label": "Supplier Address",
    "options": "Address"
   },
   {
+   "fetch_from": "subcontractor.primary_address",
    "fieldname": "address",
    "fieldtype": "Small Text",
    "label": "Address"
@@ -268,7 +264,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-24 14:35:57.870128",
+ "modified": "2026-04-24 16:29:15.223034",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Subcontract Delivery Note",
