@@ -178,7 +178,10 @@ doc_events = {
 
 	"Purchase Order": {
 		"before_submit": "acn.custom_script.purchase_order.purchase_order.before_submit"
-	}
+	},
+	 "Quotation": {
+        "on_submit": "acn.custom_script.quotation.quotation.send_quotation_with_letterhead"
+    }
 }
 
 
