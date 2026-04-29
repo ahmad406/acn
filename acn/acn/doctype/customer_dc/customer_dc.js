@@ -1,31 +1,35 @@
 frappe.ui.form.on("Customer DC", {
     refresh: function (frm) {
         cur_frm.trigger("calculate_total");
-        // if (frm.doc.docstatus == 0) {
-        //     frm.add_custom_button(__('Sales Order'), function () {
-        //         if (!frm.doc.sales_order_no) {
-        //             frappe.throw({
-        //                 title: __("Mandatory"),
-        //                 message: __("Please select a Sales Order before fetching items.")
-        //             });
-        //         }
-        //         cur_frm.doc.items = []
-        //         erpnext.utils.map_current_doc({
-        //             method: "acn.acn.doctype.customer_dc.customer_dc.map_sales_order_to_customer_dc",
-        //             source_doctype: "Sales Order",
-        //             target: frm,
-        //             allow_multiple: false,
-        //             setters: {
-        //                 customer: frm.doc.customer,
-        //             },
-        //             get_query_filters: {
-        //                 name: frm.doc.sales_order_no,
-        //                 docstatus: 1
-        //             }
-        //         });
 
-        //     }, __("Get Items From"));
-        // }
+        if (frm.doc.docstatus == 1) {
+            frm.add_custom_button(__('Discrepancy Note'), function () {
+                frappe.confirm(
+                    __('Create a Discrepancy Delivery Note for all items with Qty Not OK for Process?'),
+                    function () {
+                        frappe.call({
+                            method: 'acn.acn.doctype.customer_dc.customer_dc.create_discrepancy_delivery_note',
+                            args: {
+                                docname: frm.doc.name
+                            },
+                            freeze: true,
+                            freeze_message: __('Creating Discrepancy Delivery Note...'),
+                            callback: function (r) {
+                                if (!r.exc && r.message) {
+                                    frappe.show_alert({
+                                        message: __('Discrepancy Delivery Note {0} created',
+                                            ['<b>' + r.message + '</b>']),
+                                        indicator: 'green'
+                                    });
+                                    // Open the created Delivery Note
+                                    frappe.set_route('Form', 'Delivery Note', r.message);
+                                }
+                            }
+                        });
+                    }
+                );
+            }, )
+        }
     },
     setup: function (frm) {
         cur_frm.cscript.onload = function () {

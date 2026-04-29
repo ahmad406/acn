@@ -292,3 +292,26 @@ def get_part_no(doctype, txt, searchfield, start, page_len, filters):
 
 
 
+from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_invoice as _original_make_sales_invoice
+
+@frappe.whitelist()
+def make_sales_invoice(source_name, target_doc=None, args=None):
+    doc = _original_make_sales_invoice(source_name, target_doc=target_doc, args=args)
+
+    dn = frappe.get_doc("Delivery Note", source_name)
+
+    sales_order = None
+    for item in dn.items:
+        if item.get("customer_dc_id"):
+            sales_order = frappe.db.get_value("Customer DC", item.customer_dc_id, "sales_order_no")
+            if sales_order:
+                break
+
+    if sales_order:
+        so = frappe.get_doc("Sales Order", sales_order)
+        doc.sales_order = sales_order
+        doc.lutbond_no = so.get("lutbond_no")
+        doc.period_from = so.get("period_from")
+        doc.period_to = so.get("period_to")
+
+    return doc

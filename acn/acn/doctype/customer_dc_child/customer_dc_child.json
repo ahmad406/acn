@@ -10,6 +10,11 @@
   "process_type",
   "process_name",
   "incoming_visual_inspection",
+  "qty_not_ok_for_process_nos",
+  "qty_not_ok_for_process_kgs",
+  "discrepancy_reasons",
+  "capture_image",
+  "remarks",
   "item_code",
   "item_name",
   "eway_bill_hsn",
@@ -184,17 +189,54 @@
    "options": "GST HSN Code"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "incoming_visual_inspection",
    "fieldtype": "Select",
    "label": "Incoming Visual Inspection",
    "options": "Ok\nNOT OK"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.incoming_visual_inspection == \"NOT OK\"",
+   "fieldname": "capture_image",
+   "fieldtype": "Attach Image",
+   "label": "Capture Image "
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.incoming_visual_inspection == \"NOT OK\"",
+   "fieldname": "discrepancy_reasons",
+   "fieldtype": "Link",
+   "label": "Discrepancy Reasons",
+   "options": "Discrepancy Reasons"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.incoming_visual_inspection == \"NOT OK\"",
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.incoming_visual_inspection == \"NOT OK\"",
+   "fieldname": "qty_not_ok_for_process_kgs",
+   "fieldtype": "Float",
+   "label": "Qty Not OK For Process (Kgs)"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.incoming_visual_inspection == \"NOT OK\"",
+   "fieldname": "qty_not_ok_for_process_nos",
+   "fieldtype": "Float",
+   "label": "Qty Not OK For Process (Nos)"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-12-12 20:35:44.681970",
+ "modified": "2026-04-28 16:09:37.731066",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer DC child",

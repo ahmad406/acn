@@ -218,6 +218,11 @@ doc_events = {
 # 	"frappe.desk.doctype.event.event.get_events": "acn.event.get_events"
 # }
 #
+# hooks.py
+override_whitelisted_methods = {
+    "erpnext.stock.doctype.delivery_note.delivery_note.make_sales_invoice": 
+        "acn.custom_script.delivery_note.delivery_note.make_sales_invoice"
+}
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps

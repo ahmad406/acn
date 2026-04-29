@@ -1,0 +1,124 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-04-28 17:55:09.034425",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_name",
+  "item",
+  "hsn_code__sac_code",
+  "process_type",
+  "process_name",
+  "part_no",
+  "material",
+  "column_break_tgax",
+  "qty_nos",
+  "qty_kgs",
+  "uom",
+  "rate",
+  "amount",
+  "item_tax_template"
+ ],
+ "fields": [
+  {
+   "fieldname": "hsn_code__sac_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "HSN Code / SAC Code"
+  },
+  {
+   "fieldname": "qty_nos",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "QTY (Nos)"
+  },
+  {
+   "fieldname": "qty_kgs",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "QTY (Kgs)"
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Rate UOM"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rate"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name"
+  },
+  {
+   "fieldname": "process_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Process Type"
+  },
+  {
+   "fieldname": "process_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Process Name"
+  },
+  {
+   "fieldname": "part_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Part No."
+  },
+  {
+   "fieldname": "material",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Material"
+  },
+  {
+   "fieldname": "item_tax_template",
+   "fieldtype": "Link",
+   "label": "Item Tax Template",
+   "options": "Item Tax Template"
+  },
+  {
+   "fieldname": "column_break_tgax",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-04-29 10:10:30.289962",
+ "modified_by": "Administrator",
+ "module": "ACN",
+ "name": "Proforma Invoice Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

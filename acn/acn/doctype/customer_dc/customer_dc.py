@@ -15,6 +15,84 @@ class CustomerDC(Document):
 		self.calculate_eway_bill_rate()
 		self.validate_part()
 
+	def on_update(self):
+		self.update_job_card_balance()
+
+	def on_update_after_submit(self):
+		self.update_job_card_balance()
+
+	def update_job_card_balance(self):
+		for item in self.items:
+			if item.incoming_visual_inspection != "NOT OK":
+				continue
+
+			qty_not_ok_nos = item.qty_not_ok_for_process_nos or 0
+			qty_not_ok_kgs = item.qty_not_ok_for_process_kgs or 0
+
+			if not qty_not_ok_nos and not qty_not_ok_kgs:
+				continue
+
+			job_cards = frappe.get_all(
+				"Job Card for process",
+				filters={
+					"customer_dc": self.name,
+					"part_no": item.part_no
+				},
+				fields=["name"]
+			)
+
+			if not job_cards:
+				frappe.log_error(
+					f"No Job Card found for Customer DC {self.name} and Part No {item.part_no}",
+					"Customer DC Balance Update"
+				)
+				continue
+
+			for jc in job_cards:
+				job_card = frappe.get_doc("Job Card for process", jc.name)
+
+				first_lot = next(
+					(lot for lot in job_card.sequence_lot_wise_internal_process
+					if lot.lot_no == 1),
+					None
+				)
+
+				if not first_lot:
+					frappe.log_error(
+						f"No Lot #1 found in Job Card {job_card.name}",
+						"Customer DC Balance Update"
+					)
+					continue
+
+				current_balance_nos = first_lot.balance_qty_in_nos or 0
+				current_balance_kgs = first_lot.balance_qty_in_kgs or 0
+
+				if qty_not_ok_nos > current_balance_nos:
+					frappe.throw(
+						f"Qty Not OK for Process (Nos) <b>{qty_not_ok_nos}</b> cannot exceed "
+						f"Balance Qty in Nos <b>{current_balance_nos}</b> "
+						f"in Job Card <b>{job_card.name}</b> Lot #1 for Part No <b>{item.part_no}</b>"
+					)
+
+				new_balance_nos = current_balance_nos - qty_not_ok_nos
+
+				if current_balance_nos > 0:
+					kgs_per_nos = current_balance_kgs / current_balance_nos
+					new_balance_kgs = new_balance_nos * kgs_per_nos
+				else:
+					new_balance_kgs = 0
+
+				frappe.db.set_value(
+					"Sequence Lot wise Internal Process",
+					first_lot.name,
+					{
+						"balance_qty_in_nos": new_balance_nos,
+						"balance_qty_in_kgs": round(new_balance_kgs, 3)
+					}
+				)
+
+			frappe.db.commit()
+
 	def validate_part(self):
 		seen = set()
 		for d in self.items:
@@ -471,3 +549,66 @@ def get_part_no(doctype, txt, searchfield, start, page_len, filters):
 	# """, args)
 
 	# return part
+
+
+@frappe.whitelist()
+def create_discrepancy_delivery_note(docname):
+	dc = frappe.get_doc("Customer DC", docname)
+
+	if not dc.items:
+		frappe.throw("No items found in Customer DC.")
+
+	items_to_process = [
+		row for row in dc.items
+		if (row.qty_not_ok_for_process_nos or 0) > 0
+	]
+
+	if not items_to_process:
+		frappe.throw("No items with 'Qty Not OK for Process' found.")
+
+	dn = frappe.new_doc("Delivery Note")
+	dn.posting_date = frappe.utils.nowdate()
+	dn.posting_time = frappe.utils.nowtime()
+	dn.set_posting_time = 1
+	dn.customer = dc.customer
+	dn.company = frappe.defaults.get_user_default("Company")
+	dn.discrepancy_note = 1
+
+	for row in items_to_process:
+		d_qty_in_nos = row.qty_not_ok_for_process_nos
+		d_qty_in_kgs = row.qty_not_ok_for_process_kgs
+		gross_value_of_goods = row.gross_value_of_goods or 0
+		e_rate = row.e_rate or 0
+		rate_uom = row.rate_uom or "Nos" 
+		part_no = row.part_no
+		process_type = row.process_type
+		item_code = row.item_code
+		item_name = row.item_name
+		customer_dc_no = row.customer_dc_no
+		customer_dc_date = row.customer_dc_date
+		customer_process_ref = row.customer_process_ref_no
+		process_type = row.process_type
+
+		dn.append("items", {
+			"item_code": item_code,
+			"item_name": item_name,
+			"qty": d_qty_in_nos,
+			"rate": e_rate,
+			"gross_value_of_goods": gross_value_of_goods,
+			"e_rate": e_rate,
+			"rate_uom": rate_uom,
+			"d_qty_in_nos": d_qty_in_nos,
+			"d_qty_in_kgs": d_qty_in_kgs,
+			"custom_customer_dc_id": docname,
+			"process_type": process_type,
+			"part_no": part_no,
+			"customer_dc_no": customer_dc_no,
+			"customer_dc_date": customer_dc_date,
+			"customer_process_ref": customer_process_ref,
+		})
+
+	dn.taxes = []
+
+	dn.insert(ignore_permissions=True)
+
+	return dn.name
