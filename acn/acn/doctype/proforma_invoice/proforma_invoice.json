@@ -9,9 +9,13 @@
   "section_break_nqod",
   "naming_series",
   "proforma_invoice_date",
-  "column_break_wwwi",
   "customer_dc_id",
   "sales_order_no",
+  "column_break_wwwi",
+  "customer_order_no",
+  "customer_order_date",
+  "customer_dc_no",
+  "customer_dc_date",
   "amended_from",
   "accounting_dimensions_section",
   "cost_center",
@@ -25,6 +29,7 @@
   "total_taxes_and_charges",
   "column_break_fslw",
   "grand_total",
+  "in_words",
   "address_contact_tab",
   "customer_address",
   "address",
@@ -166,13 +171,41 @@
    "fieldname": "grand_total",
    "fieldtype": "Currency",
    "label": "Grand Total"
+  },
+  {
+   "fieldname": "in_words",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "In Words"
+  },
+  {
+   "fieldname": "customer_dc_no",
+   "fieldtype": "Data",
+   "label": "Customer DC No."
+  },
+  {
+   "fieldname": "customer_dc_date",
+   "fieldtype": "Date",
+   "label": "Customer DC Date"
+  },
+  {
+   "fetch_from": "customer_dc_id.customer_order_no",
+   "fieldname": "customer_order_no",
+   "fieldtype": "Data",
+   "label": "Customer Order No."
+  },
+  {
+   "fetch_from": "customer_dc_id.customer_order_date",
+   "fieldname": "customer_order_date",
+   "fieldtype": "Date",
+   "label": "Customer Order Date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-29 10:43:39.293404",
+ "modified": "2026-04-29 18:13:12.254473",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Proforma Invoice",
