@@ -13,6 +13,7 @@
   "lab_inspection_entry_id",
   "actual_start_date_time",
   "actual_end_date_time",
+  "reason_for_delay_in_checking",
   "rocessfurnace_section",
   "internal_process",
   "furnace_process",
@@ -183,13 +184,20 @@
    "fieldname": "actual_end_date_time",
    "fieldtype": "Datetime",
    "label": "Actual End Date Time"
+  },
+  {
+   "fieldname": "reason_for_delay_in_checking",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reason For Delay In Checking",
+   "options": "Reason For Delay In Checking"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-01 21:27:43.049091",
+ "modified": "2026-05-05 16:18:28.652001",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Lab Inspection Entry",

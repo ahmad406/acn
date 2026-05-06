@@ -12,49 +12,60 @@ def send_quotation_with_letterhead(doc, method):
     )
     pdf_content = get_pdf(html)
 
+    # Fetch notification
+    notification = frappe.get_doc("Notification", "quotation")
+
     recipient = doc.contact_email
     if not recipient:
         frappe.log_error(f"No contact_email on {doc.name}, skipping notification", "Quotation Email")
         return
 
+    # Fetch CC from notification recipients row
+    cc = []
+    for r in notification.recipients:
+        if r.cc:
+            cc_emails = [e.strip() for e in r.cc.split("\n") if e.strip()]
+            cc.extend(cc_emails)
+
+    # Start attachments with letterhead PDF
+    attachments = [{
+        "fname": f"{doc.name}.pdf",
+        "fcontent": pdf_content
+    }]
+
+    # Fetch all files attached to this Quotation
+    attached_files = frappe.get_all(
+        "File",
+        filters={
+            "attached_to_doctype": doc.doctype,
+            "attached_to_name": doc.name
+        },
+        fields=["name", "file_name"]
+    )
+
+    for f in attached_files:
+        file_doc = frappe.get_doc("File", f.name)
+        attachments.append({
+            "fname": f.file_name,
+            "fcontent": file_doc.get_content()
+        })
+
+    frappe.log_error(
+        f"Recipients: {[recipient]}\nCC: {cc}\nAttachments: {[a['fname'] for a in attachments]}",
+        "Quotation Email Debug"
+    )
+
     frappe.sendmail(
         recipients=[recipient],
+        cc=cc,
         subject=f"Quotation {doc.name} from {doc.company}",
         message=get_email_body(doc),
-        attachments=[{
-            "fname": f"{doc.name}.pdf",
-            "fcontent": pdf_content
-        }]
+        attachments=attachments,
+        expose_recipients="header"
     )
 
 
 def get_email_body(doc):
-    valid_till = frappe.utils.formatdate(doc.valid_till) if doc.valid_till else "—"
-    transaction_date = frappe.utils.formatdate(doc.transaction_date)
-
-    return f"""
-<p>Dear {doc.contact_person},</p>
-<p>Thank you for your enquiry. We have studied your requirements of heat treatment and our confident of undertaking the same to your satisfaction.</br></p>
-The detailed price offer is as follows:</br>
-<ul>
-  <li><b>Quotation No:</b> {doc.name} (Please find attached)</li>
-  <li><b>Date:</b> {transaction_date}</li>
-  <li><b>Valid Till:</b> {valid_till}</li>
-</ul>
-</br>
-<p>We hope our offer is competitive and look forward to your valuable purchase order</p></br></br>
-<div style="font-style: italic; line-height: 1.5;">
-Regards,<br>
-<b>Sunny William</b><br>
-Marketing & Sales<br>
-<b>Cell:</b> <a href="tel:+917411918957">7411918957</a><br>
-<b style="font-size:16px;">ACE CARBO NITRIDERS</b><br>
-No.145-A, 3 rd. Cross, 1 st. Stage, Peenya Industrial Estate<br>
-BANGALORE-56058.<br>
-<a href="mailto:marketing@acecarbo.in">E-Mail</a> | 
-<a href="http://www.acecarbo.in/">Website</a> | 
-<a href="https://youtu.be/aadWZJSjH5Y">YouTube</a> | 
-<a href="https://www.facebook.com/acecarbonitri">Facebook</a> | 
-<a href="https://www.linkedin.com/in/ace-carbo-nitriders-acn-392602232">LinkedIn</a>
-</div>
-"""
+    notification = frappe.get_doc("Notification", "quotation")
+    context = frappe.get_doc("Quotation", doc.name).as_dict()
+    return frappe.render_template(notification.message, {"doc": context, "frappe": frappe})

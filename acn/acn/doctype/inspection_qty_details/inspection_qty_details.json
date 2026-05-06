@@ -38,8 +38,7 @@
   "samplingcheckqty",
   "lot_no",
   "batch_no",
-  "prev_batch_no",
-  "reason_for_delay_in_checking"
+  "prev_batch_no"
  ],
  "fields": [
   {
@@ -213,12 +212,6 @@
    "label": "Batch No"
   },
   {
-   "fieldname": "reason_for_delay_in_checking",
-   "fieldtype": "Small Text",
-   "in_list_view": 1,
-   "label": "Reason For Delay In Checking"
-  },
-  {
    "fieldname": "prev_batch_no",
    "fieldtype": "Data",
    "label": "Prev Batch No"
@@ -233,7 +226,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-22 18:19:06.150276",
+ "modified": "2026-05-05 16:16:16.087318",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Inspection Qty Details",

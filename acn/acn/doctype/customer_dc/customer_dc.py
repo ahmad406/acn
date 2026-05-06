@@ -599,7 +599,7 @@ def create_discrepancy_delivery_note(docname):
 			"rate_uom": rate_uom,
 			"d_qty_in_nos": d_qty_in_nos,
 			"d_qty_in_kgs": d_qty_in_kgs,
-			"custom_customer_dc_id": docname,
+			"customer_dc_id": docname,
 			"process_type": process_type,
 			"part_no": part_no,
 			"customer_dc_no": customer_dc_no,

@@ -49,7 +49,6 @@ frappe.ui.form.on("Proforma Invoice", {
 
                     child.item = dc_row.item_code;
                     child.item_name = dc_row.item_name;
-                    child.hsn_code__sac_code = dc_row.hsn;
                     child.process_type = dc_row.process_type;
                     child.process_name = dc_row.process_name;
                     child.part_no = dc_row.part_no;
@@ -69,6 +68,7 @@ frappe.ui.form.on("Proforma Invoice", {
                     if (so_row) {
                         child.rate = so_row.rate;
                         child.item_tax_template = so_row.item_tax_template;
+                        child.hsn_code__sac_code = so_row.gst_hsn_code;
                     }
 
                     // Calculate amount based on Rate UOM
