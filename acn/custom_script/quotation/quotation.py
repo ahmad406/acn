@@ -12,12 +12,17 @@ def send_quotation_with_letterhead(doc, method):
     )
     pdf_content = get_pdf(html)
 
-    # Fetch notification
     notification = frappe.get_doc("Notification", "quotation")
 
-    recipient = doc.contact_email
-    if not recipient:
+    # Parse comma-separated emails into a clean list
+    if not doc.contact_email:
         frappe.log_error(f"No contact_email on {doc.name}, skipping notification", "Quotation Email")
+        return
+
+    recipients = [e.strip() for e in doc.contact_email.split(",") if e.strip()]
+
+    if not recipients:
+        frappe.log_error(f"No valid emails parsed from contact_email on {doc.name}", "Quotation Email")
         return
 
     # Fetch CC from notification recipients row
@@ -27,13 +32,11 @@ def send_quotation_with_letterhead(doc, method):
             cc_emails = [e.strip() for e in r.cc.split("\n") if e.strip()]
             cc.extend(cc_emails)
 
-    # Start attachments with letterhead PDF
     attachments = [{
         "fname": f"{doc.name}.pdf",
         "fcontent": pdf_content
     }]
 
-    # Fetch all files attached to this Quotation
     attached_files = frappe.get_all(
         "File",
         filters={
@@ -51,12 +54,12 @@ def send_quotation_with_letterhead(doc, method):
         })
 
     frappe.log_error(
-        f"Recipients: {[recipient]}\nCC: {cc}\nAttachments: {[a['fname'] for a in attachments]}",
+        f"Recipients: {recipients}\nCC: {cc}\nAttachments: {[a['fname'] for a in attachments]}",
         "Quotation Email Debug"
     )
 
     frappe.sendmail(
-        recipients=[recipient],
+        recipients=recipients,
         cc=cc,
         subject=f"Quotation {doc.name} from {doc.company}",
         message=get_email_body(doc),

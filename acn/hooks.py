@@ -74,7 +74,14 @@ doctype_list_js = {
 
 # Generators
 # ----------
-
+fixtures = [
+    {
+        "doctype": "Property Setter",
+        "filters": [
+            ["name", "in", ["Sales Order-naming_series-options"]]
+        ]
+    }
+]
 # automatically create page for each record of this doctype
 # website_generators = ["Web Page"]
 
