@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:material",
  "creation": "2026-05-12 18:23:12.124207",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -11,16 +12,18 @@
   {
    "fieldname": "material",
    "fieldtype": "Data",
-   "label": "Material"
+   "label": "Material",
+   "unique": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-12 18:23:20.693419",
+ "modified": "2026-05-13 19:04:38.744585",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Material",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
