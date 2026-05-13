@@ -218,13 +218,8 @@ class CustomerDC(Document):
 			doc.customer_name=self.customer_name
 			doc.qty_in_kgs=d.qty_kgs
 			doc.qty_in_nos=d.qty_nos
-
-
-
-
+			doc.rework = d.rework
 			cr_list = []
-
-
 
 			for c in cp.customer_requirements:
 				row_c = doc.append("customer_requirements", {})

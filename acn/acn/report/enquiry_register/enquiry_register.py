@@ -36,7 +36,7 @@ def get_columns():
 		{"label": "Contact Person",  "fieldname": "contact_person",   "fieldtype": "Data",     "width": 140},
 		{"label": "Contact No",      "fieldname": "mobile_no",        "fieldtype": "Data",     "width": 120},
 		{"label": "E-Mail ID",       "fieldname": "email_id",         "fieldtype": "Data",     "width": 160},
-		{"label": "Process",         "fieldname": "process",          "fieldtype": "Data",     "width": 180},
+		{"label": "Process",         "fieldname": "process",          "fieldtype": "Data",     "width": 500},
 		{"label": "Quotation",       "fieldname": "quotation_name",   "fieldtype": "Link",     "options": "Quotation", "width": 140},
 		{"label": "Rates Quoted",    "fieldname": "rates_quoted",     "fieldtype": "Currency", "width": 130},
 		{"label": "Total Value",     "fieldname": "total_value",      "fieldtype": "Currency", "width": 130},
@@ -91,7 +91,7 @@ def get_data(filters=None):
 			o.name               AS opp_id,
 			o.party_name         AS lead_id,
 			o.opportunity_amount AS total_value,
-			oi.item_name         AS process
+			oi.description AS process
 		FROM `tabOpportunity` o
 		LEFT JOIN `tabOpportunity Item` oi ON oi.parent = o.name
 		WHERE o.opportunity_from = 'Lead'
@@ -109,7 +109,7 @@ def get_data(filters=None):
 			if o.opp_id not in lead_opps_map[o.lead_id]:
 				lead_opps_map[o.lead_id].append(o.opp_id)
 		if o.process:
-			opp_items_map.setdefault(o.opp_id, []).append(o.process)
+			opp_items_map.setdefault(o.opp_id, []).append(strip_html(o.process))
 
 	qtn_map = {}
 
@@ -270,3 +270,21 @@ def export_with_summary(filters=None):
 	frappe.response["filename"] = "Enquiry_Register.xlsx"
 	frappe.response["filecontent"] = output.getvalue()
 	frappe.response["display_content_as"] = "attachment"
+
+
+import re
+
+def strip_html(html):
+    if not html:
+        return ""
+    # Replace <p> and <br> tags with newline or separator
+    html = re.sub(r"<p[^>]*>", "", html)
+    html = re.sub(r"</p>", " | ", html)
+    html = re.sub(r"<br\s*/?>", " | ", html)
+    # Strip remaining HTML tags
+    html = re.sub(r"<[^>]+>", "", html)
+    # Decode HTML entities
+    html = html.replace("&amp;", "&").replace("&nbsp;", " ").replace("&lt;", "<").replace("&gt;", ">")
+    # Clean up extra spaces
+    html = re.sub(r"\s+", " ", html).strip(" |")
+    return html

@@ -20,6 +20,7 @@
   "customer_code",
   "customer_name",
   "incoming_visual_inspection",
+  "rework",
   "column_break_xrgf",
   "process_type",
   "process_name",
@@ -215,6 +216,12 @@
    "fieldname": "pasting_area_drawing",
    "fieldtype": "Attach Image",
    "label": "Pasting Area Drawing"
+  },
+  {
+   "default": "0",
+   "fieldname": "rework",
+   "fieldtype": "Check",
+   "label": "Rework"
   }
  ],
  "grid_page_length": 50,
@@ -222,7 +229,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-08 16:56:44.842991",
+ "modified": "2026-05-13 11:35:43.159861",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Card for process",

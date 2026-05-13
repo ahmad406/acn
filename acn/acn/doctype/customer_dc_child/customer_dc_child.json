@@ -36,7 +36,17 @@
   "rate",
   "rate_uom",
   "sales_order_item",
-  "hsn"
+  "hsn",
+  "rework",
+  "billing",
+  "type_of_rework",
+  "root_cause",
+  "non_conformance",
+  "reson_for_rework_remarks",
+  "action_plan",
+  "responsibility",
+  "effectiveness",
+  "rework_remarks"
  ],
  "fields": [
   {
@@ -230,13 +240,76 @@
    "fieldname": "qty_not_ok_for_process_nos",
    "fieldtype": "Float",
    "label": "Qty Not OK For Process (Nos)"
+  },
+  {
+   "default": "0",
+   "fieldname": "rework",
+   "fieldtype": "Check",
+   "label": "Rework"
+  },
+  {
+   "default": "0",
+   "fieldname": "billing",
+   "fieldtype": "Check",
+   "label": "Billing"
+  },
+  {
+   "depends_on": "eval:doc.rework",
+   "fieldname": "type_of_rework",
+   "fieldtype": "Link",
+   "label": "Type Of Rework",
+   "options": "Type Of Rework"
+  },
+  {
+   "depends_on": "eval:doc.rework",
+   "fieldname": "root_cause",
+   "fieldtype": "Link",
+   "label": "Root Cause",
+   "options": "Root Cause"
+  },
+  {
+   "depends_on": "eval:doc.rework",
+   "fieldname": "non_conformance",
+   "fieldtype": "Small Text",
+   "label": "Non Conformance"
+  },
+  {
+   "depends_on": "eval:doc.rework",
+   "fieldname": "reson_for_rework_remarks",
+   "fieldtype": "Small Text",
+   "label": "Reson for Rework & Remarks"
+  },
+  {
+   "depends_on": "eval:doc.rework",
+   "fieldname": "action_plan",
+   "fieldtype": "Small Text",
+   "label": "Action Plan"
+  },
+  {
+   "depends_on": "eval:doc.rework",
+   "fieldname": "responsibility",
+   "fieldtype": "Link",
+   "label": "Responsibility",
+   "options": "Employee"
+  },
+  {
+   "depends_on": "eval:doc.rework",
+   "fieldname": "effectiveness",
+   "fieldtype": "Small Text",
+   "label": "Effectiveness"
+  },
+  {
+   "depends_on": "eval:doc.rework",
+   "fieldname": "rework_remarks",
+   "fieldtype": "Small Text",
+   "label": "Rework Remarks"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-28 16:09:37.731066",
+ "modified": "2026-05-13 17:35:13.567441",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Customer DC child",
