@@ -120,3 +120,40 @@ def get_part_no(doctype, txt, searchfield, start, page_len, filters):
 		""",
 		args,
 	)
+
+
+from erpnext.controllers.accounts_controller import update_child_qty_rate as original_update_child_qty_rate
+import frappe
+import json
+
+
+@frappe.whitelist()
+def update_child_qty_rate(parent_doctype, trans_items, parent_doctype_name, child_docname="items"):
+
+	if isinstance(trans_items, str):
+		data = json.loads(trans_items)
+	else:
+		data = trans_items
+
+	# SAVE YOUR CUSTOM FIELD FIRST
+	if parent_doctype == "Sales Order":
+
+		doc = frappe.get_doc(parent_doctype, parent_doctype_name)
+
+		for d in data:
+			if d.get("docname"):
+
+				for row in doc.items:
+					if row.name == d.get("docname"):
+						row.prevdoc_docname = d.get("prevdoc_docname")
+
+		doc.flags.ignore_validate_update_after_submit = True
+		doc.save(ignore_permissions=True)
+
+	# THEN RUN ORIGINAL ERPNext METHOD
+	return original_update_child_qty_rate(
+		parent_doctype,
+		json.dumps(data),
+		parent_doctype_name,
+		child_docname
+	)

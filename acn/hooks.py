@@ -51,7 +51,8 @@ doctype_list_js = {
 	 "Journal Entry" : "custom_script/journal_entry/journal_entry.js",
 	 "Purchase Invoice" : "custom_script/purchase_invoice/purchase_invoice.js",
 	 "Purchase Order" : "custom_script/purchase_order/purchase_order.js",
-
+	 "Opportunity" : "custom_script/opportunity/opportunity.js",
+	 "Quotation" : "custom_script/quotation/quotation.js",
 	}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -78,7 +79,7 @@ fixtures = [
     {
         "doctype": "Property Setter",
         "filters": [
-            ["name", "in", ["Sales Order-naming_series-options"]]
+            ["name", "in", ["Customer-customer_type-options","Customer-customer_type-default","Sales Order-naming_series-options"]]
         ]
     }
 ]
@@ -187,8 +188,12 @@ doc_events = {
 		"before_submit": "acn.custom_script.purchase_order.purchase_order.before_submit"
 	},
 	 "Quotation": {
-        "on_submit": "acn.custom_script.quotation.quotation.send_quotation_with_letterhead"
-    }
+        "on_submit": "acn.custom_script.quotation.quotation.send_quotation_with_letterhead",
+		"after_insert": "acn.custom_script.opportunity.opportunity.copy_opportunity_attachments"
+    },
+	"Opportunity": {
+		"validate": "acn.custom_script.opportunity.opportunity.update_opportunity_valuation_type"
+	}
 }
 
 
@@ -228,8 +233,14 @@ doc_events = {
 # hooks.py
 override_whitelisted_methods = {
     "erpnext.stock.doctype.delivery_note.delivery_note.make_sales_invoice": 
-        "acn.custom_script.delivery_note.delivery_note.make_sales_invoice"
-}
+        "acn.custom_script.delivery_note.delivery_note.make_sales_invoice",
+	
+	"erpnext.controllers.accounts_controller.update_child_qty_rate":
+		"acn.custom_script.sales_order.sales_order.update_child_qty_rate",
+
+	"erpnext.crm.doctype.lead.lead.make_opportunity":
+	"acn.custom_script.opportunity.opportunity.make_opportunity"
+}		
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps

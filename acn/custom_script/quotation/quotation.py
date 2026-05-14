@@ -1,7 +1,40 @@
 import frappe
 from frappe.utils.pdf import get_pdf
 
+
+def update_opportunity_amount(doc):
+	try:
+		if doc.opportunity:
+
+			amount = doc.total or 0
+
+			valuation_type = (
+				"High Value"
+				if amount >= 100000
+				else "Low Value"
+			)
+
+			frappe.db.set_value(
+				"Opportunity",
+				doc.opportunity,
+				{
+					"opportunity_amount": amount,
+					"opportunity_valuation_type": valuation_type
+				}
+			)
+
+	except Exception:
+		frappe.log_error(
+			frappe.get_traceback(),
+			f"Opportunity Update Failed - {doc.name}"
+		)
+
+
 def send_quotation_with_letterhead(doc, method):
+
+
+    update_opportunity_amount(doc)
+
     letter_head = frappe.db.get_value("Letter Head", {"is_default": 1}, "name")
 
     html = frappe.get_print(

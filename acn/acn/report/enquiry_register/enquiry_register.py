@@ -27,7 +27,7 @@ def execute(filters=None):
 
 def get_columns():
 	return [
-		{"label": "Date of Enquiry", "fieldname": "transaction_date", "fieldtype": "Date",     "width": 120},
+		{"label": "Date of Enquiry", "fieldname": "transaction_date", "fieldtype": "Date",     "width": 160},
 		{"label": "Enquiry Type",    "fieldname": "enquiry_type",     "fieldtype": "Data",     "width": 120},
 		{"label": "Source",          "fieldname": "source",           "fieldtype": "Data",     "width": 110},
 		{"label": "Customer Name",   "fieldname": "customer_name",    "fieldtype": "Data",    "width": 160},
@@ -62,7 +62,7 @@ def get_data(filters=None):
         SELECT
             l.name       AS lead_id,
             l.company_name AS customer_name,
-            l.creation   AS transaction_date,
+            l.date_of_enquiry   AS transaction_date,
             l.enquiry_type,
             l.source,
             l.industry,
