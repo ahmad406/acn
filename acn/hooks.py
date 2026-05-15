@@ -189,7 +189,8 @@ doc_events = {
 	},
 	 "Quotation": {
         "on_submit": "acn.custom_script.quotation.quotation.send_quotation_with_letterhead",
-		"after_insert": "acn.custom_script.opportunity.opportunity.copy_opportunity_attachments"
+		"after_insert": "acn.custom_script.opportunity.opportunity.copy_opportunity_attachments",
+		"on_cancel": "acn.custom_script.quotation.quotation.reset_opportunity_amount"
     },
 	"Opportunity": {
 		"validate": "acn.custom_script.opportunity.opportunity.update_opportunity_valuation_type"

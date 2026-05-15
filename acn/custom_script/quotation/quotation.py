@@ -1,27 +1,33 @@
 import frappe
 from frappe.utils.pdf import get_pdf
+from frappe.utils import flt
+
 
 
 def update_opportunity_amount(doc):
 	try:
-		if doc.opportunity:
+		if not doc.opportunity:
+			return
 
-			amount = doc.total or 0
+		amount = sum(
+			flt(item.opportunity_value)
+			for item in doc.items
+		)
 
-			valuation_type = (
-				"High Value"
-				if amount >= 100000
-				else "Low Value"
-			)
+		valuation_type = (
+			"High Value"
+			if amount >= 100000
+			else "Low Value"
+		)
 
-			frappe.db.set_value(
-				"Opportunity",
-				doc.opportunity,
-				{
-					"opportunity_amount": amount,
-					"opportunity_valuation_type": valuation_type
-				}
-			)
+		frappe.db.set_value(
+			"Opportunity",
+			doc.opportunity,
+			{
+				"opportunity_amount": amount,
+				"opportunity_valuation_type": valuation_type
+			}
+		)
 
 	except Exception:
 		frappe.log_error(
@@ -105,3 +111,25 @@ def get_email_body(doc):
     notification = frappe.get_doc("Notification", "quotation")
     context = frappe.get_doc("Quotation", doc.name).as_dict()
     return frappe.render_template(notification.message, {"doc": context, "frappe": frappe})
+
+
+
+def reset_opportunity_amount(doc, method=None):
+	try:
+		if not doc.opportunity:
+			return
+
+		frappe.db.set_value(
+			"Opportunity",
+			doc.opportunity,
+			{
+				"opportunity_amount": 0,
+				"opportunity_valuation_type": "Low Value"
+			}
+		)
+
+	except Exception:
+		frappe.log_error(
+			frappe.get_traceback(),
+			f"Opportunity Reset Failed - {doc.name}"
+        )

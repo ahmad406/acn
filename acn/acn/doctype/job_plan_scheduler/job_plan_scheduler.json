@@ -18,6 +18,8 @@
   "furnace_job_cards_list_section",
   "furnace_code",
   "furnace_name",
+  "column_break_ucbu",
+  "last_planned_furnace_details",
   "section_break_xwkf",
   "job_card_details",
   "section_break_ehjz",
@@ -217,6 +219,17 @@
    "in_list_view": 1,
    "label": "Lab Inspection By",
    "options": "Employee"
+  },
+  {
+   "fieldname": "column_break_ucbu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.furnace_code",
+   "fieldname": "last_planned_furnace_details",
+   "fieldtype": "Small Text",
+   "label": "Last Planned Furnace Details",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -224,7 +237,7 @@
  "is_calendar_and_gantt": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-22 18:06:37.032193",
+ "modified": "2026-05-14 18:33:24.375170",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Plan Scheduler",
