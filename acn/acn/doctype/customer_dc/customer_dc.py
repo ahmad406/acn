@@ -576,6 +576,7 @@ def create_discrepancy_delivery_note(docname):
 		e_rate = row.e_rate or 0
 		rate_uom = row.rate_uom or "Nos" 
 		part_no = row.part_no
+		rate = row.rate
 		process_type = row.process_type
 		item_code = row.item_code
 		item_name = row.item_name
@@ -588,7 +589,7 @@ def create_discrepancy_delivery_note(docname):
 			"item_code": item_code,
 			"item_name": item_name,
 			"qty": d_qty_in_nos,
-			"rate": e_rate,
+			"rate": rate,
 			"gross_value_of_goods": gross_value_of_goods,
 			"e_rate": e_rate,
 			"rate_uom": rate_uom,
@@ -600,10 +601,14 @@ def create_discrepancy_delivery_note(docname):
 			"customer_dc_no": customer_dc_no,
 			"customer_dc_date": customer_dc_date,
 			"customer_process_ref": customer_process_ref,
+			"service_value":0
 		})
 
 	dn.taxes = []
 
 	dn.insert(ignore_permissions=True)
+
+	for row in dn.items:
+		frappe.db.set_value("Delivery Note Item", row.name, "service_value", 0)
 
 	return dn.name

@@ -54,6 +54,13 @@ frappe.ui.form.on('Delivery Note', {
                 });
         }
         frm.refresh_field('document_enclosed_for_dispatch');
+    },
+    refresh: function (frm) {
+        if (frm.doc.discrepancy_note) {
+            setTimeout(() => {
+                frm.remove_custom_button(__('Sales Invoice'), __('Create'));
+            }, 300);
+        }
     }
 })
 
@@ -94,7 +101,9 @@ frappe.ui.form.on('Delivery Note Item', {
 
 
             }
+             if (!frm.doc.discrepancy_note){
             calculate_service_value(frm, cdt, cdn)
+        }
             calculate_gross_value(frm, cdt, cdn)
 
             frm.refresh_field("items");
@@ -173,8 +182,9 @@ frappe.ui.form.on('Delivery Note Item', {
 
                         }
                         frappe.model.set_value(cdt, cdn, "rate", r.message.rate);
-
-                        calculate_service_value(frm, cdt, cdn)
+                        if (!frm.doc.discrepancy_note) {
+                            calculate_service_value(frm, cdt, cdn)
+                        }
                         calculate_gross_value(frm, cdt, cdn)
 
                     }, 600);
@@ -202,6 +212,9 @@ frappe.ui.form.on('Delivery Note Item', {
         });
     },
     rate: function (frm, cdt, cdn) {
+        if (frm.doc.discrepancy_note) {
+            return
+        }
         calculate_service_value(frm, cdt, cdn)
         frm.refresh_field('items');
 

@@ -130,6 +130,22 @@ frappe.ui.form.on("Customer DC child", {
         cur_frm.refresh()
 
     },
+    qty_not_ok_for_process_nos: function(frm, cdt, cdn) {
+    let d = locals[cdt][cdn];
+
+    let delivered_qty = flt(d.delivered_qty);
+    let delivery_qty_kgs = flt(d.delivery_qty_kgs);
+    let qty_not_ok_nos = flt(d.qty_not_ok_for_process_nos);
+
+    if (delivered_qty > 0 && delivery_qty_kgs > 0) {
+        d.qty_not_ok_for_process_kgs =
+            (qty_not_ok_nos / delivered_qty) * delivery_qty_kgs;
+    } else {
+        d.qty_not_ok_for_process_kgs = 0;
+    }
+
+    frm.refresh_field("items");
+}
 
 });
 

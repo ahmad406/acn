@@ -12,6 +12,8 @@ def validate(self, method=None):
 	errors = []
 	seen_combinations = set()
 
+	if self.discrepancy_note:
+		return
 
 	for d in self.items:
 		key = (d.part_no, d.customer_dc_id)
@@ -51,8 +53,12 @@ def validate(self, method=None):
 			)
 	if errors:
 		frappe.throw("The following items have quantity issues:\n\n" + "\n".join(errors))
+
+		
 def before_validate(self,method):
-	  calculate_service_and_gross_values(self)
+	if self.discrepancy_note:
+		return
+	calculate_service_and_gross_values(self)
 
 def calculate_service_and_gross_values(self):
 	for row in self.items:   

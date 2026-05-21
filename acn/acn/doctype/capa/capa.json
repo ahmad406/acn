@@ -24,13 +24,15 @@
   "defective_qty_nos",
   "defective_qty_kgs",
   "nature_of_complaint",
-  "section_break_cstx",
-  "immediate_containment_action",
-  "root_cause",
+  "root_cause_section",
+  "process_failure",
   "detection_failure",
   "system_failure",
+  "column_break_icwf",
+  "root_cause_description",
+  "section_break_cstx",
+  "immediate_containment_action",
   "column_break_lvgf",
-  "detailed_report",
   "microstructure_case",
   "section_break_eybv",
   "corrective_action",
@@ -166,12 +168,6 @@
   },
   {
    "default": "0",
-   "fieldname": "root_cause",
-   "fieldtype": "Check",
-   "label": "Root Cause"
-  },
-  {
-   "default": "0",
    "fieldname": "detection_failure",
    "fieldtype": "Check",
    "label": "Detection Failure"
@@ -181,11 +177,6 @@
    "fieldname": "system_failure",
    "fieldtype": "Check",
    "label": "System Failure"
-  },
-  {
-   "fieldname": "detailed_report",
-   "fieldtype": "Small Text",
-   "label": "Detailed Report"
   },
   {
    "fieldname": "microstructure_case",
@@ -211,13 +202,33 @@
    "fieldtype": "Table",
    "label": "Problem Solving Team",
    "options": "Problem Solving Team"
+  },
+  {
+   "default": "0",
+   "fieldname": "process_failure",
+   "fieldtype": "Check",
+   "label": "Process Failure"
+  },
+  {
+   "fieldname": "root_cause_description",
+   "fieldtype": "Small Text",
+   "label": "Root Cause Description"
+  },
+  {
+   "fieldname": "root_cause_section",
+   "fieldtype": "Section Break",
+   "label": "Root Cause"
+  },
+  {
+   "fieldname": "column_break_icwf",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-12 15:11:40.282552",
+ "modified": "2026-05-18 18:11:45.159661",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "CAPA",

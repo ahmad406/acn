@@ -7,7 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "employee",
-  "desigination"
+  "designation"
  ],
  "fields": [
   {
@@ -18,10 +18,10 @@
    "options": "Employee"
   },
   {
-   "fieldname": "desigination",
+   "fieldname": "designation",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Desigination",
+   "label": "Designation",
    "options": "Designation"
   }
  ],
@@ -29,7 +29,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-05-12 15:08:41.570298",
+ "modified": "2026-05-15 14:55:03.051941",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Problem Solving Team",
