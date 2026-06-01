@@ -29,6 +29,7 @@ def get_columns():
         {"label": _("Shift"), "fieldname": "shift", "fieldtype": "Data", "width": 100},
         {"label": _("Person Name"), "fieldname": "person_name", "fieldtype": "Data", "width": 160},
         {"label": _("Job Loading Plan Date"), "fieldname": "date", "fieldtype": "Datetime", "width":200},
+        {"label": _("TC No."), "fieldname": "tc_no", "fieldtype": "Link", "options": "Test Certificate entry", "width": 180},
         {"label": _("Checked Date"), "fieldname": "checked_date", "fieldtype": "Date", "width": 160},
         {"label": _("Checked By (User)"), "fieldname": "checked_by", "fieldtype": "Data", "width":200},
         {"label": _("Reason For Delay In Checking"), "fieldname": "reason", "fieldtype": "Data", "width":500},
@@ -71,6 +72,7 @@ def get_data(filters):
 
         DATE(lie.actual_start_date_time) AS checked_date,
         lie.checked_by AS checked_by,
+        lie.tc_no AS tc_no,
 
         lie.reason_for_delay_in_checking AS reason
 
@@ -87,7 +89,8 @@ def get_data(filters):
                 lie.job_plan_id,
                 lie.reason_for_delay_in_checking,
                 lie.actual_start_date_time,
-                tce.checked_by
+                tce.checked_by,
+                tce.name AS tc_no
             FROM `tabLab Inspection Entry` lie
             LEFT JOIN `tabTest Certificate entry` tce
                 ON tce.lab_inspection_id = lie.name

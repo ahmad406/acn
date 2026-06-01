@@ -32,6 +32,22 @@ def get_data(filters):
         conditions += " AND si.posting_date <= %(to_date)s"
         values["to_date"] = filters.get("to_date")
 
+    if filters.get("customer"):
+        conditions += " AND si.customer = %(customer)s"
+        values["customer"] = filters.get("customer")
+
+    if filters.get("territory"):
+        conditions += " AND c.territory = %(territory)s"
+        values["territory"] = filters.get("territory")
+
+    if filters.get("market_segment"):
+        conditions += " AND c.market_segment = %(market_segment)s"
+        values["market_segment"] = filters.get("market_segment")
+
+    if filters.get("process"):
+        conditions += " AND sii.process_name = %(process)s"
+        values["process"] = filters.get("process")
+
     rows = frappe.db.sql(
         f"""
         SELECT

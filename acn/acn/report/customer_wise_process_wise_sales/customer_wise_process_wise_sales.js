@@ -24,18 +24,35 @@ frappe.query_reports["Customer Wise Process Wise Sales"] = {
 			label: "Customer",
 			fieldtype: "Link",
 			options: "Customer"
+		},
+		{
+			fieldname: "territory",
+			label: "Territory",
+			fieldtype: "Link",
+			options: "Territory"
+		},
+		{
+			fieldname: "market_segment",
+			label: "Market Segment",
+			fieldtype: "Link",
+			options: "Market Segment"
+		},
+		{
+			fieldname: "process",
+			label: "Process",
+			fieldtype: "Data"
 		}
 	]
 	,
-	  formatter: function(value, row, column, data, default_formatter) {
+	formatter: function (value, row, column, data, default_formatter) {
 
-        value = default_formatter(value, row, column, data);
+		value = default_formatter(value, row, column, data);
 
-        // Make customer total row bold
-        if (data && data.is_customer_total) {
-            value = `<span style="font-weight:800;">${value}</span>`;
-        }
+		// Make customer total row bold
+		if (data && data.is_customer_total) {
+			value = `<span style="font-weight:800;">${value}</span>`;
+		}
 
-        return value;
-    }
+		return value;
+	}
 };

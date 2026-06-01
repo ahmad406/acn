@@ -31,7 +31,8 @@ def get_columns():
 		{"label": "Enquiry Type",    "fieldname": "enquiry_type",     "fieldtype": "Data",     "width": 120},
 		{"label": "Source",          "fieldname": "source",           "fieldtype": "Data",     "width": 110},
 		{"label": "Customer Name",   "fieldname": "customer_name",    "fieldtype": "Data",    "width": 160},
-		{"label": "Sector",          "fieldname": "industry",         "fieldtype": "Data",     "width": 120},
+		{"label": "Market Segment",  "fieldname": "market_segment",   "fieldtype": "Data",     "width": 140},
+		{"label": "Opportunity Valuation Type",  "fieldname": "opportunity_valuation_type",   "fieldtype": "Data",     "width": 200},
 		{"label": "Territory",       "fieldname": "territory",        "fieldtype": "Data",     "width": 120},
 		{"label": "Contact Person",  "fieldname": "contact_person",   "fieldtype": "Data",     "width": 140},
 		{"label": "Contact No",      "fieldname": "mobile_no",        "fieldtype": "Data",     "width": 120},
@@ -65,7 +66,7 @@ def get_data(filters=None):
             l.date_of_enquiry   AS transaction_date,
             l.enquiry_type,
             l.source,
-            l.industry,
+            l.market_segment,
             l.territory,
             l.first_name AS contact_person,
             l.mobile_no,
@@ -91,6 +92,7 @@ def get_data(filters=None):
 			o.name               AS opp_id,
 			o.party_name         AS lead_id,
 			o.opportunity_amount AS total_value,
+			o.opportunity_valuation_type,
 			oi.description AS process
 		FROM `tabOpportunity` o
 		LEFT JOIN `tabOpportunity Item` oi ON oi.parent = o.name
@@ -103,7 +105,8 @@ def get_data(filters=None):
 		if o.opp_id not in opp_meta_map:
 			opp_meta_map[o.opp_id] = {
 				"lead_id":     o.lead_id,
-				"total_value": o.total_value
+				"total_value": o.total_value,
+				"opportunity_valuation_type": o.opportunity_valuation_type
 			}
 			lead_opps_map.setdefault(o.lead_id, [])
 			if o.opp_id not in lead_opps_map[o.lead_id]:
@@ -188,7 +191,8 @@ def make_row(lead, opp_meta, item, qtn, remarks):
 		"enquiry_type":     lead.enquiry_type,
 		"source":           lead.source,
 		"customer_name":    lead.customer_name,
-		"industry":         lead.industry,
+		"market_segment":   lead.market_segment,
+		"opportunity_valuation_type": opp_meta["opportunity_valuation_type"] if opp_meta else "",
 		"territory":        lead.territory,
 		"contact_person":   lead.contact_person,
 		"mobile_no":        lead.mobile_no,

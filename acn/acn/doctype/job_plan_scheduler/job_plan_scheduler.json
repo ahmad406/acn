@@ -87,9 +87,11 @@
    "options": "Job Card details"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "job_loading_plan_date",
    "fieldtype": "Datetime",
-   "label": "Job loading plan date"
+   "label": "Job loading plan date",
+   "reqd": 1
   },
   {
    "fieldname": "loading_plan_time",
@@ -179,9 +181,11 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "job_ending_plan_date",
    "fieldtype": "Datetime",
-   "label": "Job Ending Plan date"
+   "label": "Job Ending Plan date",
+   "reqd": 1
   },
   {
    "fieldname": "section_break_xwkf",
@@ -237,7 +241,7 @@
  "is_calendar_and_gantt": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-14 18:33:24.375170",
+ "modified": "2026-06-01 11:32:57.283441",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Job Plan Scheduler",
