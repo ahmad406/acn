@@ -72,3 +72,79 @@ def get_customer_dc_query(doctype, txt, searchfield, start, page_len, filters):
         ORDER BY name
         LIMIT %s OFFSET %s
     """, values + [page_len, start])
+
+
+
+
+def send_proforma_invoice_with_letterhead(doc, method):
+
+    letter_head = frappe.db.get_value("Letter Head", {"is_default": 1}, "name")
+
+    html = frappe.get_print(
+        doc.doctype,
+        doc.name,
+        print_format="Proforma Invoice",
+        letterhead=letter_head
+    )
+    pdf_content = get_pdf(html)
+
+    notification = frappe.get_doc("Notification", "Proforma Invoice")
+
+    # Parse comma-separated emails into a clean list
+    if not doc.customer_email:
+        frappe.log_error(f"No customer_email on {doc.name}, skipping notification", "Proforma Invoice Email")
+        return
+
+    recipients = [e.strip() for e in doc.customer_email.split(",") if e.strip()]
+
+    if not recipients:
+        frappe.log_error(f"No valid emails parsed from customer_email on {doc.name}", "Proforma Invoice Email")
+        return
+
+    # Fetch CC from notification recipients row
+    cc = []
+    for r in notification.recipients:
+        if r.cc:
+            cc_emails = [e.strip() for e in r.cc.split("\n") if e.strip()]
+            cc.extend(cc_emails)
+
+    attachments = [{
+        "fname": f"{doc.name}.pdf",
+        "fcontent": pdf_content
+    }]
+
+    attached_files = frappe.get_all(
+        "File",
+        filters={
+            "attached_to_doctype": doc.doctype,
+            "attached_to_name": doc.name
+        },
+        fields=["name", "file_name"]
+    )
+
+    for f in attached_files:
+        file_doc = frappe.get_doc("File", f.name)
+        attachments.append({
+            "fname": f.file_name,
+            "fcontent": file_doc.get_content()
+        })
+
+    frappe.log_error(
+        f"Recipients: {recipients}\nCC: {cc}\nAttachments: {[a['fname'] for a in attachments]}",
+        "Proforma Invoice Email Debug"
+    )
+
+    frappe.sendmail(
+        recipients=recipients,
+        cc=cc,
+        subject=f"Proforma Invoice {doc.name} from {doc.company}",
+        message=get_email_body(doc),
+        attachments=attachments,
+        expose_recipients="header"
+    )
+
+
+def get_email_body(doc):
+    notification = frappe.get_doc("Notification", "Proforma Invoice")
+    context = frappe.get_doc("Proforma Invoice", doc.name).as_dict()
+    return frappe.render_template(notification.message, {"doc": context, "frappe": frappe})

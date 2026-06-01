@@ -194,7 +194,10 @@ doc_events = {
     },
 	"Opportunity": {
 		"validate": "acn.custom_script.opportunity.opportunity.update_opportunity_valuation_type"
-	}
+	},
+	"Proforma Invoice": {
+        "on_submit": "acn.acn.doctype.proforma_invoice.proforma_invoice.send_proforma_invoice_with_letterhead"
+    },
 }
 
 
