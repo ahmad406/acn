@@ -4,6 +4,8 @@
 import frappe
 from frappe.model.document import Document
 from frappe.utils import money_in_words
+from frappe.utils.pdf import get_pdf
+
 
 class ProformaInvoice(Document):
     def before_save(self):
