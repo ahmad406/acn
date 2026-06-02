@@ -29,6 +29,16 @@ frappe.ui.form.on("Customer DC", {
                     }
                 );
             }, )
+
+            frm.add_custom_button(__('Create Proforma Invoice'), function () {
+
+        frappe.new_doc("Proforma Invoice", {
+            customer_dc_id: frm.doc.name,
+            customer: frm.doc.customer,
+            sales_order_no: frm.doc.sales_order_no
+        });
+
+    },);
         }
     },
     setup: function (frm) {

@@ -139,7 +139,7 @@ def send_proforma_invoice_with_letterhead(doc, method):
     frappe.sendmail(
         recipients=recipients,
         cc=cc,
-        subject=f"Proforma Invoice {doc.name} from {doc.company}",
+        subject=f"Proforma Invoice {doc.name}",
         message=get_email_body(doc),
         attachments=attachments,
         expose_recipients="header"
