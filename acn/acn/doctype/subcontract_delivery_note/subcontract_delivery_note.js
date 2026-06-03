@@ -74,6 +74,8 @@ frappe.ui.form.on("Subcontract Delivery Item", {
 					frappe.model.set_value(cdt, cdn, "process_name",  r.message.process_name);
 					frappe.model.set_value(cdt, cdn, "dc_qty_nos",    r.message.dc_qty_nos);
 					frappe.model.set_value(cdt, cdn, "dc_qty_kgs",    r.message.dc_qty_kgs);
+					frappe.model.set_value(cdt, cdn, "delivery_qty_nos",    r.message.dc_qty_nos);
+					frappe.model.set_value(cdt, cdn, "delivery_qty_kgs",    r.message.dc_qty_kgs);
 					frappe.model.set_value(cdt, cdn, "eway_bill_hsn", r.message.eway_bill_hsn);
 					frappe.model.set_value(cdt, cdn, "rate",              r.message.rate);
 					frappe.model.set_value(cdt, cdn, "rate_uom",          r.message.rate_uom);

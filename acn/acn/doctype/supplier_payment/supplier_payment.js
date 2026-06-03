@@ -2,8 +2,8 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on("Supplier Payment", {
-  onload:function(frm){
-frm.ignore_doctypes_on_cancel_all = ["Journal Entry"];
+  onload: function (frm) {
+    frm.ignore_doctypes_on_cancel_all = ["Journal Entry"];
   },
   setup: function (frm) {
     frm.set_query('bank', function (doc) {
@@ -58,7 +58,7 @@ frappe.ui.form.on('Supplier Payment Details', {
     frappe.call({
       method: "get_ref_doc_details",
       doc: cur_frm.doc,
-      args:{"row":row},
+      args: { "row": row },
       callback: function (r) {
         if (r.message) {
           cur_frm.referesh()
@@ -66,5 +66,53 @@ frappe.ui.form.on('Supplier Payment Details', {
         }
       }
     });
+  }
+});
+
+
+
+function calculate_cheque_amount(frm) {
+  let total = 0;
+
+  (frm.doc.supplier_details || []).forEach(row => {
+    total += flt(row.allocated_amount);
+  });
+
+  frm.set_value("cheque_amount", total);
+}
+
+
+frappe.ui.form.on('Supplier Payment Details', {
+
+  name_ref: function (frm, cdt, cdn) {
+
+    const row = locals[cdt][cdn];
+
+    if (!row.type || !row.name_ref) {
+      return;
+    }
+
+    frappe.call({
+      method: "get_ref_doc_details",
+      doc: cur_frm.doc,
+      args: { "row": row },
+
+      callback: function (r) {
+        if (r.message) {
+
+          cur_frm.refresh_field("supplier_details");
+
+          calculate_cheque_amount(frm);
+        }
+      }
+    });
+  },
+
+  allocated_amount: function (frm, cdt, cdn) {
+    calculate_cheque_amount(frm);
+  },
+
+  supplier_details_remove: function (frm) {
+    calculate_cheque_amount(frm);
   }
 });

@@ -10,11 +10,12 @@
   "amended_from",
   "naming_series",
   "transaction_date",
-  "customer_complaint_id",
   "customer",
+  "customer_complaint_id",
   "customer_dc_no",
   "item_code",
   "item_name",
+  "customer_requirement",
   "column_break_msrm",
   "material",
   "process_type",
@@ -24,6 +25,7 @@
   "defective_qty_nos",
   "defective_qty_kgs",
   "nature_of_complaint",
+  "customer_complaint_statement",
   "root_cause_section",
   "process_failure",
   "detection_failure",
@@ -74,7 +76,6 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Customer Complaint ID",
-   "link_filters": "[[\"Customer Complaint\",\"capa\",\"=\",1],[\"Customer Complaint\",\"capa_no\",\"is\",\"not set\"],[\"Customer Complaint\",\"docstatus\",\"=\",\"1\"]]",
    "options": "Customer Complaint",
    "reqd": 1
   },
@@ -222,13 +223,23 @@
   {
    "fieldname": "column_break_icwf",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_complaint_statement",
+   "fieldtype": "Small Text",
+   "label": "Customer Complaint Statement"
+  },
+  {
+   "fieldname": "customer_requirement",
+   "fieldtype": "Small Text",
+   "label": "Customer Requirement"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-18 18:11:45.159661",
+ "modified": "2026-06-02 14:19:25.427235",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "CAPA",

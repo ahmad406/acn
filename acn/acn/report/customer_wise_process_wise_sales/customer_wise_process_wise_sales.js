@@ -40,7 +40,8 @@ frappe.query_reports["Customer Wise Process Wise Sales"] = {
 		{
 			fieldname: "process",
 			label: "Process",
-			fieldtype: "Data"
+			fieldtype: "Link",
+			options: "Process Type"
 		}
 	]
 	,

@@ -5,6 +5,7 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
+from frappe.utils import getdate, nowdate
 
 
 class SubcontractDeliveryNote(Document):
@@ -157,7 +158,7 @@ def make_stock_entry_on_submit(sdn):
 	se.flags.ignore_links     = True
 	se.insert(ignore_permissions=True, ignore_mandatory=True)
 
-	frappe.db.set_value("Stock Entry", se.name, "docstatus", 1)
+	# frappe.db.set_value("Stock Entry", se.name, "docstatus", 1)
 	frappe.db.set_value("Subcontract Delivery Note", sdn.name, "stock_entry", se.name)
 
 	frappe.msgprint(
@@ -167,9 +168,6 @@ def make_stock_entry_on_submit(sdn):
 		alert=True,
 		indicator="green",
 	)
-
-
-from frappe.utils import getdate, nowdate
 
 
 def get_valid_item_tax_template(gst_hsn_code):

@@ -45,7 +45,7 @@ def get_data(filters):
         values["market_segment"] = filters.get("market_segment")
 
     if filters.get("process"):
-        conditions += " AND sii.process_name = %(process)s"
+        conditions += " AND sii.process_type = %(process)s"
         values["process"] = filters.get("process")
 
     rows = frappe.db.sql(
@@ -54,7 +54,7 @@ def get_data(filters):
             si.customer,
             c.territory,
             c.market_segment,
-            sii.process_name AS process,
+            sii.process_type AS process,
             SUM(sii.d_qty_in_nos) AS qty_nos,
             SUM(sii.d_qty_in_kgs) AS qty_kgs,
             SUM(sii.base_net_amount) AS amount
@@ -71,10 +71,10 @@ def get_data(filters):
             si.customer,
             c.territory,
             c.market_segment,
-            sii.process_name
+            sii.process_type
         ORDER BY
             si.customer,
-            sii.process_name
+            sii.process_type
         """,
         values,
         as_dict=True,

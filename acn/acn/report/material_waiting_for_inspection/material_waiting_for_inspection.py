@@ -30,6 +30,8 @@ def get_columns():
         {"label": _("Person Name"), "fieldname": "person_name", "fieldtype": "Data", "width": 160},
         {"label": _("Job Loading Plan Date"), "fieldname": "date", "fieldtype": "Datetime", "width":200},
         {"label": _("TC No."), "fieldname": "tc_no", "fieldtype": "Link", "options": "Test Certificate entry", "width": 180},
+        {"label": _("Previous Internal Process"), "fieldname": "previous_internal_process", "fieldtype": "Data", "width": 220},
+        {"label": _("Previous Process Status"), "fieldname": "previous_process_status", "fieldtype": "Data", "width": 180},
         {"label": _("Checked Date"), "fieldname": "checked_date", "fieldtype": "Date", "width": 160},
         {"label": _("Checked By (User)"), "fieldname": "checked_by", "fieldtype": "Data", "width":200},
         {"label": _("Reason For Delay In Checking"), "fieldname": "reason", "fieldtype": "Data", "width":500},
@@ -109,5 +111,55 @@ def get_data(filters):
             "to_date": filters.get("to_date"),
             "internal_process_for": internal_process_for
         }, as_dict=1)
+
+
+    for row in data:
+
+        previous_process = ""
+
+        sequence_rows = frappe.get_all(
+            "Sequence Lot wise Internal Process",
+            filters={
+                "parent": row.job_card_no
+            },
+            fields=[
+                "idx",
+                "internal_process"
+            ],
+            order_by="idx asc"
+        )
+
+        current_index = None
+
+        for i, seq in enumerate(sequence_rows):
+            if (seq.internal_process or "").strip().lower() == (row.inspection or "").strip().lower():
+                current_index = i
+                break
+
+        # previous row process
+        if current_index is not None and current_index > 0:
+            previous_process = sequence_rows[current_index - 1].internal_process
+
+        row["previous_internal_process"] = previous_process or ""
+
+        # default status
+        row["previous_process_status"] = "Not Processed"
+
+        if previous_process:
+
+            processed = frappe.db.sql("""
+                SELECT jels.name
+                FROM `tabJob Execution Logsheet child` jelsc
+                INNER JOIN `tabJob Execution Logsheet` jels
+                    ON jels.name = jelsc.parent
+                WHERE
+                    jels.docstatus = 1
+                    AND jels.internal_process = %s
+                    AND jelsc.job_card_id = %s
+                LIMIT 1
+            """, (previous_process, row.job_card_no))
+        
+            if processed:
+                row["previous_process_status"] = "Processed"
 
     return data

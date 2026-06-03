@@ -29,18 +29,20 @@ def get_columns():
 	return [
 		{"label": "Date of Enquiry", "fieldname": "transaction_date", "fieldtype": "Date",     "width": 160},
 		{"label": "Enquiry Type",    "fieldname": "enquiry_type",     "fieldtype": "Data",     "width": 120},
+		{"label": "Lead Priority", "fieldname": "lead_priority", "fieldtype": "Data", "width": 120},
 		{"label": "Source",          "fieldname": "source",           "fieldtype": "Data",     "width": 110},
 		{"label": "Customer Name",   "fieldname": "customer_name",    "fieldtype": "Data",    "width": 160},
 		{"label": "Market Segment",  "fieldname": "market_segment",   "fieldtype": "Data",     "width": 140},
-		{"label": "Opportunity Valuation Type",  "fieldname": "opportunity_valuation_type",   "fieldtype": "Data",     "width": 200},
 		{"label": "Territory",       "fieldname": "territory",        "fieldtype": "Data",     "width": 120},
 		{"label": "Contact Person",  "fieldname": "contact_person",   "fieldtype": "Data",     "width": 140},
 		{"label": "Contact No",      "fieldname": "mobile_no",        "fieldtype": "Data",     "width": 120},
 		{"label": "E-Mail ID",       "fieldname": "email_id",         "fieldtype": "Data",     "width": 160},
+		{"label": "Service Tag", "fieldname": "service_tag", "fieldtype": "Data", "width": 140},
 		{"label": "Process",         "fieldname": "process",          "fieldtype": "Data",     "width": 500},
 		{"label": "Quotation",       "fieldname": "quotation_name",   "fieldtype": "Link",     "options": "Quotation", "width": 140},
 		{"label": "Rates Quoted",    "fieldname": "rates_quoted",     "fieldtype": "Currency", "width": 130},
 		{"label": "Total Value",     "fieldname": "total_value",      "fieldtype": "Currency", "width": 130},
+		{"label": "Opportunity Valuation Type",  "fieldname": "opportunity_valuation_type",   "fieldtype": "Data",     "width": 200},
 		{"label": "Enq Status",      "fieldname": "status",           "fieldtype": "Data",     "width": 120},
 		{"label": "Remarks",         "fieldname": "remarks",          "fieldtype": "Data",     "width": 240},
 	]
@@ -71,7 +73,9 @@ def get_data(filters=None):
             l.first_name AS contact_person,
             l.mobile_no,
             l.email_id,
-            l.status
+            l.status,
+			l.lead_priority,
+			l.service_tag
         FROM `tabLead` l
         WHERE 1=1 {conditions}
         ORDER BY l.creation
@@ -203,6 +207,8 @@ def make_row(lead, opp_meta, item, qtn, remarks):
 		"total_value":      opp_meta["total_value"] if opp_meta else 0,
 		"status":           lead.status,
 		"remarks":          remarks,
+		"lead_priority": lead.lead_priority,
+		"service_tag": lead.service_tag,
 	}
 
 @frappe.whitelist()

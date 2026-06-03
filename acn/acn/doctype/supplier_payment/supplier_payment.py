@@ -11,7 +11,7 @@ class SupplierPayment(Document):
 	def validate(self):
 		self.validate_required_fields()
 		self.validate_allocated_amount()
-		self.validate_total_vs_cheque()
+		# self.validate_total_vs_cheque()
 
 	@frappe.whitelist()
 	def get_ref_doc_details(self, row):

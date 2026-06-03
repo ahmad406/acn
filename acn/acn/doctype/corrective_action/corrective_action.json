@@ -7,7 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "corrective_action_note",
-  "action_responsible"
+  "action_responsible",
+  "date_of_target"
  ],
  "fields": [
   {
@@ -22,13 +23,19 @@
    "in_list_view": 1,
    "label": "Action Responsible",
    "options": "Employee"
+  },
+  {
+   "fieldname": "date_of_target",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date Of Target"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-05-12 15:07:31.027632",
+ "modified": "2026-06-02 11:03:48.502031",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Corrective Action",
