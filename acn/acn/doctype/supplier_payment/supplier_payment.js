@@ -48,28 +48,6 @@ frappe.ui.form.on("Supplier Payment", {
   }
 });
 
-frappe.ui.form.on('Supplier Payment Details', {
-  name_ref: function (frm, cdt, cdn) {
-    const row = locals[cdt][cdn];
-
-    if (!row.type || !row.name_ref) {
-      return;
-    }
-    frappe.call({
-      method: "get_ref_doc_details",
-      doc: cur_frm.doc,
-      args: { "row": row },
-      callback: function (r) {
-        if (r.message) {
-          cur_frm.referesh()
-
-        }
-      }
-    });
-  }
-});
-
-
 
 function calculate_cheque_amount(frm) {
   let total = 0;
@@ -104,6 +82,27 @@ frappe.ui.form.on('Supplier Payment Details', {
 
           calculate_cheque_amount(frm);
         }
+      }
+    });
+  },
+
+  party_name: function (frm, cdt, cdn) {
+    let row = locals[cdt][cdn];
+
+    if (!row.party_name) return;
+
+    frappe.db.get_value(
+      "Bank Account",
+      {
+        party_type: "Supplier",
+        party: row.party_name
+      },
+      ["bank_account_no", "branch_code","ifsc_code"]
+    ).then(r => {
+      if (r.message) {
+        frappe.model.set_value(cdt, cdn, "account_no", r.message.bank_account_no);
+        frappe.model.set_value(cdt, cdn, "branch_code", r.message.branch_code);
+        frappe.model.set_value(cdt, cdn, "ifsc_code", r.message.ifsc_code);
       }
     });
   },

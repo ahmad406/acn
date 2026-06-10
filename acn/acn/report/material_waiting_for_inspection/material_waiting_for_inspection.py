@@ -47,6 +47,11 @@ def get_data(filters):
             BETWEEN %(from_date)s AND %(to_date)s
         """
 
+    if filters.get("internal_process"):
+        conditions += """
+            AND jps.internal_process = %(internal_process)s
+        """
+
     internal_process_for = filters.get("internal_process_for", "Lab Inspection")
 
     data = frappe.db.sql(f"""
@@ -78,8 +83,6 @@ def get_data(filters):
 
         lie.reason_for_delay_in_checking AS reason
 
-
-
         FROM `tabJob Plan Scheduler` jps
 
         JOIN `tabJob Card details` jcd
@@ -109,7 +112,8 @@ def get_data(filters):
         """, {
             "from_date": filters.get("from_date"),
             "to_date": filters.get("to_date"),
-            "internal_process_for": internal_process_for
+            "internal_process_for": internal_process_for,
+            "internal_process": filters.get("internal_process") or "",
         }, as_dict=1)
 
 
@@ -161,5 +165,10 @@ def get_data(filters):
         
             if processed:
                 row["previous_process_status"] = "Processed"
+
+    # ── process_status filter (applied after loop since value is computed) ──
+    process_status = filters.get("process_status")
+    if process_status:
+        data = [r for r in data if r.get("previous_process_status") == process_status]
 
     return data

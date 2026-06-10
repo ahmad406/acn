@@ -136,9 +136,12 @@ def send_proforma_invoice_with_letterhead(doc, method):
         "Proforma Invoice Email Debug"
     )
 
+    sender = notification.sender_email or None
+
     frappe.sendmail(
         recipients=recipients,
         cc=cc,
+        sender=sender,
         subject=f"Proforma Invoice {doc.name}",
         message=get_email_body(doc),
         attachments=attachments,

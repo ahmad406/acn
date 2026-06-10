@@ -18,11 +18,12 @@ class SupplierPayment(Document):
 		for d in self.supplier_details:
 			if str(d.idx) == str(row.get("idx")):
 				if d.type == "Purchase Invoice":
-					out, grand = frappe.get_value("Purchase Invoice", d.name_ref, ["outstanding_amount", "grand_total"])
+					out, grand, bill_no = frappe.get_value("Purchase Invoice", d.name_ref, ["outstanding_amount", "grand_total","bill_no"])
 					d.grand_total = grand
 					d.outstanding = out
 					d.allocated_amount = out
-					return
+					d.bill_no = bill_no
+					return d
 
 				if d.type == "Journal Entry":
 					sql = """
@@ -39,7 +40,8 @@ class SupplierPayment(Document):
 						d.grand_total = data[0].grand_total or 0
 						d.outstanding = data[0].outstanding or 0
 						d.allocated_amount = d.outstanding
-					return
+						d.bill_no = frappe.db.get_value("Journal Entry",d.name_ref,"user_remark") or ""
+					return d
 
 
 

@@ -37,7 +37,7 @@ def get_columns():
 		{"label": "Contact Person",  "fieldname": "contact_person",   "fieldtype": "Data",     "width": 140},
 		{"label": "Contact No",      "fieldname": "mobile_no",        "fieldtype": "Data",     "width": 120},
 		{"label": "E-Mail ID",       "fieldname": "email_id",         "fieldtype": "Data",     "width": 160},
-		{"label": "Service Tag", "fieldname": "service_tag", "fieldtype": "Data", "width": 140},
+		{"label": "Service Tag", "fieldname": "service_tag", "fieldtype": "Data", "width": 250},
 		{"label": "Process",         "fieldname": "process",          "fieldtype": "Data",     "width": 500},
 		{"label": "Quotation",       "fieldname": "quotation_name",   "fieldtype": "Link",     "options": "Quotation", "width": 140},
 		{"label": "Rates Quoted",    "fieldname": "rates_quoted",     "fieldtype": "Currency", "width": 130},
@@ -63,19 +63,18 @@ def get_data(filters=None):
 
 	leads = frappe.db.sql("""
         SELECT
-            l.name       AS lead_id,
-            l.company_name AS customer_name,
-            l.date_of_enquiry   AS transaction_date,
+            l.name            AS lead_id,
+            l.company_name    AS customer_name,
+            l.date_of_enquiry AS transaction_date,
             l.enquiry_type,
             l.source,
             l.market_segment,
             l.territory,
-            l.first_name AS contact_person,
+            l.first_name      AS contact_person,
             l.mobile_no,
             l.email_id,
             l.status,
-			l.lead_priority,
-			l.service_tag
+            l.lead_priority
         FROM `tabLead` l
         WHERE 1=1 {conditions}
         ORDER BY l.creation
@@ -86,6 +85,24 @@ def get_data(filters=None):
 
 	lead_ids = [l.lead_id for l in leads]
 	ph_leads = ", ".join(["%s"] * len(lead_ids))
+
+	# ── Service Tags (child table) ───────────────────────────────────────────
+	service_tag_map = {}  # lead_id -> comma-separated tags
+
+	tag_rows = frappe.db.sql("""
+		SELECT parent AS lead_id, service_tag
+		FROM `tabLead Service Tag`
+		WHERE parent IN ({ph})
+		ORDER BY parent, idx
+	""".format(ph=ph_leads), lead_ids, as_dict=True)
+
+	for t in tag_rows:
+		if t.service_tag:
+			service_tag_map.setdefault(t.lead_id, []).append(t.service_tag)
+
+	# Convert lists to comma-separated strings
+	service_tag_map = {k: ", ".join(v) for k, v in service_tag_map.items()}
+	# ────────────────────────────────────────────────────────────────────────
 
 	opp_meta_map  = {}
 	opp_items_map = {}
@@ -171,9 +188,10 @@ def get_data(filters=None):
 
 	for lead in leads:
 		opp_ids_for_lead = lead_opps_map.get(lead.lead_id)
+		service_tags = service_tag_map.get(lead.lead_id, "")
 
 		if not opp_ids_for_lead:
-			result.append(make_row(lead, None, None, None, ""))
+			result.append(make_row(lead, None, None, None, "", service_tags))
 			continue
 
 		for opp_id in opp_ids_for_lead:
@@ -184,12 +202,12 @@ def get_data(filters=None):
 
 			for item in items:
 				for qtn in qtns:
-					result.append(make_row(lead, meta, item, qtn, remarks))
+					result.append(make_row(lead, meta, item, qtn, remarks, service_tags))
 
 	return result
 
 
-def make_row(lead, opp_meta, item, qtn, remarks):
+def make_row(lead, opp_meta, item, qtn, remarks, service_tags=""):
 	return {
 		"transaction_date": lead.transaction_date,
 		"enquiry_type":     lead.enquiry_type,
@@ -207,8 +225,8 @@ def make_row(lead, opp_meta, item, qtn, remarks):
 		"total_value":      opp_meta["total_value"] if opp_meta else 0,
 		"status":           lead.status,
 		"remarks":          remarks,
-		"lead_priority": lead.lead_priority,
-		"service_tag": lead.service_tag,
+		"lead_priority":    lead.lead_priority,
+		"service_tag":      service_tags,
 	}
 
 @frappe.whitelist()
@@ -287,14 +305,10 @@ import re
 def strip_html(html):
     if not html:
         return ""
-    # Replace <p> and <br> tags with newline or separator
     html = re.sub(r"<p[^>]*>", "", html)
     html = re.sub(r"</p>", " | ", html)
     html = re.sub(r"<br\s*/?>", " | ", html)
-    # Strip remaining HTML tags
     html = re.sub(r"<[^>]+>", "", html)
-    # Decode HTML entities
     html = html.replace("&amp;", "&").replace("&nbsp;", " ").replace("&lt;", "<").replace("&gt;", ">")
-    # Clean up extra spaces
     html = re.sub(r"\s+", " ", html).strip(" |")
     return html

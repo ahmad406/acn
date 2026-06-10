@@ -12,7 +12,11 @@
   "grand_total",
   "outstanding",
   "allocated_amount",
-  "account"
+  "account",
+  "account_no",
+  "branch_code",
+  "ifsc_code",
+  "bill_no"
  ],
  "fields": [
   {
@@ -69,18 +73,44 @@
    "fieldtype": "Link",
    "label": "Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "account_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Account No."
+  },
+  {
+   "fieldname": "ifsc_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "IFSC Code"
+  },
+  {
+   "fieldname": "bill_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bill No."
+  },
+  {
+   "fieldname": "branch_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Branch Code"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-06-03 21:25:13.606007",
+ "modified": "2026-06-10 15:21:59.939196",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Supplier Payment Details",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

@@ -3,7 +3,8 @@ frappe.ui.form.on("Customer DC", {
         cur_frm.trigger("calculate_total");
 
         if (frm.doc.docstatus == 1) {
-            frm.add_custom_button(__('Discrepancy Note'), function () {
+
+            frm.add_custom_button(__('Delivery Note For Discrepancy'), function () {
                 frappe.confirm(
                     __('Create a Discrepancy Delivery Note for all items with Qty Not OK for Process?'),
                     function () {
@@ -28,17 +29,17 @@ frappe.ui.form.on("Customer DC", {
                         });
                     }
                 );
-            }, )
+            },"Create")
 
-            frm.add_custom_button(__('Create Proforma Invoice'), function () {
+            frm.add_custom_button(__('Proforma Invoice'), function () {
 
-        frappe.new_doc("Proforma Invoice", {
-            customer_dc_id: frm.doc.name,
-            customer: frm.doc.customer,
-            sales_order_no: frm.doc.sales_order_no
-        });
+                frappe.new_doc("Proforma Invoice", {
+                    customer_dc_id: frm.doc.name,
+                    customer: frm.doc.customer,
+                    sales_order_no: frm.doc.sales_order_no
+                });
 
-    },);
+            },"Create");
         }
     },
     setup: function (frm) {
@@ -140,22 +141,22 @@ frappe.ui.form.on("Customer DC child", {
         cur_frm.refresh()
 
     },
-    qty_not_ok_for_process_nos: function(frm, cdt, cdn) {
-    let d = locals[cdt][cdn];
+    qty_not_ok_for_process_nos: function (frm, cdt, cdn) {
+        let d = locals[cdt][cdn];
 
-    let delivered_qty = flt(d.delivered_qty);
-    let delivery_qty_kgs = flt(d.delivery_qty_kgs);
-    let qty_not_ok_nos = flt(d.qty_not_ok_for_process_nos);
+        let delivered_qty = flt(d.delivered_qty);
+        let delivery_qty_kgs = flt(d.delivery_qty_kgs);
+        let qty_not_ok_nos = flt(d.qty_not_ok_for_process_nos);
 
-    if (delivered_qty > 0 && delivery_qty_kgs > 0) {
-        d.qty_not_ok_for_process_kgs =
-            (qty_not_ok_nos / delivered_qty) * delivery_qty_kgs;
-    } else {
-        d.qty_not_ok_for_process_kgs = 0;
+        if (delivered_qty > 0 && delivery_qty_kgs > 0) {
+            d.qty_not_ok_for_process_kgs =
+                (qty_not_ok_nos / delivered_qty) * delivery_qty_kgs;
+        } else {
+            d.qty_not_ok_for_process_kgs = 0;
+        }
+
+        frm.refresh_field("items");
     }
-
-    frm.refresh_field("items");
-}
 
 });
 
