@@ -102,9 +102,10 @@
   },
   {
    "fieldname": "rate_uom",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Rate UoM",
+   "options": "UOM",
    "read_only": 1
   },
   {
@@ -162,7 +163,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-05-11 12:39:12.066460",
+ "modified": "2026-06-10 17:10:44.796371",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Subcontract Delivery Item",

@@ -46,89 +46,105 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Job Card ID",
-   "options": "Job Card for process"
+   "options": "Job Card for process",
+   "read_only": 1
   },
   {
    "fieldname": "customer_dc_id",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Customer DC ID"
+   "label": "Customer DC ID",
+   "read_only": 1
   },
   {
    "fieldname": "item_code",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Item code"
+   "label": "Item code",
+   "read_only": 1
   },
   {
    "fieldname": "item_name",
    "fieldtype": "Data",
-   "label": "Item Name"
+   "label": "Item Name",
+   "read_only": 1
   },
   {
    "fieldname": "part_no",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Part No",
-   "options": "Part no"
+   "options": "Part no",
+   "read_only": 1
   },
   {
    "fieldname": "customer_code",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Customer code"
+   "label": "Customer code",
+   "read_only": 1
   },
   {
    "fieldname": "customer_name",
    "fieldtype": "Data",
-   "label": "Customer Name"
+   "label": "Customer Name",
+   "read_only": 1
   },
   {
    "fieldname": "process_type",
    "fieldtype": "Data",
-   "label": "Process type"
+   "label": "Process type",
+   "read_only": 1
   },
   {
    "fieldname": "process_name",
    "fieldtype": "Data",
-   "label": "Process Name"
+   "label": "Process Name",
+   "read_only": 1
   },
   {
    "fieldname": "material",
    "fieldtype": "Data",
-   "label": "Material"
+   "label": "Material",
+   "read_only": 1
   },
   {
    "fieldname": "customer_process_ref",
    "fieldtype": "Data",
-   "label": "Customer Process Ref. No"
+   "label": "Customer Process Ref. No",
+   "read_only": 1
   },
   {
    "fieldname": "customer_dc_no",
    "fieldtype": "Data",
-   "label": "Customer DC No"
+   "label": "Customer DC No",
+   "read_only": 1
   },
   {
    "fieldname": "planned_qty_in_nos",
    "fieldtype": "Float",
-   "label": "Planned Qty in Nos"
+   "label": "Planned Qty in Nos",
+   "read_only": 1
   },
   {
    "fieldname": "planned_qty_in_kgs",
    "fieldtype": "Float",
-   "label": "Planned Qty in Kgs"
+   "label": "Planned Qty in Kgs",
+   "read_only": 1
   },
   {
    "fieldname": "checked_qty_in_nos",
    "fieldtype": "Float",
    "hidden": 1,
-   "label": "Checked Qty in Nos"
+   "label": "Checked Qty in Nos",
+   "read_only": 1
   },
   {
    "fieldname": "checked_qty_in_kgs",
    "fieldtype": "Float",
    "hidden": 1,
-   "label": "Checked Qty in Kgs"
+   "label": "Checked Qty in Kgs",
+   "read_only": 1
   },
   {
    "fieldname": "accepted_qty_in_nos",
@@ -179,13 +195,15 @@
    "fieldname": "control_parameter",
    "fieldtype": "Link",
    "label": "Control Parameter",
-   "options": "Internal Control Parameter"
+   "options": "Internal Control Parameter",
+   "read_only": 1
   },
   {
    "default": "0",
    "fieldname": "test_certified",
    "fieldtype": "Check",
-   "label": "Test Certified"
+   "label": "Test Certified",
+   "read_only": 1
   },
   {
    "fieldname": "samplingcheckqty",
@@ -203,30 +221,34 @@
    "fieldname": "location_image",
    "fieldtype": "Attach",
    "in_list_view": 1,
-   "label": "Location Image"
+   "label": "Location Image",
+   "read_only": 1
   },
   {
    "fieldname": "batch_no",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Batch No"
+   "label": "Batch No",
+   "read_only": 1
   },
   {
    "fieldname": "prev_batch_no",
    "fieldtype": "Data",
-   "label": "Prev Batch No"
+   "label": "Prev Batch No",
+   "read_only": 1
   },
   {
    "fieldname": "pasting_area_drawing",
    "fieldtype": "Attach Image",
-   "label": "Pasting Area Drawing"
+   "label": "Pasting Area Drawing",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-05-05 16:16:16.087318",
+ "modified": "2026-06-10 15:58:10.616414",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Inspection Qty Details",

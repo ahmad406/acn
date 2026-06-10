@@ -117,7 +117,10 @@ def make_stock_entry_on_submit(sdn):
 		item_tax_template = get_valid_item_tax_template(hsn)
 
 		basic_rate   = row.rate or 0
-		qty          = row.delivery_qty_nos or 0
+		if row.rate_uom == "Kgs":
+			qty = row.delivery_qty_kgs or 0
+		else:
+			qty = row.delivery_qty_nos or 0
 		basic_amount = basic_rate * qty
 
 		# ── Fetch cumulative tax % from Item Tax Template ──────────────────────
@@ -158,7 +161,7 @@ def make_stock_entry_on_submit(sdn):
 	se.flags.ignore_links     = True
 	se.insert(ignore_permissions=True, ignore_mandatory=True)
 
-	# frappe.db.set_value("Stock Entry", se.name, "docstatus", 1)
+	frappe.db.set_value("Stock Entry", se.name, "docstatus", 1)
 	frappe.db.set_value("Subcontract Delivery Note", sdn.name, "stock_entry", se.name)
 
 	frappe.msgprint(
