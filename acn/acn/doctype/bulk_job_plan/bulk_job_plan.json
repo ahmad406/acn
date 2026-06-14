@@ -7,6 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
+  "column_break_uoou",
+  "job_loading_plan_date",
   "section_break_zgxg",
   "internal_process",
   "fetch_data",
@@ -102,13 +104,23 @@
    "fieldname": "download",
    "fieldtype": "Button",
    "label": "Download"
+  },
+  {
+   "fieldname": "column_break_uoou",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "job_loading_plan_date",
+   "fieldtype": "Datetime",
+   "label": "Job Loading Plan Date",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-02-09 23:14:57.292100",
+ "modified": "2026-06-14 16:01:50.356581",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Bulk Job Plan",

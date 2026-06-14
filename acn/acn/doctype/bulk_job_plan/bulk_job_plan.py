@@ -39,8 +39,8 @@ class BulkJobPlan(Document):
             scheduler.get_internal_process_details()
 
             # copy plan date if needed
-            if rows and rows[0].job_loading_plan_date:
-                scheduler.job_loading_plan_date = rows[0].job_loading_plan_date
+            if self.job_loading_plan_date:
+                scheduler.job_loading_plan_date = self.job_loading_plan_date
 
             #  append job cards
             for r in rows:
