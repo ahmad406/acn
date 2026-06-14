@@ -55,8 +55,6 @@ class SupplierPayment(Document):
 		if not self.bank:
 			frappe.throw(_("Bank is required."))
 
-		if not self.cheque_no:
-			frappe.throw(_("Cheque No is required."))
 
 		if not self.cheque_amount or self.cheque_amount <= 0:
 			frappe.throw(_("Cheque Amount must be greater than zero."))
