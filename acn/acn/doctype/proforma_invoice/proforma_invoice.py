@@ -14,10 +14,8 @@ class ProformaInvoice(Document):
 
     def calculate_amounts(self):
         taxable_value = 0
-
         for row in self.proforma_invoice_table:
             uom = (row.uom or "").lower()
-
             if uom == "nos":
                 qty = row.qty_nos or 0
             elif uom == "kgs":
@@ -26,17 +24,25 @@ class ProformaInvoice(Document):
                 qty = 1
             else:
                 qty = row.qty_nos or row.qty_kgs or 0
-
             row.amount = qty * (row.rate or 0)
             taxable_value += row.amount
-
-        # Calculate tax amounts
+    
+        # account_head -> rate from item tax templates
+        templates = {r.item_tax_template for r in self.proforma_invoice_table if r.item_tax_template}
+        rate_by_account = {}
+        for t in templates:
+            tmpl = frappe.get_doc("Item Tax Template", t)
+            for tx in tmpl.taxes:
+                rate_by_account[tx.tax_type] = tx.tax_rate
+    
         total_taxes = 0
         for tax in self.taxes_and_charges:
-            tax.tax_amount = (taxable_value * (tax.rate or 0)) / 100
+            rate = rate_by_account.get(tax.account_head, 0)
+            tax.rate = rate
+            tax.tax_amount = (taxable_value * rate) / 100
             tax.total = taxable_value + tax.tax_amount
             total_taxes += tax.tax_amount
-
+    
         self.total_taxes_and_charges = total_taxes
         self.grand_total = taxable_value + total_taxes
 

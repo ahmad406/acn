@@ -195,8 +195,8 @@ def get_material_received(filters):
         pending_nos = received_nos - dispatch["nos"]
         pending_kgs = received_kgs - dispatch["kgs"]
 
-        if pending_nos == 0 or pending_kgs == 0:
-            continue
+        # if pending_nos == 0 or pending_kgs == 0:
+        #     continue
 
         rows.append({
             "particulars": "MATERIAL RECEIVED",
@@ -226,51 +226,6 @@ def get_material_received(filters):
 
     return rows
 
-
-def get_dispatch_details(customer_dc, part_no, to_date=None):
-
-    if not customer_dc or not part_no:
-        return {"nos": 0, "kgs": 0, "invoice": "", "detail": ""}
-
-    result = frappe.db.sql("""
-        SELECT
-            SUM(sii.d_qty_in_nos) AS nos,
-            SUM(sii.d_qty_in_kgs) AS kgs,
-
-            GROUP_CONCAT(
-                DISTINCT CONCAT(
-                    '(',
-                    si.name,
-                    ' - ',
-                    FORMAT(IFNULL(sii.d_qty_in_nos,0), 2),
-                    ' Nos - ',
-                    DATE_FORMAT(si.posting_date,'%%d-%%m-%%Y'),
-                    ')'
-                )
-                SEPARATOR ', '
-            ) AS invoice_detail,
-
-            GROUP_CONCAT(DISTINCT si.name) AS invoices
-
-        FROM `tabSales Invoice` si
-        JOIN `tabSales Invoice Item` sii
-            ON sii.parent = si.name
-        WHERE si.docstatus = 1
-        AND sii.customer_dc_id = %s
-        AND sii.part_no = %s
-        AND (%s IS NULL OR si.posting_date < %s)
-        """, (customer_dc, part_no,to_date, to_date), as_dict=True)
-
-    if result and result[0]:
-        r = result[0]
-        return {
-            "nos": flt(r.nos),
-            "kgs": flt(r.kgs),
-            "invoice": r.invoices or "",
-            "detail": r.invoice_detail or ""
-        }
-
-    return {"nos": 0, "kgs": 0, "invoice": "", "detail": ""}
 
 
 
@@ -422,17 +377,83 @@ def export_with_summary(filters=None):
 
 
 
-def get_dispatch_during_period(customer_dc, part_no, from_date, to_date):
-    """Get dispatch that happened DURING the selected period (from_date to to_date)"""
+def get_dispatch_details(customer_dc, part_no, to_date=None):
 
     if not customer_dc or not part_no:
         return {"nos": 0, "kgs": 0, "invoice": "", "detail": ""}
 
-    result = frappe.db.sql("""
+    # Quantities from Delivery Note
+    dn_result = frappe.db.sql("""
         SELECT
-            SUM(sii.d_qty_in_nos) AS nos,
-            SUM(sii.d_qty_in_kgs) AS kgs,
+            SUM(dni.d_qty_in_nos) AS nos,
+            SUM(dni.d_qty_in_kgs) AS kgs
+        FROM `tabDelivery Note` dn
+        JOIN `tabDelivery Note Item` dni
+            ON dni.parent = dn.name
+        WHERE dn.docstatus = 1
+        AND dni.customer_dc_id = %s
+        AND dni.part_no = %s
+        AND (%s IS NULL OR dn.posting_date < %s)
+    """, (customer_dc, part_no, to_date, to_date), as_dict=True)
 
+    # Invoice no / detail from Sales Invoice
+    si_result = frappe.db.sql("""
+        SELECT
+            GROUP_CONCAT(
+                DISTINCT CONCAT(
+                    '(',
+                    si.name,
+                    ' - ',
+                    FORMAT(IFNULL(sii.d_qty_in_nos,0), 2),
+                    ' Nos - ',
+                    DATE_FORMAT(si.posting_date,'%%d-%%m-%%Y'),
+                    ')'
+                )
+                SEPARATOR ', '
+            ) AS invoice_detail,
+            GROUP_CONCAT(DISTINCT si.name) AS invoices
+        FROM `tabSales Invoice` si
+        JOIN `tabSales Invoice Item` sii
+            ON sii.parent = si.name
+        WHERE si.docstatus = 1
+        AND sii.customer_dc_id = %s
+        AND sii.part_no = %s
+        AND (%s IS NULL OR si.posting_date < %s)
+    """, (customer_dc, part_no, to_date, to_date), as_dict=True)
+
+    dn = dn_result[0] if dn_result else {}
+    si = si_result[0] if si_result else {}
+
+    return {
+        "nos": flt(dn.get("nos")),
+        "kgs": flt(dn.get("kgs")),
+        "invoice": si.get("invoices") or "",
+        "detail": si.get("invoice_detail") or ""
+    }
+
+
+def get_dispatch_during_period(customer_dc, part_no, from_date, to_date):
+
+    if not customer_dc or not part_no:
+        return {"nos": 0, "kgs": 0, "invoice": "", "detail": ""}
+
+    # Quantities from Delivery Note
+    dn_result = frappe.db.sql("""
+        SELECT
+            SUM(dni.d_qty_in_nos) AS nos,
+            SUM(dni.d_qty_in_kgs) AS kgs
+        FROM `tabDelivery Note` dn
+        JOIN `tabDelivery Note Item` dni
+            ON dni.parent = dn.name
+        WHERE dn.docstatus = 1
+        AND dni.customer_dc_id = %s
+        AND dni.part_no = %s
+        AND dn.posting_date BETWEEN %s AND %s
+    """, (customer_dc, part_no, from_date, to_date), as_dict=True)
+
+    # Invoice no / detail from Sales Invoice
+    si_result = frappe.db.sql("""
+        SELECT
             GROUP_CONCAT(
                 DISTINCT CONCAT(
                     '(',
@@ -445,9 +466,7 @@ def get_dispatch_during_period(customer_dc, part_no, from_date, to_date):
                 )
                 SEPARATOR ', '
             ) AS invoice_detail,
-
             GROUP_CONCAT(DISTINCT si.name) AS invoices
-
         FROM `tabSales Invoice` si
         JOIN `tabSales Invoice Item` sii
             ON sii.parent = si.name
@@ -457,13 +476,12 @@ def get_dispatch_during_period(customer_dc, part_no, from_date, to_date):
         AND si.posting_date BETWEEN %s AND %s
     """, (customer_dc, part_no, from_date, to_date), as_dict=True)
 
-    if result and result[0]:
-        r = result[0]
-        return {
-            "nos": flt(r.nos),
-            "kgs": flt(r.kgs),
-            "invoice": r.invoices or "",
-            "detail": r.invoice_detail or ""
-        }
+    dn = dn_result[0] if dn_result else {}
+    si = si_result[0] if si_result else {}
 
-    return {"nos": 0, "kgs": 0, "invoice": "", "detail": ""}
+    return {
+        "nos": flt(dn.get("nos")),
+        "kgs": flt(dn.get("kgs")),
+        "invoice": si.get("invoices") or "",
+        "detail": si.get("invoice_detail") or ""
+    }
