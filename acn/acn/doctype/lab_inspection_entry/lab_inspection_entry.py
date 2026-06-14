@@ -569,3 +569,18 @@ ORDER BY
 	""", (internal_process,), as_dict=True)
 
 
+
+@frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
+def get_rework_process(doctype, txt, searchfield, start, page_len, filters):
+    job_card_id = filters.get("job_card_id") or ""
+
+    return frappe.db.sql("""
+        SELECT DISTINCT s.internal_process
+        FROM `tabSequence Lot wise Internal Process` s
+        WHERE s.parent = %s
+          AND s.parenttype = 'Job Card for process'
+          AND s.internal_process LIKE %s
+        ORDER BY s.internal_process
+        LIMIT %s OFFSET %s
+    """, (job_card_id, f"%{txt}%", page_len, start))

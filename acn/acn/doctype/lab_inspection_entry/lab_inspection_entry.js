@@ -22,7 +22,15 @@ frappe.ui.form.on("Lab Inspection Entry", {
                 filters: { "internal_process_for": "Lab Inspection" }
 
             }
-        });
+        }); 
+
+         cur_frm.set_query("rework_process", "inspection_qty_details", function (frm, cdt, cdn) {
+        let row = locals[cdt][cdn];
+        return {
+            query: "acn.acn.doctype.lab_inspection_entry.lab_inspection_entry.get_rework_process",
+            filters: { job_card_id: row.job_card_id || "" }
+        };
+    });
     },
     job_plan_id(frm) {
         if (cur_frm.doc.job_plan_id) {

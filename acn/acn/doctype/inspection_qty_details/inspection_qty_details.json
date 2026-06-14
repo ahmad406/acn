@@ -178,8 +178,9 @@
   },
   {
    "fieldname": "rework_process",
-   "fieldtype": "Data",
-   "label": "Rework Process"
+   "fieldtype": "Link",
+   "label": "Rework Process",
+   "options": "Internal Process"
   },
   {
    "fieldname": "rework_cause",
@@ -248,7 +249,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-10 15:58:10.616414",
+ "modified": "2026-06-14 18:10:16.504900",
  "modified_by": "Administrator",
  "module": "ACN",
  "name": "Inspection Qty Details",
