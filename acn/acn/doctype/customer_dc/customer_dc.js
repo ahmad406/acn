@@ -144,8 +144,8 @@ frappe.ui.form.on("Customer DC child", {
     qty_not_ok_for_process_nos: function (frm, cdt, cdn) {
         let d = locals[cdt][cdn];
 
-        let delivered_qty = flt(d.delivered_qty);
-        let delivery_qty_kgs = flt(d.delivery_qty_kgs);
+        let delivered_qty = flt(d.qty_nos);
+        let delivery_qty_kgs = flt(d.qty_kgs);
         let qty_not_ok_nos = flt(d.qty_not_ok_for_process_nos);
 
         if (delivered_qty > 0 && delivery_qty_kgs > 0) {
