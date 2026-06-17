@@ -84,4 +84,23 @@ frappe.ui.form.on("Subcontract Delivery Item", {
 			},
 		});
 	},
+
+	delivery_qty_nos: function (frm, cdt, cdn) {
+	let d = locals[cdt][cdn];
+
+	let dc_qty_nos = flt(d.dc_qty_nos);
+	let dc_qty_kgs = flt(d.dc_qty_kgs);
+	let delivery_qty_nos = flt(d.delivery_qty_nos);
+
+	if (dc_qty_nos > 0 && dc_qty_kgs > 0) {
+		frappe.model.set_value(
+			cdt,
+			cdn,
+			"delivery_qty_kgs",
+			(delivery_qty_nos / dc_qty_nos) * dc_qty_kgs
+		);
+	} else {
+		frappe.model.set_value(cdt, cdn, "delivery_qty_kgs", 0);
+	}
+},
 });
