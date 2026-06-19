@@ -161,7 +161,7 @@ def make_stock_entry_on_submit(sdn):
 	se.flags.ignore_links     = True
 	se.insert(ignore_permissions=True, ignore_mandatory=True)
 
-	frappe.db.set_value("Stock Entry", se.name, "docstatus", 1)
+	frappe.db.set_value("Stock Entry", se.name, {"is_subcontract_delivery_note": 1,"docstatus": 1,}, update_modified=False)
 	frappe.db.set_value("Subcontract Delivery Note", sdn.name, "stock_entry", se.name)
 
 	frappe.msgprint(
